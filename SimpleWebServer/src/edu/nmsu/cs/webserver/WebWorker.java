@@ -16,12 +16,14 @@ package edu.nmsu.cs.webserver;
  * request; it writes out an HTTP header to begin its response, and then it writes out some HTML
  * content for the response content. HTTP requests and responses are just lines of text (in a very
  * particular format).
- * 
+ *
  * @author Jon Cook, Ph.D.
  *
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -55,9 +57,24 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String getFileName = readHTTPRequest(is);
+			File getFile = null;
+
+			// creating a file if a name was passed by readHTTPRequest
+			if (getFileName != null)
+			{
+				getFile = new File(getFileName);
+			}
+
+      // making sure file exists
+			if (getFile.exists())
+			{
+				writeHTTPHeader(os, "text/html", "200 OK");
+			}
+			else {
+				writeHTTPHeader(os, "text/html", "404 Not Found");
+			}
+			writeContent(os, getFile);
 			os.flush();
 			socket.close();
 		}
@@ -72,9 +89,10 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String getFile = null;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -84,6 +102,11 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+
+				if (line.startsWith("GET"))
+				{
+					getFile = line.substring(5, line.length() - 9);
+				}
 				if (line.length() == 0)
 					break;
 			}
@@ -93,23 +116,24 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return getFile;
 	}
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
-	 * 
+	 *
 	 * @param os
 	 *          is the OutputStream object to write to
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, String response) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
+		String r = "HTTP/1.1" + response;
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		os.write(r.getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -126,15 +150,53 @@ public class WebWorker implements Runnable
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
-	 * 
+	 *
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, File getFile) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		// process html file if it exists
+		if (getFile.exists())
+		{
+			BufferedReader f = new BufferedReader(new FileReader(getFile));
+			String line = f.readLine();
+
+			line = tagReplacer(line); // replacing certain tags
+
+			while (line != null)
+			{
+				line = tagReplacer(line); // replacing certain tags
+				os.write(line.getBytes()); // outputting line
+				line = f.readLine(); // getting new line
+
+			}
+		}
+		else
+		{ // if the file doesn't exist 404 not found
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h1>404 Not Found</h1>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+	}
+
+	/**
+	 *Replaces <cs371date>, <cs371server> tags that are found in a line.
+	 *
+	 * @param line - string to be checked for replacements
+	 *
+	 **/
+	private String tagReplacer(String line)
+	{
+		String answer = line;
+    // getting the current date time so it can be output
+		Date d = new Date();
+		DateFormat df = DateFormat.getDateTimeInstance();
+
+		// replacing tags
+		answer = answer.replace("<cs371date>", df.format(d));
+		answer = answer.replace("<cs371server>", "Justin's Server");
+		return answer;
 	}
 
 } // end class

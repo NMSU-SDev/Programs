@@ -1,0 +1,12 @@
+1.
+I think this assignment will take me 2 hours to complete.
+
+2.
+* Thought / Design : 1:00
+* Programming      : 1:00
+* Debugging        : 4:00
+* ------------------------
+  Total            : 6:00
+
+3.x
+My original estimate was only 33% accurate.
