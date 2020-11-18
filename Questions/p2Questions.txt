@@ -1,0 +1,13 @@
+1. Estimate the time it will take you to complete the assignment.
+14 hours
+
+2. Estimate the time it took you to complete the assignment, broken down as:
+Thought/Design: 2 hours
+Refactoring previous code: 1.5 hours
+Research: 6 hours over 4 days
+Programming: 1.5 hours
+Debugging: 0.5 hours
+TOTAL: 11.5
+
+3. To within what percent accuracy was your original estimate.
+82%

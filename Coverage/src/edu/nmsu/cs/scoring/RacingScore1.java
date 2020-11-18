@@ -11,7 +11,7 @@ package edu.nmsu.cs.scoring;
  * @author Jon Cook, Ph.D.
  * 
  ***/
-
+//FUNCTIONAL ERROR for invalid input: no bounds check for input to be between 0-50
 public class RacingScore1
 {
 
@@ -39,9 +39,11 @@ public class RacingScore1
 	{
 		int s;
 		if (score1 < score2)
-			s = score2;
-		else
+			// s = score2; FUNCTIONAL ERROR FOUND
 			s = score1;
+		else
+			//s = score1; FUNCTIONAL ERROR FOUND
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

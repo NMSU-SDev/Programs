@@ -36,27 +36,31 @@ public class RacingScore2
 
 	public int overallScore()
 	{
-		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		int s=0, s1=0, s2=0;
+		if (score1 <= score2 && score1 <= score3) //FUNCTIONAL ERROR: no check for equal input
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+		else if (score2 <= score1 && score2 <= score3) //FUNCTIONAL ERROR: no check for equal input
 		{
+			s1 = score1;
+			// functional error for valid input:
+			// s2 = score2;
+			s2 = score3;
+		}
+		//else if (score3 <= score1 && score3 <= score2){ //FUNCTIONAL ERROR: no check for equal input
+		else{
 			s1 = score1;
 			s2 = score2;
 		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
+		/* FUNCTIONAL ERROR: not a valid operation for requirements
 		else
 		{
 			s1 = 99;
 			s2 = 99;
 		}
+		 */
 		s = s1 + s2;
 		return s;
 	}
@@ -64,7 +68,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length != 3)//FUNCTIONAL ERROR: command line args cannot be null; this is an unreachable condition, change this condition
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
@@ -80,7 +84,19 @@ public class RacingScore2
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
-		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+		// if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50) FUNCTIONAL ERROR: difficult to test
+																		// broken up into multiple if cases for easier testing
+		if (s1 < 0 || s1 > 50)
+		{
+			System.err.println("Error: scores must be between 0 and 50!");
+			return;
+		}
+		if (s2 < 0 || s2 > 50)
+		{
+			System.err.println("Error: scores must be between 0 and 50!");
+			return;
+		}
+		if (s3 < 0 || s3 > 50)
 		{
 			System.err.println("Error: scores must be between 0 and 50!");
 			return;
