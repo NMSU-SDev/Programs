@@ -8,4 +8,7 @@ These assignments rely on the SimpleWebServer program. Each gets graded using ta
 This assignment relies on the Coverage programs. 
 
 ## Program 4
-This assignment relies on the Circles programs. 
+This assignment relies on the Circles programs.
+
+## Lab 1
+This assignment relies on the HelloWorld program. Github user id: mrbryantguy
