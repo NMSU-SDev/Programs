@@ -1,4 +1,5 @@
 package edu.nmsu.cs.circles;
+import org.junit.*;
 
 /***
  * Example JUnit testing class for Circle1 (and Circle)
@@ -9,7 +10,6 @@ package edu.nmsu.cs.circles;
  * here just so you see what is happening. You should not have them in your test cases.
  ***/
 
-import org.junit.*;
 
 public class Circle1Test
 {
@@ -19,26 +19,19 @@ public class Circle1Test
 	//
 	// Stuff you want to do before each test case
 	//
-	@Before
+
 	public void setup()
 	{
 		System.out.println("\nTest starting...");
 		circle1 = new Circle1(1, 2, 3);
 	}
 
-	//
-	// Stuff you want to do after each test case
-	//
-	@After
+
 	public void teardown()
 	{
 		System.out.println("\nTest finished.");
 	}
 
-	//
-	// Test a simple positive move
-	//
-	@Test
 	public void simpleMove()
 	{
 		Point p;
@@ -47,10 +40,6 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 2 && p.y == 3);
 	}
 
-	//
-	// Test a simple negative move
-	//
-	@Test
 	public void simpleMoveNeg()
 	{
 		Point p;
@@ -59,10 +48,11 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
 
-	/***
-	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
-	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
-	 * " + e); } }
-	 ***/
+/*
+
+public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
+	 java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception: " + e); } }
+*/
+
 
 }

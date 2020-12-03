@@ -1,0 +1,59 @@
+<project name="Circle">
+
+    <property name="src.dir" location="src/" />
+    <property name="lib.dir" location="lib/" />
+    <property name="build.dir" location="bin/" />
+    <property name="report.dir" location="report/" />
+
+    <path id = "junitpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location = "${build.dir}"/>
+    </path>
+
+    <target name = "clean">
+        <delete dir = "${build.dir}"/>
+        <delete dir = "${report.dir}"/>
+    </target>
+
+    <target name = "compile" depends="clean">
+        <mkdir dir = "${build.dir}"/>
+        <javac srcdir = "${src.dir}" destdir = "${build.dir}" includeantruntime="false" >
+            <classpath refid = "junitpath"/>
+        </javac>
+    </target>
+
+    <target name = "run" depends = "clean,compile">
+        <java classname = "edu.nmsu.cs.circles.CircleRun" classpath = "${build.dir}" fork="true">
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+        </java>
+    </target>
+
+    <target name = "test" depends = "testCircle1, testCircle2">
+    </target>
+
+    <target name = "testCircle1" depends="compile">
+        <mkdir dir = "report" />
+         <junit haltonfailure = "false" haltonerror="false" printsummary="true">
+            <classpath refid ="junitpath"></classpath>
+            <test name = "edu.nmsu.cs.circles.Circle1Test" todir="${report.dir}"></test>
+            <formatter type = "plain"/>
+    </junit>
+    </target>
+
+    <target name = "testCircle2" depends="compile">
+        <mkdir dir ="report"/>
+        <junit haltonfailure = "false" haltonerror="false" printsummary="true">
+            <classpath refid ="junitpath"></classpath>
+            <test name = "edu.nmsu.cs.circles.Circle2Test" todir="${report.dir}"></test>
+            <formatter type = "plain"/>
+        </junit>
+    </target>
+</project>
+

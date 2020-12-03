@@ -21,19 +21,27 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+
+	private String fileDir;
+	private String mimeType;
+
+	private boolean isFile = true;
+	private boolean isDefault = true;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -56,7 +64,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os, mimeType);
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -72,27 +80,47 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
-	{
-		String line;
+	private void readHTTPRequest(InputStream is) {
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		while (true)
-		{
-			try
-			{
+
+		String line = "";
+
+		while (true) {
+			try {
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+
+				// make sure GET request is not default
+				if (line.contains("GET /") && !line.contains("GET / ")) {
+
+					// set default to false
+					isDefault = false;
+
+					// create new substring for the GET request
+					String sub = "." + line.substring(4, line.length()-9);
+
+					// create new file based on substring dir
+					File dir = new File(sub);
+
+					mimeType = Files.probeContentType(dir.toPath());
+
+					// check if the directory leads to a file
+					if (dir.isFile())
+						fileDir = sub;
+					else
+						isFile = false;
+				}
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				System.err.println("Request error: " + e);
 				break;
 			}
 		}
+
 		return;
 	}
 
@@ -132,9 +160,92 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
+		// create default-gateway if there is no file
+		// attempting to be accessed
+		if (isDefault) {
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>Default gateway</h3>\n".getBytes());
+			os.write("</body><html>\n".getBytes());
+			os.close();
+		}
+
+		else {
+
+			// write 404 error if it is not a file being accessed, and return
+			if (!isFile) {
+				write404(os);
+				return;
+			}
+
+			// inits two strings for tags
+			String date = "<cs371date>";
+			String server = "<cs371server>";
+
+			// instantiates a new date obj with formatting
+			Date d = new Date();
+			DateFormat df = DateFormat.getDateTimeInstance();
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+			// inits a string for a server 'phrase'
+			String serverPhrase = "Matt's Server";
+
+
+			// creates a substantial new string array
+			String[] read = new String[1000];
+
+			// create new file with directed file root
+			File file = new File(fileDir);
+
+			// create type of content string
+			String type = fileDir.substring(fileDir.length()-4);
+
+			// creates byte stream to read in images
+			if (!type.contains("html")) {
+				int bytes;
+				InputStream byteStream = new FileInputStream(fileDir);
+
+				while ((bytes = byteStream.read()) != -1) {
+					os.write(bytes);
+				}
+				os.close();
+			}
+			else {
+				// instantiate new buffered reader (file reader to read the HTML file)
+				BufferedReader r = new BufferedReader(new FileReader(file));
+
+				// for loop until the end of the string array
+				for (int a = 0; a < read.length; a++) {
+
+					// reads the line, places it into string array
+					read[a] = r.readLine();
+
+					// checks for tags, instantiates new strings and replaces
+					// all instances of those tags with corrected date/phrase
+					if (read[a].contains(date)) {
+						String tempSub1 = read[a];
+						String tempSub2 = read[a];
+						tempSub1 = read[a].replaceAll(date, df.format(d));
+						if (read[a].contains(server))
+							tempSub2 = tempSub1.replaceAll(server, serverPhrase);
+						os.write(tempSub2.getBytes());
+					}
+					// if there were no tags, it will just write out what
+					// is insided the Output Stream.
+					else
+						os.write(read[a].getBytes());
+				}
+
+				os.close();
+			}
+
+		}
+	}
+
+	private void write404(OutputStream os) throws Exception {
 		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		os.write("<h3>404 Not Found</h3>\n".getBytes());
+		os.write("</body><html>\n".getBytes());
+		os.close();
 	}
 
 } // end class

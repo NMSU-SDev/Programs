@@ -65,6 +65,7 @@ public class WebServer
 			}
 			// have new client connection, so fire off a worker on it
 			worker = new WebWorker(workerSocket);
+			worker.run();
 			new Thread(worker).start();
 		}
 		return true;
@@ -108,5 +109,6 @@ public class WebServer
 			System.err.println("Execution failed!");
 		}
 	} // end main
+
 
 } // end class

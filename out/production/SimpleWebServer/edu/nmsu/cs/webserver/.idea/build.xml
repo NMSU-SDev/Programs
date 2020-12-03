@@ -1,0 +1,18 @@
+<project name="SimpleWebServer"  basedir=".">
+	<description>
+		Buildfile for the SimpleWebServer by Matthew Horrocks (CS371), to run a single localhost instance with some dynamic programming.
+	</description>
+	<property name="src" location="src/"/>
+	<property name="build" location="bin/"/>
+	
+	<target name="build" description="compiles all java files to /bin">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+	
+	<target name="run" description="launches SimpleWebServer on port 8080">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}/www">
+			<arg value="8080"/>
+		</java>
+	</target>
+</project>

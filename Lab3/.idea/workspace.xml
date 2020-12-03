@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:upstream" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6ceedf30-a86a-4067-8817-f59bdda906b9" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1iqp03FmqDlDi5KhdPT8dWWgSjH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Delete/ProgramOneCS371-1.0" />
+  </component>
+  <component name="RunManager">
+    <configuration name="DFS" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="DFS" />
+      <module name="Lab3" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.DFS" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6ceedf30-a86a-4067-8817-f59bdda906b9" name="Default Changelist" comment="" />
+      <created>1602644759875</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602644759875</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2677" y="239" key="FileChooserDialogImpl" timestamp="1603146081947">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="757" y="239" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1603145982074" />
+    <state x="2677" y="239" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1603146081947" />
+    <state width="1877" height="390" key="GridCell.Tab.0.bottom" timestamp="1602997523495">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1060" height="312" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602743859760" />
+    <state width="1877" height="390" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1602997523495" />
+    <state width="1877" height="390" key="GridCell.Tab.0.center" timestamp="1602997523495">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1060" height="312" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602743859760" />
+    <state width="1877" height="390" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1602997523495" />
+    <state width="1877" height="390" key="GridCell.Tab.0.left" timestamp="1602997523495">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1060" height="312" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602743859760" />
+    <state width="1877" height="390" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1602997523495" />
+    <state width="1877" height="390" key="GridCell.Tab.0.right" timestamp="1602997523495">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1060" height="312" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602743859760" />
+    <state width="1877" height="390" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1602997523495" />
+    <state width="914" height="183" key="GridCell.Tab.1.bottom" timestamp="1602730544043">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="914" height="183" key="GridCell.Tab.1.bottom/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602730544043" />
+    <state width="914" height="183" key="GridCell.Tab.1.center" timestamp="1602730544043">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="914" height="183" key="GridCell.Tab.1.center/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602730544043" />
+    <state width="914" height="183" key="GridCell.Tab.1.left" timestamp="1602730544043">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="914" height="183" key="GridCell.Tab.1.left/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602730544043" />
+    <state width="914" height="183" key="GridCell.Tab.1.right" timestamp="1602730544043">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="914" height="183" key="GridCell.Tab.1.right/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602730544043" />
+    <state x="101" y="276" width="898" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1602714635940">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="101" y="276" width="898" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602714635940" />
+    <state x="342" y="160" key="new project wizard" timestamp="1602826601817">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="342" y="160" key="new project wizard/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602826601817" />
+    <state x="213" y="239" width="672" height="678" key="search.everywhere.popup" timestamp="1602705213446">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="213" y="239" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080/1920.0.1920.1080@0.0.1920.1080" timestamp="1602705213446" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.StackOverflowError" package="java.lang" />
+          <option name="timeStamp" value="5" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
