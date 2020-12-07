@@ -37,11 +37,12 @@ public class RacingScore1
 
 	public int overallScore()
 	{
+		// if three scores are equal, sum up the scores
 		int s;
 		if (score1 < score2)
-			s = score2;
-		else
 			s = score1;
+		else
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

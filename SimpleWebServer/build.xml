@@ -1,0 +1,20 @@
+<project default="run" basedir="./www/">
+    <property name="bin" location="bin"/>
+	<property name="src" location="src"/>
+
+	<target name="clean">
+		<!-- Delete the class files created by the compile task -->
+		<delete dir="${bin}/edu"/>
+	</target>
+
+	<target name="compile" depends="clean">
+		<!-- compile .java files under srcdir and place class files in destdir -->
+		<javac srcdir="${src}/edu/nmsu/cs/webserver" destdir="${bin}"/>
+	</target>
+
+	<target name="run" depends="compile">
+		<java classname="edu.nmsu.cs.webserver.WebServer">
+			<classpath path="${bin}"/>
+		</java>
+	</target>
+</project> 
