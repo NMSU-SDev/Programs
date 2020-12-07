@@ -1,0 +1,22 @@
+<project name = "SimpleWebBrowser" default="run" basedir=".">
+	<description>
+		build file to run code in SimpleWebSever
+	</description>
+	<property name="src" location="src/"/>
+	<property name="build" location="www/"/>
+
+	<target name="clean" description="deletes all class files">
+		<delete dir="www/bin"/>
+	</target>
+
+	<target name="build" description="compiles all java files to /www/bin">
+		<mkdir dir="www/bin"/>
+		<javac srcdir="${src}" destdir="www/bin"/>
+	</target>
+
+	<target name="run" depends="clean,build" description="launches SimpleWebServer on port 8085">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true">
+			<arg value="8085"/>
+		</java>
+	</target>
+</project>

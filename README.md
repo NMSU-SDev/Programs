@@ -8,4 +8,10 @@ These assignments rely on the SimpleWebServer program. Each gets graded using ta
 This assignment relies on the Coverage programs. 
 
 ## Program 4
-This assignment relies on the Circles programs. 
+This assignment relies on the Circles programs.
+
+## Lab 1
+This lab is intended to create a repository, add a directory and files to it adn commit it back.
+
+### Github user id
+Github: JulioEstrada 

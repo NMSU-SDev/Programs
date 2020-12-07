@@ -1,0 +1,8 @@
+1. The time I estimate it will take me to complete the assignment, to within a quarter-hour is: 4 hours
+
+2. Thought/Design: 2 hours
+   Programming:    1 hour
+   Debugging:      1 hour
+   TOTAL:          4 hours
+
+3. 5%

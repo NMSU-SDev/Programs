@@ -29,6 +29,10 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.StringTokenizer;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class WebWorker implements Runnable
 {
@@ -55,9 +59,7 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			readHTTPRequest(is, os);	
 			os.flush();
 			socket.close();
 		}
@@ -72,23 +74,64 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
-	{
+	private void readHTTPRequest(InputStream is, OutputStream os) {
+
 		String line;
+		String file;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		while (true)
-		{
-			try
-			{
+
+		try {
+			while (!r.ready())
+				Thread.sleep(1);
+
+			line = r.readLine();
+			StringTokenizer stk = new StringTokenizer(line);
+
+			if (stk.hasMoreElements() && stk.nextToken().equalsIgnoreCase("GET")
+					&& stk.hasMoreElements())
+				file = stk.nextToken();
+			else 
+				throw new IOException("400");
+
+			if (file.startsWith("/"))
+				file = file.substring(1);
+			if (file.equals(""))
+				file = "test.html";
+
+			FileInputStream fis = new FileInputStream(file);
+
+			String mimetype = "text/html";
+			if (file.endsWith(".jpg") || file.endsWith(".jpeg"))
+				mimetype = "image/jpeg";
+			else if (file.endsWith(".png"))
+				mimetype = "image/png";
+			else if (file.endsWith(".gif"))
+				mimetype = "image/gif";
+			else if (file.endsWith(".ico"))
+				mimetype = "image/x-icon";
+
+			writeHTTPHeader(os, mimetype, "200");
+			writeContent(os, file);
+
+		} catch (FileNotFoundException e0) {
+			try { 
+				writeHTTPHeader(os, "text/html", "404");
+			} catch (Exception e1) {
+				System.err.println("Error: " + e1);
+			}
+		} catch (Exception e2) {
+			System.err.println("error: " + e2);
+		}
+
+		while (true) {
+			try {
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				System.err.println("Request error: " + e);
 				break;
 			}
@@ -96,6 +139,8 @@ public class WebWorker implements Runnable
 		return;
 	}
 
+	
+		
 	/**
 	 * Write the HTTP header lines to the client network connection.
 	 * 
@@ -104,22 +149,30 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader (OutputStream os, String mimeType, String status) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
+
+		os.write("HTTP/1.1 ".getBytes());
+		os.write(status.getBytes());
+		os.write("\nDate: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Julio's very own server\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
-		os.write(contentType.getBytes());
+		os.write(mimeType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+		
+		try {
+			if(status.equalsIgnoreCase("404"))
+				writeContent(os, "404page.html");
+		} catch (Exception e) {
+			System.err.println("Error writing to OutputStream");
+		}
+		
 		return;
 	}
 
@@ -130,11 +183,30 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	private void writeContent(OutputStream os, String file) throws Exception {
+		File toSend = new File(file);
+		byte[] bytearr = new byte [(int)toSend.length()];
+		FileInputStream fis = new FileInputStream(toSend);
+		BufferedInputStream bis = new BufferedInputStream(fis);
+
+		String line = "";
+		if(file.endsWith(".html")) {
+			String sdf = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while ((line = br.readLine()) != null) {
+				line = line.replaceAll("<cs371date>", sdf);
+				line = line.replaceAll("<cs371server>", "Julio's Server");
+				os.write(line.getBytes());
+			}
+			return;
+		}
+
+		bis.read(bytearr,0,bytearr.length);
+		System.err.println("Send: " + toSend + "(" + bytearr.length + " bytes)");
+		os.write(bytearr,0,bytearr.length);
+		os.flush();
+		System.err.println("Send: Done.");
 	}
+	
 
 } // end class
