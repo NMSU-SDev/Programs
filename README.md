@@ -1,3 +1,9 @@
+# Github Information
+User Id: NateLoken
+
+# Lab 1
+Set up Helloworld package, and the build files for the other assignments
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
