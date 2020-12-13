@@ -34,9 +34,10 @@ public class RacingScore2
 		score3 = s3;
 	}
 
+	// In this function I fixed two functional errors.
 	public int overallScore()
 	{
-		int s, s1, s2;
+		int s, s1 = 0, s2 = 0; // Initialized variables s1 and s2 to 0.
 		if (score1 < score2 && score1 < score3)
 		{
 			s1 = score2;
@@ -45,7 +46,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3; // Switch the stored number from score2 to score3 since this else if statement indicates score2 being the smallest score.
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
@@ -54,17 +55,35 @@ public class RacingScore2
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			// Created an if statement that checks if score1 == score2 then sets the numbers accordingly.
+			if(score1 == score2) {
+				s1 = score1;
+				s2 = score3;
+			} // end of if
+		    
+			// Created an if statement that checks if score2 == score3 then sets the numbers accordingly.
+			if(score2 == score3) {
+				s1 = score2;
+				s2 = score1;	
+			} // end of if
+			
+			// Created an if statement that checks if score3 == score1 then sets the numbers accordingly.
+			if(score3 == score1) {
+				s1 = score1;
+				s2 = score2;
+			} // end of if		
 		}
 		s = s1 + s2;
 		return s;
 	}
 
+	// In the main function I fixed one functional error.
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		
+		// I removed the null case due to it never being possible to execute.
+		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;

@@ -14,6 +14,14 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * 
  **/
+
+/**
+ * This simple web server was modified to have HTML file delivery work, a 404 response, 
+ * tag substitution, serve image files in the GIF, JPEG, and PNG formats and the extra 
+ * credit of creating an icon for the server and properly send it to the browser upon request.
+ * Modified by Meagan Waldo
+ * Last date modified: 10/29/20
+ **/
 import java.net.ServerSocket;
 import java.net.Socket;
 

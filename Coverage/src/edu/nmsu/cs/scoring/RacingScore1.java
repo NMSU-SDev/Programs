@@ -35,19 +35,21 @@ public class RacingScore1
 		score3 = s3;
 	}
 
+	// In this function I fixed two functional errors.
 	public int overallScore()
 	{
 		int s;
 		if (score1 < score2)
-			s = score2;
+			s = score1;  // I switched out score2 with score1 since this if statement indicates score1 is the smallest.
 		else
-			s = score1;
+			s = score2;  // I switched out score1 with score2 since this else statement indicates score2 is the smallest.
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;
 		return s;
 	}
 
+	// In the main function I fixed one functional error.
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
@@ -67,6 +69,13 @@ public class RacingScore1
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
+		
+		//I added this if statement in to check if the inputs are from 0 to 50 (inclusive).
+		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+		{
+			System.err.println("Error: scores must be between 0 and 50!");
+			return;
+		} // end of if
 		RacingScore1 score = new RacingScore1();
 		score.recordScores(s1, s2, s3);
 		System.out.println("Overall score: " + score.overallScore());

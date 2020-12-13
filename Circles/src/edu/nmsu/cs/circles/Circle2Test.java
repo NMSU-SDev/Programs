@@ -1,7 +1,7 @@
 package edu.nmsu.cs.circles;
 
 /***
- * Example JUnit testing class for Circle1 (and Circle)
+ * JUnit testing class for Circle2 (and Circle)
  *
  * - must have your classpath set to include the JUnit jarfiles - to run the test do: java
  * org.junit.runner.JUnitCore Circle1Test - note that the commented out main is another way to run
@@ -11,12 +11,12 @@ package edu.nmsu.cs.circles;
 
 import org.junit.*;
 
-public class Circle1Test
+public class Circle2Test
 {
 	// Data you need for each test case
-	private Circle1 circle1a;
-	private Circle1 circle1b; // New circle.
-	private Circle1 circle1c; // New circle.
+	private Circle2 circle2a;
+	private Circle2 circle2b; // New circle.
+	private Circle2 circle2c; // New circle.
 	
 	//
 	// Stuff you want to do before each test case
@@ -25,9 +25,9 @@ public class Circle1Test
 	public void setup()
 	{
 		System.out.println("\nTest starting...");
-		circle1a = new Circle1(1, 2, 3);
-		circle1b = new Circle1(2, 3, 12); // New circle.
-		circle1c = new Circle1(8, 9, 9); // New circle.
+		circle2a = new Circle2(1, 2, 3);
+		circle2b = new Circle2(2, 3, 12); // New circle.
+		circle2c = new Circle2(8, 9, 9); // New circle.
 	}
 
 	//
@@ -47,7 +47,7 @@ public class Circle1Test
 	{
 		Point p;
 		System.out.println("Running test simpleMove.");
-		p = circle1a.moveBy(1, 2);
+		p = circle2a.moveBy(1, 2);
 		Assert.assertTrue(p.x == 2 && p.y == 4);
 	}
 
@@ -59,7 +59,7 @@ public class Circle1Test
 	{
 		Point p;
 		System.out.println("Running test simpleMoveNeg.");
-		p = circle1a.moveBy(-1, -3);
+		p = circle2a.moveBy(-1, -3);
 		Assert.assertTrue(p.x == 0 && p.y == -1);
 	}
 
@@ -71,7 +71,7 @@ public class Circle1Test
 	{
 		Point p;
 		System.out.println("Running test simpleMoveZero.");
-		p = circle1a.moveBy(0, 0);
+		p = circle2a.moveBy(0, 0);
 		Assert.assertTrue(p.x == 1 && p.y == 2);
 	}
 	
@@ -83,7 +83,7 @@ public class Circle1Test
 	{
 		double r;
 		System.out.println("Running test scalePositive.");
-		r = circle1a.scale(2.0);
+		r = circle2a.scale(2.0);
 		Assert.assertTrue(r == 6);
 	}
 	
@@ -95,7 +95,7 @@ public class Circle1Test
 	{
 		double r;
 		System.out.println("Running test scaleNegative.");
-		r = circle1a.scale(-0.5);
+		r = circle2a.scale(-0.5);
 		Assert.assertTrue(r == -1.5);
 	}
 	
@@ -107,7 +107,7 @@ public class Circle1Test
 	{
 		double r;
 		System.out.println("Running test scaleNegative.");
-		r = circle1a.scale(0);
+		r = circle2a.scale(0);
 		Assert.assertTrue(r == 0);
 	}
 	
@@ -118,7 +118,7 @@ public class Circle1Test
 	public void intersectsTrue()
 	{ 
 		System.out.println("Running test intersectsTrue.");
-		Assert.assertTrue(circle1a.intersects(circle1b));
+		Assert.assertTrue(circle2a.intersects(circle2b));
 	}
 	
 	//
@@ -128,7 +128,7 @@ public class Circle1Test
 	public void intersectsFalse()
 	{ 
 		System.out.println("Running test intersectsFalse.");
-		Assert.assertFalse(circle1a.intersects(circle1c));
+		Assert.assertFalse(circle2a.intersects(circle2c));
 	}
 	
 	/***
