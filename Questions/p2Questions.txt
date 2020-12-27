@@ -1,0 +1,6 @@
+1. 1 hour
+2.  Thought/Design: 15 mins
+	Programming: 15 mins
+	Debugging: 15 mins
+	TOTAL: 45 mins
+3. 75% accuracy

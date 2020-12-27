@@ -1,0 +1,89 @@
+Testsuite: edu.nmsu.cs.circles.Circle2Test
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.01 sec
+------------- Standard Output ---------------
+
+Test starting...
+Running test scaleLess.
+
+Test finished.
+
+Test starting...
+Running test scaleMore.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveX.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveY.
+
+Test finished.
+
+Test starting...
+Running test simpleMove.
+
+Test finished.
+
+Test starting...
+Running test simpleMovePosAndNeg.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveNeg.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveNegAndPos.
+
+Test finished.
+
+Test starting...
+Running test intersectInfinitePoints.
+
+Test finished.
+
+Test starting...
+Running test intersectOnePoint.
+
+Test finished.
+
+Test starting...
+Running test intersectZeroSeparate.
+
+Test finished.
+
+Test starting...
+Running test intersectTwoPoints.
+
+Test finished.
+
+Test starting...
+Running test scaleEqual.
+
+Test finished.
+
+Test starting...
+Running test intersectZeroInside.
+
+Test finished.
+------------- ---------------- ---------------
+
+Testcase: scaleLess took 0.002 sec
+Testcase: scaleMore took 0 sec
+Testcase: simpleMoveX took 0.001 sec
+Testcase: simpleMoveY took 0 sec
+Testcase: simpleMove took 0 sec
+Testcase: simpleMovePosAndNeg took 0 sec
+Testcase: simpleMoveNeg took 0 sec
+Testcase: simpleMoveNegAndPos took 0 sec
+Testcase: intersectInfinitePoints took 0.001 sec
+Testcase: intersectOnePoint took 0 sec
+Testcase: intersectZeroSeparate took 0 sec
+Testcase: intersectTwoPoints took 0 sec
+Testcase: scaleEqual took 0 sec
+Testcase: intersectZeroInside took 0 sec

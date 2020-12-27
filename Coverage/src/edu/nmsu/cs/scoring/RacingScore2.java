@@ -37,25 +37,22 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		//Removed else s1=99 and s2=99 and instead put <= for all comparisons to fix functional error when the top two scores were equal
+		if (score1 <= score2 && score1 <= score3)
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+		else if (score2 <= score1 && score2 <= score3)
 		{
 			s1 = score1;
-			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
+			//this was previously score2 and has now been fixed to give correct result
+			s2 = score3;
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			s1 = score1;
+			s2 = score2;
 		}
 		s = s1 + s2;
 		return s;
@@ -64,7 +61,8 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		//impossible for args to be null so that condition was removed from the if statement
+		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;

@@ -22,6 +22,9 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -34,6 +37,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private File file;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -41,6 +45,7 @@ public class WebWorker implements Runnable
 	public WebWorker(Socket s)
 	{
 		socket = s;
+		file = new File("");
 	}
 
 	/**
@@ -56,8 +61,30 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String content = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
+			if(content.equals(".jpeg"))
+			{
+				content = "image/jpeg";
+			}
+			else if(content.equals(".gif"))
+			{
+				content = "image/gif";
+			}
+			else if(content.equals(".png"))
+			{
+				content = "image/png";
+			}
+			else if(content.equals(".ico"))
+			{
+				content = "image/png";
+			}
+			else
+			{
+				content = "text/html";
+			}
+			System.out.println("Content = " + content);
+			writeHTTPHeader(os, content);
+			writeContent(os, content);
 			os.flush();
 			socket.close();
 		}
@@ -86,6 +113,18 @@ public class WebWorker implements Runnable
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
+				if(line.substring(0, 3).equals("GET"))
+				{
+					String[] parts = line.split(" ");
+					String path = "." + parts[1];
+					if(path.equals("./"))
+					{
+						System.out.println("Success!");
+						path = "./text.html";
+					}
+					file = new File(path);
+					//System.out.println("Requested file: " + temp);
+				}
 			}
 			catch (Exception e)
 			{
@@ -109,11 +148,18 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		if(file.exists() && file.isFile())
+		{
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+		else
+		{
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Breanna's server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -130,11 +176,40 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String content) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if(!file.exists() || !file.isFile())
+		{
+			os.write("<html><head></head>".getBytes());
+			os.write("<body><h1><center>404 Error Page Not Found</center></h1></body></html>".getBytes());
+			return;
+		}
+		else if(content.equals("image/jpeg") || content.equals("image/gif") || content.equals("image/png"))
+		{
+			FileInputStream i = new FileInputStream(file);
+			int cur = i.read();
+			while(cur != -1)
+			{
+				os.write(cur);
+				cur = i.read();
+			}
+			i.close();
+		}
+		else
+		{
+			BufferedReader b = new BufferedReader(new FileReader(file));
+			String s;
+			Date d = new Date();
+			DateFormat df = DateFormat.getDateTimeInstance();
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			while ((s = b.readLine()) != null)
+			{
+				s = s.replaceAll("<cs371date>", df.format(d));
+				s = s.replaceAll("<cs371server>", "Breanna's server");
+				os.write(s.getBytes());
+			}
+			b.close();
+		}
 	}
 
 } // end class

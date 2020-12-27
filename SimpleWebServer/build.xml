@@ -1,0 +1,26 @@
+<project name="SimpleWebServer" default="run" basedir=".">
+<description>
+	Buildfile to compile and run SimpleWebServer program
+</description>
+<property name="src" location="src/"/>
+<property name="bin" location="bin/"/>
+
+<!-- Deletes bin folder -->
+<target name="clean">
+	<delete dir="${bin}"/>
+</target>
+
+<!-- Compiles web server -->
+<target name="compile">
+	<mkdir dir="${bin}"/>
+	<javac srcdir="${src}" destdir="${bin}"/>
+</target>
+
+<!-- Cleans and compiles-->
+<target name="compileClean" depends="clean, compile"/>
+
+<!-- Starts running the webserver -->
+<target name="run" depends="compileClean">
+	<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" dir="../www" fork="true"/>
+</target>
+</project>
