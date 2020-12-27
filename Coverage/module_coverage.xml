@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_coverage" default="compile.module.coverage">
+  <dirname property="module.coverage.basedir" file="${ant.file.module_coverage}"/>
+  
+  <property name="module.jdk.home.coverage" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.coverage" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.coverage" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.coverage" value="-encoding UTF-8 -source 14 -target 14 ${compiler.args}"/>
+  
+  <property name="coverage.output.dir" value="${module.coverage.basedir}/../out/production/Coverage"/>
+  <property name="coverage.testoutput.dir" value="${module.coverage.basedir}/../out/test/Coverage"/>
+  
+  <path id="coverage.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="coverage.module.production.classpath">
+    <path refid="${module.jdk.classpath.coverage}"/>
+  </path>
+  
+  <path id="coverage.runtime.production.module.classpath">
+    <pathelement location="${coverage.output.dir}"/>
+  </path>
+  
+  <path id="coverage.module.classpath">
+    <path refid="${module.jdk.classpath.coverage}"/>
+    <pathelement location="${coverage.output.dir}"/>
+  </path>
+  
+  <path id="coverage.runtime.module.classpath">
+    <pathelement location="${coverage.testoutput.dir}"/>
+    <pathelement location="${coverage.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.coverage">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.coverage">
+    <patternset refid="excluded.from.module.coverage"/>
+  </patternset>
+  
+  <path id="coverage.module.sourcepath">
+    <dirset dir="${module.coverage.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.coverage" depends="compile.module.coverage.production,compile.module.coverage.tests" description="Compile module Coverage"/>
+  
+  <target name="compile.module.coverage.production" depends="register.custom.compilers" description="Compile module Coverage; production classes">
+    <mkdir dir="${coverage.output.dir}"/>
+    <javac2 destdir="${coverage.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.coverage}/javac">
+      <compilerarg line="${compiler.args.coverage}"/>
+      <bootclasspath refid="coverage.module.bootclasspath"/>
+      <classpath refid="coverage.module.production.classpath"/>
+      <src refid="coverage.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.coverage"/>
+    </javac2>
+    
+    <copy todir="${coverage.output.dir}">
+      <fileset dir="${module.coverage.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.coverage.tests" depends="register.custom.compilers,compile.module.coverage.production" description="compile module Coverage; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.coverage" description="cleanup module">
+    <delete dir="${coverage.output.dir}"/>
+    <delete dir="${coverage.testoutput.dir}"/>
+  </target>
+</project>

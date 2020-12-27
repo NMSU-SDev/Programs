@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_programs" default="compile.module.programs">
+  <dirname property="module.programs.basedir" file="${ant.file.module_programs}"/>
+  
+  <property name="module.jdk.home.programs" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.programs" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.programs" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.programs" value="-encoding UTF-8 -source 14 -target 14 ${compiler.args}"/>
+  
+  <property name="programs.output.dir" value="${module.programs.basedir}/../out/production/Programs"/>
+  <property name="programs.testoutput.dir" value="${module.programs.basedir}/../out/test/Programs"/>
+  
+  <path id="programs.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="programs.module.production.classpath">
+    <path refid="${module.jdk.classpath.programs}"/>
+  </path>
+  
+  <path id="programs.runtime.production.module.classpath">
+    <pathelement location="${programs.output.dir}"/>
+  </path>
+  
+  <path id="programs.module.classpath">
+    <path refid="${module.jdk.classpath.programs}"/>
+    <pathelement location="${programs.output.dir}"/>
+  </path>
+  
+  <path id="programs.runtime.module.classpath">
+    <pathelement location="${programs.testoutput.dir}"/>
+    <pathelement location="${programs.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.programs">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.programs">
+    <patternset refid="excluded.from.module.programs"/>
+  </patternset>
+  
+  
+  <target name="compile.module.programs" depends="compile.module.programs.production,compile.module.programs.tests" description="Compile module Programs"/>
+  
+  <target name="compile.module.programs.production" depends="register.custom.compilers" description="Compile module Programs; production classes"/>
+  
+  <target name="compile.module.programs.tests" depends="register.custom.compilers,compile.module.programs.production" description="compile module Programs; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.programs" description="cleanup module">
+    <delete dir="${programs.output.dir}"/>
+    <delete dir="${programs.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,8 @@
+<!--Code used from https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_placeholder_topic_ID0EXXHS.html
+-->
+<w:customXml>
+    <w:customXmlPr>
+        <w:placeholder w:val="[placeholder for later use]"/>
+    </w:customXmlPr>
+    <w:p/>
+</w:customXml>

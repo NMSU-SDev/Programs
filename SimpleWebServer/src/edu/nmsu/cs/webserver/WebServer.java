@@ -82,7 +82,7 @@ public class WebServer
 	 * Application main: process command line and start web server; default port number is 8080 if not
 	 * given on command line.
 	 **/
-	public static void main(String args[])
+	public static void main(String[] args)
 	{
 		int port = 8080;
 		if (args.length > 1)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Circles/Circles.iml" filepath="$PROJECT_DIR$/Circles/Circles.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Coverage/Coverage.iml" filepath="$PROJECT_DIR$/Coverage/Coverage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HelloWorld/HelloWorld.iml" filepath="$PROJECT_DIR$/HelloWorld/HelloWorld.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Programs.iml" filepath="$PROJECT_DIR$/.idea/Programs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimpleWebServer/SimpleWebServer.iml" filepath="$PROJECT_DIR$/SimpleWebServer/SimpleWebServer.iml" />
+    </modules>
+  </component>
+</project>

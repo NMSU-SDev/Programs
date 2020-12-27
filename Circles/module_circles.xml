@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_circles" default="compile.module.circles">
+  <dirname property="module.circles.basedir" file="${ant.file.module_circles}"/>
+  
+  <property name="module.jdk.home.circles" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.circles" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.circles" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.circles" value="-encoding UTF-8 -source 14 -target 14 ${compiler.args}"/>
+  
+  <property name="circles.output.dir" value="${module.circles.basedir}/../out/production/Circles"/>
+  <property name="circles.testoutput.dir" value="${module.circles.basedir}/../out/test/Circles"/>
+  
+  <path id="circles.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="circles.module.production.classpath">
+    <path refid="${module.jdk.classpath.circles}"/>
+  </path>
+  
+  <path id="circles.runtime.production.module.classpath">
+    <pathelement location="${circles.output.dir}"/>
+  </path>
+  
+  <path id="circles.module.classpath">
+    <path refid="${module.jdk.classpath.circles}"/>
+    <pathelement location="${circles.output.dir}"/>
+  </path>
+  
+  <path id="circles.runtime.module.classpath">
+    <pathelement location="${circles.testoutput.dir}"/>
+    <pathelement location="${circles.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.circles">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.circles">
+    <patternset refid="excluded.from.module.circles"/>
+  </patternset>
+  
+  <path id="circles.module.sourcepath">
+    <dirset dir="${module.circles.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.circles" depends="compile.module.circles.production,compile.module.circles.tests" description="Compile module Circles"/>
+  
+  <target name="compile.module.circles.production" depends="register.custom.compilers" description="Compile module Circles; production classes">
+    <mkdir dir="${circles.output.dir}"/>
+    <javac2 destdir="${circles.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.circles}/javac">
+      <compilerarg line="${compiler.args.circles}"/>
+      <bootclasspath refid="circles.module.bootclasspath"/>
+      <classpath refid="circles.module.production.classpath"/>
+      <src refid="circles.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.circles"/>
+    </javac2>
+    
+    <copy todir="${circles.output.dir}">
+      <fileset dir="${module.circles.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.circles.tests" depends="register.custom.compilers,compile.module.circles.production" description="compile module Circles; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.circles" description="cleanup module">
+    <delete dir="${circles.output.dir}"/>
+    <delete dir="${circles.testoutput.dir}"/>
+  </target>
+</project>
