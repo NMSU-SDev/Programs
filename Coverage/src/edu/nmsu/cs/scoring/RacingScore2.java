@@ -34,29 +34,30 @@ public class RacingScore2
 		score3 = s3;
 	}
 
-	public int overallScore()
+	public int overallScore()// doesnt check if scores are equal
 	{
-		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		int s, s1, s2=0; //initialized all variables 
+		if (score1 <= score2 && score1 <= score3)// added or equals to account for same numbers
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+		else if (score2 <= score1 && score2 <= score3)// lowest score not taken out, added or equals to account for same numbers
+
+		{
+			s1 = score1;
+			s2 = score3;//switched from 2 to 3
+		}
+		else //if (score3 < score1 && score3 < score2)//removed the if since is last case
 		{
 			s1 = score1;
 			s2 = score2;
 		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
-		else
-		{
-			s1 = 99;
-			s2 = 99;
-		}
+//		else //removed this case since its not required
+//		{
+//			s1 = 99;
+//			s2 = 99;
+//		} 
 		s = s1 + s2;
 		return s;
 	}
@@ -64,7 +65,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length == 0 || args.length != 3) //Changed null to arg length of 0 
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;

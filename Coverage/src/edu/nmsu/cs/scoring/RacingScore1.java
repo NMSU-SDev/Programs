@@ -35,10 +35,10 @@ public class RacingScore1
 		score3 = s3;
 	}
 
-	public int overallScore()
+	public int overallScore()// doesnt check for equals or if score is over 50
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2)// functional error finding largest instead of smallest score and not checking for equals between the scores.
 			s = score2;
 		else
 			s = score1;
