@@ -1,5 +1,7 @@
 package edu.nmsu.cs.webserver;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 /**
  * A simple web server: it creates a new WebWorker for each new client connection, so all the
  * WebServer object does is listen on the port for incoming client connection requests.
@@ -16,12 +18,13 @@ package edu.nmsu.cs.webserver;
  **/
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class WebServer
 {
-	private ServerSocket	socket;
+	private ServerSocket socket;
 
-	private boolean				running;
+	private boolean running;
 
 	/**
 	 * Constructor
@@ -83,7 +86,7 @@ public class WebServer
 	 * given on command line.
 	 **/
 	public static void main(String args[])
-	{
+	{	
 		int port = 8080;
 		if (args.length > 1)
 		{

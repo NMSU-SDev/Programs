@@ -70,6 +70,11 @@ public class RacingScore1
 		RacingScore1 score = new RacingScore1();
 		score.recordScores(s1, s2, s3);
 		System.out.println("Overall score: " + score.overallScore());
+		
+		
+		
+		
+		
 		return;
 	}
 

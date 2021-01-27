@@ -1,0 +1,67 @@
+<project name="racingscore" default="report" xmlns:jacoco="antlib:org.jacoco.ant">
+	<!-- directory configuration - if things are not working, start troubleshooting from here -->
+	<property name="lib.dir" location="lib/" />
+	<property name="src.dir" location="src/" />
+	<property name="build.dir" location="bin/" />
+	<property name="result.dir" location="./target" />
+	<property name="result.report.dir" location="${result.dir}/site/jacoco" />
+	<property name="result.exec.file" location="${result.dir}/jacoco.exec" />
+
+	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+		<classpath path="${lib.dir}/jacocoant.jar" />
+	</taskdef>
+
+	<!-- standard compile task, but turn debugging on for source viewing -->
+	<target name="compile" description="compile the source">
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${src.dir}" classpath="${lib.dir}/hamcrest-core-1.3.jar:${lib.dir}/junit-4.13.1.jar"
+			destdir="${build.dir}"
+
+		includeantruntime="false" debug="true" />
+	</target>
+
+	<target name="testCircle1" description="one of the three new targets">
+		<java classpath="${lib.dir}/hamcrest-core-1.3.jar:${lib.dir}/junit-4.13.1.jar:${build.dir}"
+		
+		includeantruntime="false" debug="true" 
+
+		classname="org.junit.runner.JUnitCore"
+		>
+			<arg value="src.edu.nmsu.cs.circles.Circle1Test" />
+
+		</java>
+	</target>
+
+	<target name="testCircle2" description="one of the three new targets">
+		<java classpath="${lib.dir}/hamcrest-core-1.3.jar:${lib.dir}/junit-4.13.1.jar:${build.dir}"
+		
+		includeantruntime="false" debug="true" 
+
+		classname="org.junit.runner.JUnitCore"
+		>
+		
+			<arg value="src.edu.nmsu.cs.circles.Circle2Test" />
+
+		</java>
+	</target>
+
+	<target name="test" depends="testCircle1,testCircle2"/>
+
+	<!-- tests if new jacoco run is needed by checking if the jacoco.exec file is
+        newer than the class files or this build file -->
+	<target name="checkRun">
+		<uptodate property="run.notneeded" targetfile="${result.exec.file}">
+			<srcfiles dir="${src.dir}" includes="**/*.java build.xml" />
+		</uptodate>
+	</target>
+
+	<!-- clean up by removing all generated files; do "ant clean" to start afresh -->
+	<target name="clean">
+		<delete>
+			<fileset dir="." includes="**/*.class" />
+		</delete>
+		<delete dir="${result.report.dir}" />
+	</target>
+
+</project>
+

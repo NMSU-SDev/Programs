@@ -22,6 +22,8 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -29,25 +31,21 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.io.FileInputStream;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private File file;
 
-	/**
-	 * Constructor: must have a valid open socket
-	 **/
+
 	public WebWorker(Socket s)
 	{
 		socket = s;
+		file = new File("");
 	}
 
-	/**
-	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
-	 * destroys the thread. This method assumes that whoever created the worker created it with a
-	 * valid open socket object.
-	 **/
 	public void run()
 	{
 		System.err.println("Handling connection...");
@@ -56,7 +54,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os);
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -68,11 +66,14 @@ public class WebWorker implements Runnable
 		System.err.println("Done handling connection.");
 		return;
 	}
+	
+//	private Image readImageFile(String fileName) {
+//		InputStream is = new BinaryStream();
+//	}
 
-	/**
-	 * Read the HTTP request header.
-	 **/
-	private void readHTTPRequest(InputStream is)
+	String contentType = "text/html"; // referring to the content type, not the file
+	
+	private void readHTTPRequest(InputStream is) // changes the content type when we're expected to deliver an image
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
@@ -84,8 +85,40 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+
 				if (line.length() == 0)
 					break;
+				if(line.substring(0, 3).equals("GET"))
+				{
+					String[] parts = line.split(" ");
+					String path = "." + parts[1];
+					System.out.println(path);
+					
+					path = path.toLowerCase();
+							
+					if(path.endsWith("gif"))
+					{
+						contentType = "image/gif";
+					}
+					
+					if(path.endsWith("jpeg"))
+					{
+						contentType = "image/jpeg";
+					}
+					
+					if(path.endsWith("png"))
+					{
+						contentType = "image/png";
+					}
+					
+					if(path.equals("./")) 
+					{
+						System.out.println("Success!");
+						path = "./test.html"; // assigns the path to the html file
+					}
+					
+					file = new File(path);
+				}
 			}
 			catch (Exception e)
 			{
@@ -93,48 +126,74 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
 	}
 
-	/**
-	 * Write the HTTP header lines to the client network connection.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 * @param contentType
-	 *          is the string MIME content type (e.g. "text/html")
-	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os) throws Exception
 	{
-		Date d = new Date();
-		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
-		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
-		os.write("Connection: close\n".getBytes());
-		os.write("Content-Type: ".getBytes());
-		os.write(contentType.getBytes());
-		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+		
+	    Date d = new Date();
+	    DateFormat df = DateFormat.getDateTimeInstance();
+	    df.setTimeZone(TimeZone.getTimeZone("GMT"));	
+	    if(file.exists() && file.isFile())
+	    {
+	        os.write("HTTP/1.1 200 OK\n".getBytes());
+	    }
+	    else
+	    {
+	        os.write("HTTP/1.1 404 Not Found\n".getBytes());
+	    }
+	    os.write("Date: ".getBytes());
+	    os.write((df.format(d)).getBytes());
+	    os.write("\n".getBytes());
+	    os.write("Server: abc's server\n".getBytes());
+	    os.write("Connection: close\n".getBytes());
+	    os.write("Content-Type: ".getBytes());
+	    os.write(contentType.getBytes());
+	    os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+	    return;
 	}
 
-	/**
-	 * Write the data content to the client network connection. This MUST be done after the HTTP
-	 * header has been written out.
-	 * 
-	 * @param os
-	 *          is the OutputStream object to write to
-	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		
+		if(!file.exists() || !file.isFile())
+		{
+			os.write("<html><head></head>".getBytes());
+			os.write("<body><h1><center>404 Error Page Not Found</center></h1></body></html>".getBytes());
+			return;
+		}
+		else if (contentType == "text/html") // the file exists
+		{
+			BufferedReader b = new BufferedReader(new FileReader(file)); // reading contents of html file
+			String s;
+			Date  d = new Date();
+			DateFormat df = DateFormat.getDateTimeInstance();
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			
+			while ((s = b.readLine()) != null) // reading line by line
+			{
+				s = s.replaceAll("<cs371date>", df.format(d)); 
+				s = s.replaceAll("<cs371server>", "abc's server");
+				os.write(s.getBytes());
+			}
+			b.close();
+		}
+		
+		else
+		{
+			FileInputStream newStream = new FileInputStream(file);
+			int bytesRead;
+			int off = 0; // start writing into the buffer at position 0 (always)
+			int len = 4000; // we want this to be as big as the buffer
+			byte[] byteArray = new byte[4000];
+			
+			while ((bytesRead = newStream.read(byteArray, off, len)) != -1) // reading line by line
+			{
+				os.write(byteArray, off, bytesRead); // we already have an array of bites, so we don't need getBytes()
+			}
+			newStream.close();
+		}
+		
 	}
 
 } // end class

@@ -1,5 +1,8 @@
-# Programs
+# Programs - maximinorobles
 Base code for program assignments in Software Development (C S 371). 
+
+## Lab 1
+Fork the class's Programs repository. It contains a HelloWorld program. It will be submitted via a pull request.
 
 ## Program 1 and Program 2
 These assignments rely on the SimpleWebServer program. Each gets graded using tags in a cloned repository. 
