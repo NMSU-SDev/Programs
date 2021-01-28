@@ -1,3 +1,8 @@
+# Lab 1
+This assignment was to get the basics of cloning and editing a repository through Git Bash
+@mariorod1015
+https://github.com/mariorod1015
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
