@@ -1,0 +1,13 @@
+<project name="SimpleWebServer" default=src basedir=".">
+	<description>
+		Build File for SimpleWebServer
+	</description>
+	<!--Global Properties -->
+	<property name="src" location="src"/>
+	<property  name="bin" location="bin"/>
+	
+	<target name="run" description="runs SimpleWebServer, opening a connection on port 8080">
+		<java classname="edu.nmsu.cs.webserver.Webserver" classpath="${build}" fork="true" dir="${user.dir}">
+		</java>
+	</target>
+	

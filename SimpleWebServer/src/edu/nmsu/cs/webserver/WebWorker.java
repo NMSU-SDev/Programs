@@ -21,18 +21,18 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.*;
+import java.time.*;
 import java.net.Socket;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+
 
 public class WebWorker implements Runnable
 {
-
+	String path = "";
+	int pathcheck = 0;
+	String serverName = "Julian V's Server";
 	private Socket socket;
 
 	/**
@@ -50,14 +50,17 @@ public class WebWorker implements Runnable
 	 **/
 	public void run()
 	{
+		
 		System.err.println("Handling connection...");
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
+			
 			readHTTPRequest(is);
+			System.out.println("Dis is Path: " + path);
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			writeContent(os, path);
 			os.flush();
 			socket.close();
 		}
@@ -76,6 +79,7 @@ public class WebWorker implements Runnable
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		
 		while (true)
 		{
 			try
@@ -83,6 +87,10 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				if (pathcheck <1) {
+					 path = line;
+					 pathcheck++;
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -130,11 +138,44 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String filepath) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		String line="";
+			
+		filepath = (filepath.replace("GET ", "").replace(" HTTP/1.1", ""));
+		filepath = (System.getProperty("user.dir") + filepath).replace("/", "\\");
+		System.out.println("Dis da filepath: " + filepath);
+		
+		
+		File content = new File(filepath);
+		if(content.isFile()) {
+			try{
+				FileReader fr = new FileReader(content);
+				BufferedReader br = new BufferedReader(fr);
+				
+				while((line=br.readLine())!=null) {
+					if(line.contains("<cs371date>") || line.contains("<cs371server>")) {
+						System.out.println(line);
+						line=line.replaceAll("<cs371date>", LocalDate.now().toString());
+						line=line.replaceAll("<cs371server>", serverName);
+					}
+					os.write(line.getBytes());
+				}
+				fr.close();
+			} catch(FileNotFoundException e) {
+				System.err.println("Request error: " + e);
+			}
+		}
+		else {
+			try {
+				os.write("Error 404\nFile Not Found".getBytes());
+			} catch(FileNotFoundException e) {
+				System.err.println("Error 404: File Not Found" + e);
+			}
+		}
+		
+		
 	}
+	
 
 } // end class
