@@ -1,5 +1,8 @@
-# Programs
+# Programs - dalmei97
 Base code for program assignments in Software Development (C S 371). 
+
+## Lab 1
+Lab checked on forking class's, repo, and creating a Hello World, then creating pull request.
 
 ## Program 1 and Program 2
 These assignments rely on the SimpleWebServer program. Each gets graded using tags in a cloned repository. 

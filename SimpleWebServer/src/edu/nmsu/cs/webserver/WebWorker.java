@@ -29,11 +29,19 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.lang.Runnable;
+import java.io.*;
+
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String URL = "";
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -56,8 +64,25 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			
+			// Check url for file types and write the content type to output - with if-elses?
+	        if(URL.contains(".html")){
+	            writeHTTPHeader(os,"text/html");
+	        }
+	        else if(URL.contains(".gif")){
+	            writeHTTPHeader(os,"image/gif");
+	        }
+	        else if(URL.contains(".jpeg")){
+	            writeHTTPHeader(os,"image/jpeg");
+	        }
+	        else if(URL.contains(".png")){
+	            writeHTTPHeader(os,"image/png");
+	        }
+	        else if (URL.contains(".ico")){     // Extra credit URL icon (favicon.ico)
+	            writeHTTPHeader(os,"image/url-icon");
+	        }
+		
+			writeContent(os, URL);
 			os.flush();
 			socket.close();
 		}
@@ -80,14 +105,21 @@ public class WebWorker implements Runnable
 		{
 			try
 			{
-				while (!r.ready())
-					Thread.sleep(1);
+				while (!r.ready())Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
+				
+				if (line.length() == 0) 
 					break;
-			}
-			catch (Exception e)
+			
+			
+			if(line.substring(0,3).equals("GET")) {
+				
+			URL = line.substring(5).split("")[0];
+			
+			}//end if
+			
+			}catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
@@ -106,14 +138,28 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
+		
+		String TURL = URL;
+		TURL = TURL.replace("/", "\\");
+		File someFile = new File(TURL);
+		
+		
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		if(someFile.isFile()) {
 		os.write("HTTP/1.1 200 OK\n".getBytes());
+		}//end id
+		
+		else {
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}
+		
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Daniel's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -130,11 +176,51 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String someURL) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
-
+		
+		someURL = someURL.replace("/", "\\");
+		File someFile = new File(someURL);
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
+		Date date = new Date();
+		
+		if(someURL.contains(".gif") || someURL.contains(".jpeg") || someURL.contains(".png")
+		         || someURL.contains("favicon.cio")){
+			
+			
+			byte[] encodedFile = Files.readAllBytes(Paths.get(someURL));
+			os.write(encodedFile);
+		}
+		
+		else {
+					
+			
+			if(someFile.isFile()) {
+			byte[] encodedFile = Files.readAllBytes(Paths.get(someURL));
+			String fileContents = new String(encodedFile, StandardCharsets.UTF_8);
+			
+			
+			String dateTag = dateFormat.format(date);
+			fileContents = fileContents.replace("<cs371server>", dateTag);
+			
+			String serverTag = "Daniel's server is working";
+			fileContents = fileContents.replace("<cs371server>", serverTag);
+			os.write(fileContents.getBytes());
+			
+		}//end if
+		
+		else {
+			
+			String error404 = "error404.html";
+			
+			byte[] encodedFile = Files.readAllBytes(Paths.get(error404));
+			String fileContents = new String(encodedFile, StandardCharsets.UTF_8);
+			
+			os.write("<center> Error! Something isn't right here. </center>".getBytes());
+			os.write(fileContents.getBytes());
+		}//end else
+		
+		}
+  }
 } // end class

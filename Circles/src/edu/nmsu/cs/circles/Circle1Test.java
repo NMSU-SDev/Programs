@@ -15,6 +15,7 @@ public class Circle1Test
 {
 	// Data you need for each test case
 	private Circle1 circle1;
+   private Circle1 newCircle;
 
 	//
 	// Stuff you want to do before each test case
@@ -58,6 +59,76 @@ public class Circle1Test
 		p = circle1.moveBy(-1, -1);
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
+
+
+	//
+	// Test intersection 
+	//
+	@Test
+	public void testTotalIntersect()
+	{
+		
+		System.out.println("Running test testIntersect.");
+		newCircle = new Circle1(1, 2, 3);
+		Assert.assertTrue(circle1.intersects(newCircle));
+	}
+
+
+	//
+	// Test Scaledown
+	//
+	@Test
+	public void testScaleDown()
+	{
+		
+		System.out.println("Running test ScaleTest);
+		double newFactor = circle1.scale(0.5);
+		Assert.assertTrue(newFactor == 1.5000000000);
+	}
+
+
+
+	//
+	// Test innercircle
+	//
+	@Test
+	public void testInnerCircle()
+	{
+		
+		System.out.println("Running test innerCircle");
+		newCircle = new Circle1(1, 2, 2);
+		Assert.assertTrue(circle1.intersects(newCircle));
+	}
+
+
+	//
+	// Test intersection 
+	//
+	@Test
+	public void testIntersect()
+	{
+		
+		System.out.println("Running test testIntersect.");
+		newCircle = new Circle1(3, 2, 3);
+		Assert.assertTrue(circle1.intersects(newCircle));
+	}
+   
+   
+	//
+	// Test outerCircle
+	//
+	@Test
+	public void testOutterCircle()
+	{
+		
+		System.out.println("Running test outerCircle.");
+		newCircle = new Circle1(13, 13, 3);
+		Assert.assertTrue(circle1.intersects(newCircle));
+	}
+   
+   
+   
+   
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(

@@ -1,0 +1,27 @@
+<project name = "Circles" default="compileClean" basedir=".">
+<description>
+	Buildfile to compile and run SimpleWebServer program
+</description>
+<property name="src" location="src/"/>
+<property name="bin" location="bin/"/>
+	
+<!-- Deletes bin folder -->
+<target name="clean">
+	<delete dir="${bin}"/>
+</target>
+	
+<!-- compiles  -->
+<target name="compile">
+	<mkdir dir="${bin}"/>
+	<javac srcdir="${bin}" destdir="${bin}"/>
+</target>
+	
+<!-- cleans and compiles -->
+<target name="compileClean" depends="clean, compile"/>
+	
+<!-- starts running webserver -->
+<target name="run">
+	<java classname="edu.nmsu.cs.circles.circle1Test" classpath="${bin}"/>
+   <java classname="edu.nmsu.cs.circles.circle2Test" classpath="${bin}"/>
+</target>
+</project>
