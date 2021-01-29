@@ -1,0 +1,7 @@
+1. i think that the the total amount of time that it would take for me to do
+the lab would be around three and four hours
+2. thought/design: 1hrs
+programming: 3hr
+debugging: 12 hr
+TOTAL: 16 hr
+3. (predicted - observed)/predicted * 100 = (16-4)/4*100 = -300% accuracy 

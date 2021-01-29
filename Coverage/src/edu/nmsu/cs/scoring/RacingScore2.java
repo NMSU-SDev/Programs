@@ -22,7 +22,7 @@ public class RacingScore2
 
 	public RacingScore2()
 	{
-		score1 = 0;
+		score1 = 0; 
 		score2 = 0;
 		score3 = 0;
 	}
@@ -36,6 +36,11 @@ public class RacingScore2
 
 	public int overallScore()
 	{
+		/*in the original program when three arguments supplied are all the same, it sets the score to 198.
+		when the first and last arguments are the same, and highest the output would be wrong. The program adds the second argument,
+		 the lowest, and the first argument.
+        When the first and last arguments are the same, and they are lower than the second argument then the score would be 198. 
+		*/
 		int s, s1, s2;
 		if (score1 < score2 && score1 < score3)
 		{
@@ -44,18 +49,31 @@ public class RacingScore2
 		}
 		else if (score2 < score1 && score2 < score3)
 		{
+			//changing s2 to be score 3 to get correct output
 			s1 = score1;
-			s2 = score2;
+			s2 = score3;
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
 			s1 = score1;
 			s2 = score2;
 		}
-		else
+		//when it gets here and s1 and s2 are not decided then two numbers are equal
+		else if(score1 == score2 && score1 < score3)
 		{
-			s1 = 99;
-			s2 = 99;
+			//making s1 = score 1 and s2 = score 2 to get correct output
+			s1 = score1;
+			s2 = score3;
+		}
+		else if(score2 == score3 && score2 < score1)
+		{
+			//making s1 = score 1 and s2 = score 2 to get correct output
+			s1 = score1;
+			s2 = score3;
+		}
+		else {
+			s1 = score1;
+			s2 = score2;
 		}
 		s = s1 + s2;
 		return s;
@@ -64,7 +82,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length == 0 || args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;

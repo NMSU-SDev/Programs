@@ -37,11 +37,18 @@ public class RacingScore1
 
 	public int overallScore()
 	{
+        /*If the two greatest numbers are the last two arguments the output would be incorrect;
+         *  the first number, the lowest, and the last number, one of the highest, would be added. 
+         */
 		int s;
 		if (score1 < score2)
-			s = score2;
-		else
+			//s = score2;
+			//i am making s equal the lowest score so that when it is subtracted  the lowest is subtracted
 			s = score1;
+		else
+			//this was score1, s would equal score 2 if the first two scores are equal or the second is the highest
+			s = score2;
+		//s would equal score 3 if it is the lowest
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;
@@ -58,6 +65,7 @@ public class RacingScore1
 		}
 		try
 		{
+			//the program does not verify if the numbers are between 0-50
 			s1 = Integer.parseInt(args[0]);
 			s2 = Integer.parseInt(args[1]);
 			s3 = Integer.parseInt(args[2]);

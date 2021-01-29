@@ -1,0 +1,6 @@
+1. i think that the total amount of time it will take  me is 8 hours
+2. 2. thought/design: 2.5hrs
+programming: 5hr
+debugging: 2 hr
+TOTAL: 9.5 hr
+3. (predicted - observed)/predicted * 100 = (8-9.5)/4*100 = -37.5% accuracy 
