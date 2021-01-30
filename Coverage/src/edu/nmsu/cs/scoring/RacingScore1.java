@@ -39,9 +39,9 @@ public class RacingScore1
 	{
 		int s;
 		if (score1 < score2)
-			s = score2;
+			s = score2; // error needs to be score 1
 		else
-			s = score1;
+			s = score1; // error needs to be score 2
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

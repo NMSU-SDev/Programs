@@ -1,0 +1,26 @@
+<project name="Hello World Project" default="run" basedir=".">
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="bin/classes"/>
+        <javac srcdir="src" destdir="bin/classes"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="bin/jar"/>
+        <jar destfile="bin/jar/SimpleWebServer.jar" basedir="bin/classes">
+            <manifest>
+                <attribute name="Main-Class" value="edu.nmsu.cs.webserver.WebServer"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="bin/jar/SimpleWebServer.jar" fork="true" dir="./www/"/>
+    </target>
+
+
+
+</project>

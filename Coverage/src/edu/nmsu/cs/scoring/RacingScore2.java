@@ -37,6 +37,7 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
+		// error make all the branches OR EQUAL TO
 		if (score1 < score2 && score1 < score3)
 		{
 			s1 = score2;
@@ -45,9 +46,9 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score2; // error needs to be score 3
 		}
-		else if (score3 < score1 && score3 < score2)
+		else if (score3 < score1 && score3 < score2) // error needs to be just else
 		{
 			s1 = score1;
 			s2 = score2;
@@ -56,7 +57,7 @@ public class RacingScore2
 		{
 			s1 = 99;
 			s2 = 99;
-		}
+		} // error no need for this else branch
 		s = s1 + s2;
 		return s;
 	}
@@ -64,7 +65,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args == null || args.length != 3) // null can't be passed so no need
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
@@ -81,6 +82,7 @@ public class RacingScore2
 			return;
 		}
 		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+		// break into a separate branch for each score check rather than one giant OR check
 		{
 			System.err.println("Error: scores must be between 0 and 50!");
 			return;

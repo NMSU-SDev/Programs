@@ -1,0 +1,75 @@
+<project name="Circles Tests" default="run" basedir="./">
+    <!-- Run jUnit -->
+
+    <path id="junit.path">
+        <fileset dir="lib/">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location="bin/"/>
+    </path>
+
+
+    <target name="clean">
+        <delete dir="bin/"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="bin/classes"/>
+        <javac includeantruntime="false" srcdir="src" destdir="bin/classes">
+            <classpath refid="junit.path"/>
+        </javac>
+    </target>
+
+    <target name="run" depends="clean, compile">
+        <java classname="edu.nmsu.cs.circles.CircleRun" classpath="bin/classes" fork="true">
+            <classpath>
+                <path refid="junit.path"/>
+                <fileset dir="lib/">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="bin/classes"/>
+            </classpath>
+            <arg value="1"/>
+            <arg value="1"/>
+            <arg value="1"/>
+            <arg value="1"/>
+            <arg value="1"/>
+            <arg value="1"/>
+        </java>
+    </target>
+
+    <target name="test" depends="test_1, test_2">
+
+    </target>
+
+    <target name="test_1">
+        <mkdir dir="rep/"/>
+        <junit haltonfailure="false" haltonerror="false" printsummary="true">
+            <classpath>
+                <path refid="junit.path"/>
+                <fileset dir="lib/">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="bin/classes"/>
+            </classpath>
+            <test name="edu.nmsu.cs.circles.Circle1Test" todir="rep/"/>
+            <formatter type="plain"/>
+        </junit>
+    </target>
+    <target name="test_2">
+        <mkdir dir="rep/"/>
+        <junit haltonfailure="false" haltonerror="false" printsummary="true">
+            <classpath>
+                <path refid="junit.path"/>
+                <fileset dir="lib/">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="bin/classes"/>
+            </classpath>
+            <test name="edu.nmsu.cs.circles.Circle2Test" todir="rep/"/>
+
+            <formatter type="plain"/>
+        </junit>
+    </target>
+
+</project>
