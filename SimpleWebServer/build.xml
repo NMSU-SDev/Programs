@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Sep 15, 2020 11:56:30 AM                                                        
+
+     SimpleWebServer    
+     It can serve HTML files, gives not found responses to incorrect strings, and
+     substitutes information for tags
+                   
+     katorma                                                                
+     ====================================================================== -->
+	  
+	<project name="SimpleWebServer" default="run" basedir=".">
+	<description>
+		Buildfile to compile and run SimpleWebServer program
+	</description>
+	<property name="src" location="src/"/>
+	<property name="bin" location="bin/"/>
+
+	<!-- Delete bin -->
+	<target name="clean">
+		<delete dir="${bin}"/>
+	</target>
+
+	<!-- compile webserver -->
+	<target name="compile">
+		<mkdir dir="${bin}"/>
+		<javac srcdir="${src}" destdir="${bin}"/>
+	</target>
+
+	<!-- compile and clean -->
+	<target name="compileClean" depends="clean, compile"/>
+
+	<!-- run the webserver -->
+	<target name="run" depends="compileClean">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" dir="../www" fork="true"/>
+	</target>
+	</project>

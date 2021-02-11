@@ -38,10 +38,12 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
+		//changed score 2 to score1, since in this case score 1 is smaller
 		if (score1 < score2)
-			s = score2;
-		else
 			s = score1;
+		else
+		//in this case score 2 is smaller 
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

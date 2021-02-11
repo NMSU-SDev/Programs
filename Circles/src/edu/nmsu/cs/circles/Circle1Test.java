@@ -22,17 +22,7 @@ public class Circle1Test
 	@Before
 	public void setup()
 	{
-		System.out.println("\nTest starting...");
 		circle1 = new Circle1(1, 2, 3);
-	}
-
-	//
-	// Stuff you want to do after each test case
-	//
-	@After
-	public void teardown()
-	{
-		System.out.println("\nTest finished.");
 	}
 
 	//
@@ -42,7 +32,6 @@ public class Circle1Test
 	public void simpleMove()
 	{
 		Point p;
-		System.out.println("Running test simpleMove.");
 		p = circle1.moveBy(1, 1);
 		Assert.assertTrue(p.x == 2 && p.y == 3);
 	}
@@ -54,15 +43,33 @@ public class Circle1Test
 	public void simpleMoveNeg()
 	{
 		Point p;
-		System.out.println("Running test simpleMoveNeg.");
 		p = circle1.moveBy(-1, -1);
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
+	
+    @Test //scale up the radius
+    public void scaleUp(){
+        circle1.scale(5);
+        Assert.assertTrue(circle1.radius == 5);
+    }
+    @Test //scale down the radius
+    public void scaleDown(){
+        circle1.scale(0.3);
+        Assert.assertTrue(circle1.radius == 0.3);
 
-	/***
-	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
-	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
-	 * " + e); } }
-	 ***/
-
+}
+    
+    @Test //testing circles with some intersection
+    public void intersectTest(){
+        Circle1 c = new Circle1(4, 2, 4);
+        boolean t = circle1.intersects(c);
+        Assert.assertTrue(t);
+    }
+    
+    @Test //testing circles with no intersection
+    public void noIntersectTest(){
+        Circle1 c = new Circle1(50, 50, 40);
+        boolean t = circle1.intersects(c);
+        Assert.assertFalse(t);
+    }
 }

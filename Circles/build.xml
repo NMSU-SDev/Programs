@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================                                                          
+     katorma                                                                
+     ====================================================================== -->
+	  
+<project name = "Circles" default = "test" basedir=".">
+	
+    <!-- Directories -->
+    <property name = "src.dir" location = "src/"/>
+    <property name = "build.dir" location = "bin/" />
+    <property name = "lib.dir" location = "lib/" />
+    <property name = "report.dir" location = "report/"/>
+	
+    <!--JUnit Path-->
+    <path id = "junitpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location = "${build.dir}"/>
+    </path>
+
+    <!-- Clean -->
+    <target name = "clean" >
+        <delete dir = "${build.dir}"/>
+        <delete dir = "${report.dir}"/>
+    </target>
+	
+    <!-- Compile -->
+    <target name = "compile" depends="clean">
+        <mkdir dir = "${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir = "${build.dir}" includeantruntime="false">
+            <classpath refid = "junitpath"/>
+        </javac>
+    </target>
+	
+    <!-- CircleRun Test -->
+    <target name = "run" depends="clean,compile">
+        <java classname = "edu.nmsu.cs.circles.CircleRun" classpath="${build.dir}" fork="true">
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+            <arg value = "1"/>
+        </java>
+    </target>
+	
+    <!-- actually runs Circle1 and Circle2 -->
+    <target name = "test" depends = "runCircle1, runCircle2">
+    </target>
+	
+    <!-- Run and Report Circle1 -->
+    <target name = "runCircle1" depends="compile">
+        <mkdir dir = "report"/>
+    <junit haltonfailure="false" haltonerror="false" printsummary="true">
+        <classpath refid ="junitpath"></classpath>
+        <test name = "edu.nmsu.cs.circles.Circle1Test" todir="${report.dir}"></test>
+        <formatter type = "plain"/>
+    </junit>
+    </target>
+	
+    <!-- Run and Report Cicle2 -->
+    <target name = "runCircle2" depends="compile">
+        <mkdir dir = "report"/>
+        <junit haltonfailure="false" haltonerror="false" printsummary="true">
+            <classpath refid ="junitpath"></classpath>
+            <test name = "edu.nmsu.cs.circles.Circle2Test" todir="${report.dir}"></test>
+            <formatter type = "plain"/>
+        </junit>
+    </target>
+	
+</project>
