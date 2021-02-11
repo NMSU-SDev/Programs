@@ -1,0 +1,68 @@
+<project name="Circles" basedir=".">
+	<description>
+		Creates the JUnit test environments
+	</description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src/"/>
+	<property name="build" location="bin/"/>
+	<property name="libraries" location="lib/"/>
+	<property name="report" location="rep/"/>
+
+	<target name="init">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<path id = "junitpath">
+		<fileset dir="${libraries}">
+			<include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${build}"/>
+	</path>
+	
+	<target name="compile" depends="init"
+		description="compile the source">
+		<!-- Compile the Java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false">
+			<classpath refid="junitpath"/>
+		</javac>
+	</target>
+	
+	<target name="run" depends="clean, compile">
+		<java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build}" fork="true">
+			<arg value="1"/>
+			<arg value="1"/>
+			<arg value="1"/>
+			<arg value="1"/>
+			<arg value="1"/>
+			<arg value="1"/>
+		</java>
+	</target>
+	
+	<target name="test" depends="Circle1Test, Circle2Test">
+	</target>
+  
+	<target name="Circle1Test" depends="compile">
+        <mkdir dir="rep/"/>
+		<junit haltonfailure="false" haltonerror="false" printsummary="true">
+			<classpath refid="junitpath"/>
+			<test name="edu.nmsu.cs.circles.Circle1Test" todir="${report}"/>
+			<formatter type="plain"/>
+		</junit>
+    </target>
+	
+	<target name="Circle2Test" depends="compile">
+        <mkdir dir="rep/"/>
+		<junit haltonfailure="false" haltonerror="false" printsummary="true">
+			<classpath refid="junitpath"/>
+			<test name="edu.nmsu.cs.circles.Circle2Test" todir="${report}"/>
+			<formatter type="plain"/>
+		</junit>
+    </target>
+
+  <target name="clean"
+        description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+  </target>
+</project>

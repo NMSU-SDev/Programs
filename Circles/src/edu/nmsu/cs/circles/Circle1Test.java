@@ -59,10 +59,22 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
 
-	/***
-	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
-	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
-	 * " + e); } }
-	 ***/
+	@Test
+	public void checkIntersect()
+	{
+		Circle1 cir1 = new Circle1(1,1,1.0);
+		System.out.println("Running test checkIntersect part 1");
+		Assert.assertTrue("This was a Triumph./n", circle1.intersects(cir1));
+		Circle1 cir2 = new Circle1(5, 6, 1);
+		System.out.println("Running test checkIntersect part 2");
+		Assert.assertFalse("This was a Triumph./n", circle1.intersects(cir2));
+	}
+
+	public static void main(String args[]) {
+		try {
+			org.junit.runner.JUnitCore.runClasses(java.lang.Class.forName("Circle1Test"));
+		} catch (Exception e) {
+			System.out.println("Exception: " + e); }
+	}
 
 }

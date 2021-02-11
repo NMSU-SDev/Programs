@@ -14,14 +14,19 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * 
  **/
+import java.io.File;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
 
 public class WebServer
 {
 	private ServerSocket	socket;
 
 	private boolean				running;
+
+
+
 
 	/**
 	 * Constructor
@@ -38,7 +43,7 @@ public class WebServer
 	 * @param port
 	 *          is the TCP port number to accept connections on
 	 **/
-	private boolean start(int port)
+	private boolean runServer(int port)
 	{
 		Socket workerSocket;
 		WebWorker worker;
@@ -103,8 +108,7 @@ public class WebServer
 			}
 		}
 		WebServer server = new WebServer();
-		if (!server.start(port))
-		{
+		if (!server.runServer(port)) {
 			System.err.println("Execution failed!");
 		}
 	} // end main

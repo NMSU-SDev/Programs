@@ -1,0 +1,24 @@
+Testsuite: edu.nmsu.cs.circles.Circle2Test
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 sec
+------------- Standard Output ---------------
+
+Test starting...
+Running test checkIntersect part 1
+Running test checkIntersect part 2
+
+Test finished.
+
+Test starting...
+Running test simpleMove.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveNeg.
+
+Test finished.
+------------- ---------------- ---------------
+
+Testcase: checkIntersect took 0.023 sec
+Testcase: simpleMove took 0 sec
+Testcase: simpleMoveNeg took 0 sec

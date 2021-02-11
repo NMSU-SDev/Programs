@@ -21,19 +21,18 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String filedir;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -51,13 +50,14 @@ public class WebWorker implements Runnable
 	public void run()
 	{
 		System.err.println("Handling connection...");
+		File page;
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+				writeHTTPHeader(os, "text/html");
+				writeContent(os);
 			os.flush();
 			socket.close();
 		}
@@ -83,6 +83,13 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				if(line.contains("GET /") && !line.contains("favicon.ico")) {
+					String sub = "src" + line.substring(4, line.length() - 8);
+					File dir = new File(sub);
+					if (dir.isFile()) {
+						filedir = sub;
+					}
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -132,9 +139,40 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if (filedir == null){
+			os.write("html>\n<head>\n</head>\n<body>\n<div class=\"mainbox\">\n<div class=\"err\"><b>Error 404</b></div>\n<div></div>\n<div class=\"msg\">The page you tried to scry is no longer on this plane of existence<p>You can try again with a different page.</div>\n</div>\n</body>\n</html>".getBytes());
+		}
+		else
+		{
+			DateFormat df = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+			Date d = new Date();
+			File page = new File(filedir);
+			String line;
+			BufferedReader r = new BufferedReader(new FileReader(page));
+			while (true)
+			{
+				try
+				{
+					while (!r.ready())
+						Thread.sleep(1);
+					line = r.readLine();
+					if(line.contains("<cs371date>"))
+					{
+						line = line.replaceAll("<cs371>", df.format(d));
+					}
+					if(line.contains("<cs371server>"))
+					{
+						line = line.replaceAll("<cs371server", "RedHeadEagles' Server");
+					}
+					os.write(line.getBytes());
+				}
+				catch (Exception e)
+				{
+					System.err.println("Request error: " + e);
+					break;
+				}
+			}
+		}
 	}
 
 } // end class
