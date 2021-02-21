@@ -1,0 +1,24 @@
+<project name ="SimpleWebServer" default="run" basedir=".">
+	<description>
+		Buildfile to clean and compile the code, and includes a run target to run the program with default port(8080).
+	</description>
+	<property name="build" location="bin/"/>
+	<property name="src"   location="src/"/>
+	
+	<target name="clean" description="deletes .class files">
+		<delete dir="${build}"/>
+	</target>
+	
+	<target name="build" description="compiles all java files">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}"/> 
+	</target>
+	
+	<target name="cleanbuild" depends="clean,build"/>
+	
+	<target name="run" description="runs WebServer.java on port 8080" depends="cleanbuild">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}/www">
+			<arg value="8090"/>
+		</java>
+	</target>
+</project>
