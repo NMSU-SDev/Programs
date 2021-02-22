@@ -1,0 +1,24 @@
+<project name="Program1" basedir=".">
+   <property name="src" location="src/edu/nmsu/cs/webserver"/>
+   <property name="build" location="build"/>   
+   <property name="classPath" location="${build}/edu/nmsu/cs/webserver"/>
+
+	<target name="clean">
+	      <delete dir="${build}"/>      
+	   </target>
+	
+	<target name="init">
+      <mkdir dir="${build}"/>	   
+   </target>
+
+   <target name="compile" depends="init">
+	   <javac srcdir="${src}" includeantruntime="true" includes="WebServer.java" destdir="${build}"></javac>
+   </target>
+
+   <target name="run" depends="compile">
+	   <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${classPath}" fork="true" dir="${build}"></java>
+   </target>
+
+   
+	
+</project>

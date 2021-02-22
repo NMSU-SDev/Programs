@@ -21,20 +21,22 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.nio.file.Files;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-
+	private String address; //handles file address
+	private String err404 = "<html><head></head><body><h1>404 Page Not Found!</h1><p>Sorry, pardner. You should've taken that left turn at Albuquerque.</p></body></html>";
+	private String defDis = "<html><head></head><body><h3>Default Page</h3><p><cs371date></p><p><cs371server></p></body></html>";
+	private String conType = "text/html";
+	
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -56,7 +58,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os, conType);
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -84,15 +86,17 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if(line.contains("GET") && line.contains("/res/acc")) address = line;
 				if (line.length() == 0)
 					break;
-			}
+			}//end try
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
-			}
-		}
+			}//end catch
+		}//end while
+		if(address != null) processAddress(address);
 		return;
 	}
 
@@ -132,9 +136,90 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
+		
+		if(conType.equals("text/html")) {
+		   if(address != null) 
+		      os.write(pageFileText(address).getBytes());
 
+		   else 
+			   os.write(checkTags(defDis).getBytes());
+	
+		}//end if
+		
+		else {
+			try {
+			   
+			   InputStream imgS = new FileInputStream(address);
+			   int getByte;
+			   while((getByte = imgS.read()) != -1 )
+			      os.write(getByte);
+			   imgS.close();
+			   
+			}//end try
+			catch(Exception e) {
+				os.write(err404.getBytes());
+			}//end catch
+		}//end else
+		
+	    //revert address for future queries
+		address = null;
+		
+	}//end writeContent
+
+	// ME
+	private void processAddress(String adr) {
+		
+		char directOp;
+		
+		address = System.getProperty("user.dir") + "/www" + adr.substring(4,adr.length()-9);
+		
+		directOp = address.charAt(address.indexOf("SimpleWebServer") - 1);
+		if(directOp == '\\'); //for Windows directories
+			address = address.replace('/', directOp);
+			
+	   try {
+		File target = new File(address);
+		conType = Files.probeContentType(target.toPath());
+	   }
+	   catch(Exception e) {}
+		
+	}//end processAddress
+	
+	private String pageFileText(String fileName){
+		
+		Scanner fScan;
+		String fileText = "";
+		try {
+			fScan = new Scanner(new File(fileName));
+			while(fScan.hasNext()) {
+				fileText += fScan.nextLine();
+			}//end while
+			
+			
+			fScan.close();
+			return checkTags(fileText);
+		}//end try
+		catch(FileNotFoundException e) {
+			//404
+			return checkTags(err404);
+		}//end catch
+		
+	}//end pageFileText
+	
+	private String checkTags(String page) {
+		
+		String tagA = "<cs371date>";
+		Date currDate = new Date();
+		SimpleDateFormat form = new SimpleDateFormat("MM-dd-yyyy");
+		String stringA = form.format(currDate);
+		String tagB = "<cs371server>";
+		String stringB = "Darkwater Town Square Server";
+			
+		page = page.replace(tagA, stringA);
+		page = page.replace(tagB, stringB);
+		
+		return page;
+		
+	}//end checkTags
+	
 } // end class
