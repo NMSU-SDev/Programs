@@ -1,0 +1,6 @@
+1. 48 hours
+2. Thought/Design: 4 hours
+   Programming: 10 hours
+   Debugging: 26 hours
+   Total: 40 hours
+3.It was about 83% accurate.

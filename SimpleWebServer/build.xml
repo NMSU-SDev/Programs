@@ -1,0 +1,31 @@
+<project name="SimpleWebServer" default="compileBuild" basedir = ".">
+    <description>
+    	Buildfile to compile programs within SimpleWebServer
+    </description>
+	
+    <property name = "src" location = "src/" />
+    <property name = "build" location = "bin/" />
+    
+	<!-- Deletes the Bin folder -->
+   <target name ="clean" description = "deletes class file">
+	    <delete dir = "${build}"/>
+   	</target>
+   	
+	<!--Compiles WebServer-->
+	<target name = "build" description = "compiles the programs to /bin" >
+		<mkdir dir = "${build}"/>
+		<javac srcdir = "${src}" destdir = "${build}"/>
+	</target>
+	
+	<!--Cleans and Compiles-->
+	<target name = "compileBuild" depends = "clean, build"/>
+	
+	<!--Runs the WebServer-->
+	<target name = "run" description = "runs the SimpleWebServer on port 8080">
+		<java classname = "edu.nmsu.cs.webserver.WebServer" classpath ="${build}" fork = "true" >
+			<arg value = "8080"/>
+			</java>
+	</target>
+	
+</project>
+
