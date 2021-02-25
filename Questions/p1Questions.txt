@@ -1,0 +1,5 @@
+1. About 5  hours.
+2.Thought / Design: 1/2 an hour.
+  Programming: 5.25 hours.
+  Debug: 1/2 an hour.
+3.I underestimated the time it will take to do this assignment by 25%.
