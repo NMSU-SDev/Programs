@@ -25,10 +25,13 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Scanner;
 
 public class WebWorker implements Runnable
 {
@@ -50,14 +53,14 @@ public class WebWorker implements Runnable
 	 **/
 	public void run()
 	{
+		String file;
 		System.err.println("Handling connection...");
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			file = readHTTPRequest(is);
+			writeContent(os, file);
 			os.flush();
 			socket.close();
 		}
@@ -72,9 +75,10 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String file = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -83,6 +87,12 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				
+				if(line.contains("GET")) {
+					String line_parts[] = line.split(" ");
+					file = line_parts[1];
+				}
+				
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -93,7 +103,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return file;
 	}
 
 	/**
@@ -104,12 +114,13 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, String responseCode) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		String httpCode = "HTTP/1.1 " + responseCode + "\n";
+		os.write(httpCode.getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -130,11 +141,50 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String file) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if(file.equals("/")) {
+			writeHTTPHeader(os, "text/html", "200 OK");
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>My web server works!</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+		else if(file.equals("/favicon.ico")) {
+			writeHTTPHeader(os, "text/html", "200 OK");
+		}
+		else {
+			try {
+				File fileObj = new File("." + file);
+				Scanner fileRead = new Scanner(fileObj);
+
+				writeHTTPHeader(os, "text/html", "200 OK");
+				while(fileRead.hasNextLine()) {
+					String line = fileRead.nextLine();
+					
+					if(line.contains("<cs371date>")) {
+						Date d = new Date();
+						DateFormat df = DateFormat.getDateTimeInstance();
+						line = line.replace("<cs371date>", df.format(d));
+					}
+					
+					if(line.contains("<cs371server>")) {
+						line = line.replace("<cs371server>", "Dawson's first server");
+					}
+					
+					os.write(line.getBytes());
+				}
+			}
+			catch(FileNotFoundException e) {
+				writeHTTPHeader(os, "text/html", "404 Not Found");
+				
+				os.write("<html><head></head><body>\n".getBytes());
+				os.write("<h3>404<br />".getBytes());
+				os.write("Not found</h3>\n".getBytes());
+				os.write("</body></html>\n".getBytes());
+
+				System.out.println(e);
+			}
+		}
 	}
 
 } // end class

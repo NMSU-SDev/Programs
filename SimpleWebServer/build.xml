@@ -1,0 +1,26 @@
+<!--
+  CS371 Program 1: SimpleWebServer
+  Dawson Drake
+  February 19, 2021                   
+-->
+
+<project name = "SimpleWebServer" default="compile">
+     <description>
+          This build file provides targets that allow the user to compile and run
+          the WebServer java program.
+     </description>
+     <property name="src" location="src/edu/nmsu/cs/webserver"/>
+
+     <target name="clean">
+          <delete dir="bin"/>
+          <mkdir dir="bin"/>
+     </target>
+
+     <target name = "compile" depends="clean">
+          <javac srcdir="${src}" destdir="bin"/>
+     </target>
+
+     <target name = "run">
+          <java classpath="bin" classname="edu.nmsu.cs.webserver.WebServer"/>
+     </target>
+</project>
