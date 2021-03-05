@@ -14,6 +14,7 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * 
  **/
+ 
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -51,6 +52,9 @@ public class WebServer
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+      
+      System.out.println( "Web server up and listening for connections on port " + port + "." );
+      
 		while (true)
 		{
 			try

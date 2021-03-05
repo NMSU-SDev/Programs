@@ -1,0 +1,9 @@
+1. Estimated time for this assignment: 7.5 hours
+
+2. Actual time:
+  - Thought/Design:	1.5
+  - Programming:	10
+  - Debugging:		4
+  - TOTAL:		15.5
+
+3. Accuracy of original estimate: -48% of actual time
