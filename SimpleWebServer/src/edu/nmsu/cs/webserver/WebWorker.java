@@ -115,25 +115,6 @@ public class WebWorker implements Runnable
                                         setMimeType("text/html");
                                 } //end if
                                 
-                                //checking and importing gif image file in the WebServer file
-                                else if (contentFile.endsWith(".gif")) {
-                                	setMimeType("image/gif");
-                                } //end else if
-                                
-                                //checking and importing jpeg image file in the WebServer
-                                else if (contentFile.endsWith(".jpeg")) {
-                                	setMimeType("image/jpeg");
-                                } //end else if
-                                
-                                //checking and importing png image file in the WebServer file
-                                else if (contentFile.endsWith(".png")) {
-                                	setMimeType("image/png"); 
-                                } //end else if
-                                
-                                //checking and importing favicon image file in the WebServer file
-                                else if (contentFile.endsWith(".ico")) {
-                                	setMimeType ("image/x-icon");
-                                }
                                 else
                                 {
                                      setMimeType("text/html");
@@ -299,8 +280,7 @@ public class WebWorker implements Runnable
                 
                 // if the file contains an image then send to IOstream
                 else if(contentType.contains("image")) 
-                {
-                        try
+                {  try
                         {
                     File file = new File(path);
                     int fileLength = (int) file.length();
@@ -318,8 +298,8 @@ public class WebWorker implements Runnable
                         } //end catch
                 } //end else if
                 
-                else 
-                {
+                  else 
+                  {
                         write404Content(os,path);
                 } //end else
         } //end writeContent method
