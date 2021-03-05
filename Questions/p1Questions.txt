@@ -1,0 +1,19 @@
+1. I estimate that this assignment will take me at least 4.25 hours
+    to complete given time to review lecture videos and research
+    functions in addition to the actual programming and debugging.
+2. Thought/Design: I am including research into java functions, ant 
+    build files, and web server information into this section, 
+    which overall took me about 6.5 hours.
+   Programming: The actual programming of the assignment took me 
+    about 1.75 hours including documentation.
+   Debugging: The debugging process included fixing 404 HTML body 
+    response and ant file path stuff in addition to small syntax 
+    errors. This took me approximately 1.25 hours.
+   Total: The total time spent on this assignment came out to 
+    about 8.5 hours.
+3. My time spent on this assignment was double what I expected,
+    which yields a percent error of ((8.5-4.25)/4.25) = 100%.
+    I would like to note that as an EE major with little knowledge 
+    of web servers and little experience in java, I seriously 
+    underestimated how long it would take me to complete this 
+    assignment.

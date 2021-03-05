@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.io.FileReader;
 
 public class WebWorker implements Runnable
 {
@@ -55,9 +56,15 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String file = readHTTPRequest(is);
+			if(writeHTTPHeader(os, file)){
+				writeContent(os, file);
+			} else {
+				os.write("<html><head></head><body>\n".getBytes());
+				os.write("<h3>ERROR! CODE: 404 NOT FOUND</h3>\n".getBytes());
+				os.write("</body></html>\n".getBytes());
+			}
+			
 			os.flush();
 			socket.close();
 		}
@@ -70,11 +77,12 @@ public class WebWorker implements Runnable
 	}
 
 	/**
-	 * Read the HTTP request header.
+	 * Read the HTTP request header and return String of file name.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String fileName = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -84,6 +92,10 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if(line.startsWith("GET")){
+					fileName = line.substring(5, line.length() - 9);
+					// excludes ':8080' from file name
+				}
 				if (line.length() == 0)
 					break;
 			}
@@ -93,34 +105,53 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return fileName;
 	}
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
+	 * Return boolean flag True if file found and False if not found
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
+	 * @param fileName
+	 * 			is the string for the name of file served
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private boolean writeHTTPHeader(OutputStream os, String fileName) throws Exception
 	{
+		String contentType = "text/html"; // hardcoded for this assignment and removed from header
+		boolean pageFlag; // flag for determining if file could be found or not
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		try
+		{
+			if(!fileName.equals("")){
+				FileReader fileRead = new FileReader(fileName);
+			}
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+			pageFlag = true; //file was found
+		}
+		catch(Exception e){
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());  //HTTP header for incorrect file request
+			pageFlag = false; //file was not found
+		}
+		
+		
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Zack's server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+
+		return pageFlag;
 	}
 
 	/**
@@ -129,12 +160,34 @@ public class WebWorker implements Runnable
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
+	 * @param fileName 
+	 * 			is the string for name of file used for HTML content
 	 **/
-	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	private void writeContent(OutputStream os, String fileName) throws Exception
+	{try{
+
+		if(fileName.equals("")){  //default HTML message body if no file path provided
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>My web server works!</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		} else {
+			BufferedReader buffRead = new BufferedReader(new FileReader(fileName));
+			String currLine;
+			String currDate = new java.util.Date().toString();
+			if(fileName.endsWith(".html")){
+				for(currLine = buffRead.readLine(); currLine != null; currLine = buffRead.readLine()){
+					// loops through HTML file replacing tags line by line
+					currLine = currLine.replaceAll("<cs371date>", currDate);
+					currLine = currLine.replaceAll("<cs371server>", "Zackery Meyer's CS371 Server");
+					os.write(currLine.getBytes());
+				}
+			} 
+		}
+
+		}catch(Exception e){
+			System.err.println("Output error: " + e);
+		}
+		
 	}
 
 } // end class

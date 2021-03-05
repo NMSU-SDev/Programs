@@ -1,0 +1,21 @@
+<project name="SimpleWebServer" default="compile">
+
+    <property name="bin" location="bin/"/>
+	<property name="src"   location="src/"/>
+
+    <targat name="clean" description="Delete all generated files">
+        <delete dir="${bin}"/>
+    </target>
+
+    <target name="compile" description="compiles program and makes bin directory">
+		<mkdir dir="${bin}"/>
+		<javac srcdir="${src}" destdir="${bin}"/>
+	</target>
+
+	<target name="run" description="runs program using argument: 8080" depends="clean,compile">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}">
+			<arg value="8080"/>
+		</java>
+	</target>
+
+</project> 
