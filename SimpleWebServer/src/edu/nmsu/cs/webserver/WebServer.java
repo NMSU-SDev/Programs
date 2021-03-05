@@ -105,7 +105,7 @@ public class WebServer
 		WebServer server = new WebServer();
 		if (!server.start(port))
 		{
-			System.err.println("Execution failed!");
+			System.err.println("404 Not Found");
 		}
 	} // end main
 

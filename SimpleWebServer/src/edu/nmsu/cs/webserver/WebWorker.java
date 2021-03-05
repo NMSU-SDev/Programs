@@ -113,7 +113,7 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: This is Nick's server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -133,7 +133,7 @@ public class WebWorker implements Runnable
 	private void writeContent(OutputStream os) throws Exception
 	{
 		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
+		os.write("<h3>Hello world, the current date is: February 22, 2021. The server is Nick's server.</h3>\n".getBytes());
 		os.write("</body></html>\n".getBytes());
 	}
 
