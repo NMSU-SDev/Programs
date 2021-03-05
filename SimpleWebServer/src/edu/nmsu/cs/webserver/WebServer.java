@@ -103,6 +103,7 @@ public class WebServer
 			}
 		}
 		WebServer server = new WebServer();
+		System.out.println("Server Started");
 		if (!server.start(port))
 		{
 			System.err.println("Execution failed!");
