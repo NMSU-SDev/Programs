@@ -80,6 +80,7 @@ public class WebWorker implements Runnable
                 return dateToString;
         } //end dateToString method
         
+        //create icon for your server and properly send it to the browser upon request.
         public boolean getFavicon() 
         {
                 return this.favSet;
@@ -114,23 +115,41 @@ public class WebWorker implements Runnable
                                         setMimeType("text/html");
                                 } //end if
                                 
+                                //checking and importing gif image file in the WebServer file
+                                else if (contentFile.endsWith(".gif")) {
+                                	setMimeType("image/gif");
+                                } //end else if
+                                
+                                //checking and importing jpeg image file in the WebServer
+                                else if (contentFile.endsWith(".jpeg")) {
+                                	setMimeType("image/jpeg");
+                                } //end else if
+                                
+                                //checking and importing png image file in the WebServer file
+                                else if (contentFile.endsWith(".png")) {
+                                	setMimeType("image/png"); 
+                                } //end else if
+                                
+                                //checking and importing favicon image file in the WebServer file
+                                else if (contentFile.endsWith(".ico")) {
+                                	setMimeType ("image/x-icon");
+                                }
                                 else
                                 {
-                                        setMimeType("text/html");
+                                     setMimeType("text/html");
                                 } //end else
                         }  //end if block
                 
                 else 
                 {
-                        mimeType = "text/html";
+                      mimeType = "text/html";
                 } //end else
                 
                 writeHTTPHeader(os, getMimeType(), contentFile);
                 writeContent(os, getMimeType(), contentFile);
                 os.flush();
                 socket.close();
-                
-            } //end try
+          } //end try
             
             catch (Exception e) 
             {
@@ -291,19 +310,19 @@ public class WebWorker implements Runnable
                     
                     inputStream.read(allBytes);
                     os.write(allBytes);
-                        } 
+                        } //end try
                         
                         catch (FileNotFoundException fnfe) 
                         {
                     System.err.println("ERROR: Image not found at: " + path);
-                        }
-                }
+                        } //end catch
+                } //end else if
                 
                 else 
                 {
                         write404Content(os,path);
-                }
-        }
+                } //end else
+        } //end writeContent method
         
         /**
         * A Simple method to put into OutputStream the ERRORCODE 404 content
