@@ -18,6 +18,10 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * modified by Dylan Lassard
  **/
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import java.net.ServerSocket;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -93,6 +97,25 @@ private boolean stop()
  **/
 public static void main(String args[])
 {
+  File file = new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Nature.PNG");
+    
+    BufferedImage image = null;
+     
+    try
+    {
+        image = ImageIO.read(file);
+         
+        ImageIO.write(image, "JPG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Sunset.JPG"));
+         
+        ImageIO.write(image, "PNG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Nature.PNG"));
+         
+        ImageIO.write(image, "GIF", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\kermit.GIF"));
+    } 
+    catch (IOException e) 
+    {
+        e.printStackTrace();
+    } //end catch
+	
 	int port = 8080;
 	if (args.length > 1)
 	{

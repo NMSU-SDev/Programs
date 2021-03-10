@@ -25,12 +25,18 @@ package edu.nmsu.cs.webserver;
  * modifed by Dylan Lassard
  **/
 
+import java.awt.*;
+import java.awt.image.*;
+import javax.imageio.*;
 import java.net.Socket;
 import java.lang.Runnable;
 import java.io.*;
 import java.util.Date;
 import java.text.DateFormat;
 import java.util.TimeZone;
+import java.net.URL;
+
+
 
 public class WebWorker implements Runnable
 {
@@ -115,13 +121,37 @@ public class WebWorker implements Runnable
                                         setMimeType("text/html");
                                 } //end if
                                 
+                                //Check to set .gif as an image file within Webserver page
+                                else if (contentFile.endsWith(".GIF"))
+                                {
+                                	setMimeType("image/GIF");
+                                } //end else if
+                                
+                                //Check to set .jpg as an image file within Webserver page
+                                else if (contentFile.endsWith(".JPG"))
+                                {
+                                	setMimeType("image/JPG");
+                                } //end else if
+                                
+                                //Check to set .png as an image file within Webserver file
+                                else if (contentFile.endsWith(".PNG"))
+                                {
+                                	setMimeType("image/PNG");
+                                } //end else if
+                                
+                                //Check to set favicon as an image file within Webserver file
+                                else if (contentFile.endsWith(".ICO"))
+                                {
+                                	setMimeType("image/x-icon");
+                                } //end else if
+                                
                                 else
                                 {
                                      setMimeType("text/html");
                                 } //end else
                         }  //end if block
                 
-                else 
+                 else 
                 {
                       mimeType = "text/html";
                 } //end else
@@ -189,7 +219,7 @@ public class WebWorker implements Runnable
                 } //end catch
             } //end while loop
             
-                File file = new File(userDirectory+path);
+                File file = new File(userDirectory + path);
                 
                 if(file.exists())
                 {
