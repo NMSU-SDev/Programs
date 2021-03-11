@@ -8,7 +8,7 @@
 		<property name="build" location="bin"/>
 		<property name="home" location="www"/>
 
-		<target name="clean" description="removes previous compilation class files">
+		<target name="clean" description="removes class files">
 			<delete>
 				<fileset dir="${build}" includes="**/*.class"/>
 			</delete>
