@@ -105,11 +105,11 @@ public static void main(String args[])
     {
         image = ImageIO.read(file);
          
-        ImageIO.write(image, "JPG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Sunset.JPG"));
+        ImageIO.write(image, "JPG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Test_Images\\Sunset.JPG"));
          
-        ImageIO.write(image, "PNG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Nature.PNG"));
+        ImageIO.write(image, "PNG", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Test_Images\\Nature.PNG"));
          
-        ImageIO.write(image, "GIF", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\kermit.GIF"));
+        ImageIO.write(image, "GIF", new File("C:\\Users\\dylan\\Programs\\SimpleWebServer\\www\\Test_Images\\kermit.GIF"));
     } 
     catch (IOException e) 
     {
