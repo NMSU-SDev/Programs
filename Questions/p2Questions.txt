@@ -5,4 +5,4 @@ Programming: 8.5 hours
 Debugging: 1 hour
 TOTAL: 10 hours
 
-3.) Percent Estimate : 
+3.) Percent Estimate : 25%
