@@ -26,7 +26,7 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import javax.imageio.*;
 import java.net.Socket;
 import java.lang.Runnable;
@@ -275,7 +275,7 @@ public class WebWorker implements Runnable
         {
                 String content = "";
                 String path = userDirectory + contentPath;
-                
+               
                 if(contentType.contains("text/html")) 
                 {
                 try 
