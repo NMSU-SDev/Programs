@@ -1,0 +1,19 @@
+<?xml version="1.0"?> <!-- Using sml version 1.0 -->
+<project name="SimpleWebServer" default="run"> <!-- Project Root Name is SimpleWebServer -->
+    <target name="run" depends="compile"> <!-- run program, depends on compile -->
+        <java classname="edu.nmsu.cs.webserver.WebWorker">  <!-- compiles webworker java file -->
+            <classpath path="bin" /> <!-- bin is path to save class files to -->
+        </java> 
+        <java classname="edu.nmsu.cs.webserver.WebServer">  <!-- compiles webserverr java file -->
+            <classpath path="bin" /> <!-- bin is path to save class files to -->
+        </java> 
+    </target> 
+    <target name="compile" depends="clean"> <!-- compile program depends on clean -->
+        <mkdir dir="bin/edu/nmsu/cs/webserver"/> <!-- directory to store class files -->
+         <!-- compiles from ./src... to ./bin/... -->
+        <javac includeantruntime="false" srcdir="./src/edu/nmsu/cs/webserver" destdir="bin" />
+    </target>
+    <target name="clean"> <!-- clean program -->
+        <delete dir="bin" /> <!-- delet class files in ./bin/... -->
+    </target>
+</project>
