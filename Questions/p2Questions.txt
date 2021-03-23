@@ -1,0 +1,8 @@
+1.) Estimate the time it will take you to do the assignment, to within a quarter-hour: Approximately 10 hours
+
+2.) Thought/Design: 0.5 hrs
+Programming: 8.5 hours
+Debugging: 1 hour
+TOTAL: 10 hours
+
+3.) Percent Estimate : 25%

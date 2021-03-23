@@ -1,0 +1,26 @@
+  <!-- Provide name for the project, and path for the files-->
+	
+	<project name="SimpleWebServer" default="run" basedir=".">
+		<description>
+			Build file for SimpleWebServer program
+		</description>
+		<property name="source" location="src"/>
+		<property name="build" location="bin"/>
+		<property name="home" location="www"/>
+
+		<target name="clean" description="removes class files">
+			<delete>
+				<fileset dir="${build}" includes="**/*.class"/>
+			</delete>
+		</target>
+		
+		<target name="compile" depends="clean" description="compile source files">
+			<javac includeantruntime="false" srcdir="${source}" destdir="${build}"/>
+		</target>
+		
+		<target name="run" depends="compile" description="run WebServer with default argument">
+			<java classname="edu.nmsu.cs.webserver.WebServer" fork="true" dir="${home}">
+				<classpath path="${build}"/>
+			</java>
+		</target>
+	</project>
