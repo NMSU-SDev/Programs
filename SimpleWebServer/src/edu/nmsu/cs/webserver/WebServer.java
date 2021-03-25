@@ -14,8 +14,7 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * 
  **/
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 public class WebServer
 {

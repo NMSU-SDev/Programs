@@ -1,4 +1,4 @@
-<project name = "SimpleWebServer" default = "compile" basedir= ".">
+<project name = "SimpleWebServer" default = "run" basedir= ".">
 
       <!-- global properties for build -->
       <property name= "src" location= "src/"/>
@@ -18,8 +18,8 @@
       
       <!-- compile first and run command -->
       <target name = "run" depends = "compile" description= "run program">
-            <java classname = "edu.nmsu.cs.webserver.WebServer" fork = "true">
-               <classpath path = "${bin}"/>
+            <java classname = "edu.nmsu.cs.webserver.WebServer" fork = "true" dir = "www">
+              <classpath path = "${bin}"/>
             </java>
       </target>
 </project>
