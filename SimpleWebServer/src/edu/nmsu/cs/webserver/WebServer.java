@@ -14,14 +14,13 @@ package edu.nmsu.cs.webserver;
  * @author Jon Cook, Ph.D.
  * 
  **/
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 public class WebServer
 {
 	private ServerSocket	socket;
 
-	private boolean				running;
+	private boolean running;
 
 	/**
 	 * Constructor
@@ -51,6 +50,9 @@ public class WebServer
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+      
+      System.out.println("Web server up and listening for connections on: "+port+".");
+      
 		while (true)
 		{
 			try
@@ -87,7 +89,7 @@ public class WebServer
 		int port = 8080;
 		if (args.length > 1)
 		{
-			System.err.println("Usage: java Webserver <portNumber>");
+			System.err.println("Usage: java WebServer <portNumber>");
 			return;
 		}
 		else if (args.length == 1)

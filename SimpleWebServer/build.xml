@@ -1,0 +1,25 @@
+<project name = "SimpleWebServer" default = "run" basedir= ".">
+
+      <!-- global properties for build -->
+      <property name= "src" location= "src/"/>
+      <property name= "bin" location= "bin/"/>
+      <property name= "class" location = "bin/edu/nmsu/cs/webserver/" />
+
+      <!-- delete old .class files-->
+      <target name= "clean" description = "clean up">
+         <delete file= "${class}/WebServer.class"/>
+         <delete file= "${class}/WebWorker.class"/>       
+      </target>
+      
+      <!-- Standard compile task with debugging view-->      
+      <target name = "compile" depends = "clean" description= "compile the source">
+         <javac srcdir = "${src}" destdir = "${bin}" includeantruntime = "false" debug= "true"/>
+      </target>
+      
+      <!-- compile first and run command -->
+      <target name = "run" depends = "compile" description= "run program">
+            <java classname = "edu.nmsu.cs.webserver.WebServer" fork = "true" dir = "www">
+              <classpath path = "${bin}"/>
+            </java>
+      </target>
+</project>

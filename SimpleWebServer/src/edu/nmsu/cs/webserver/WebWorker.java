@@ -21,10 +21,8 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
+import java.lang.Runnable;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
@@ -34,6 +32,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+   private File file; 
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -50,20 +49,37 @@ public class WebWorker implements Runnable
 	 **/
 	public void run()
 	{
+   //address that points to file
+   String url = "";
+   //represent content type (text, jpg, etc)
+   String cType = "";
+   
 		System.err.println("Handling connection...");
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+         url = readHTTPRequest(is);
+         System.err.println("HTTP Request: " + url);
+         
+         //check file type
+         //jpeg
+         if(url.contains(".jpg")) cType = "image/jpeg";
+         //png
+         else if(url.contains(".png")) cType = "image/png";
+         //gif
+         else if(url.contains(".gif")) cType = "image/gif";
+         //text
+         else cType = "text/html";
+         
+         //pass cType to write functions
+			writeHTTPHeader(os, cType, url);
+			writeContent(os, cType, url);
 			os.flush();
 			socket.close();
 		}
-		catch (Exception e)
-		{
-			System.err.println("Output error: " + e);
+		catch (Exception e) {
+		   e.printStackTrace();//	System.err.println("Output error: " + e);
 		}
 		System.err.println("Done handling connection.");
 		return;
@@ -72,28 +88,41 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
+      
 		String line;
-		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		while (true)
+		BufferedReader read = new BufferedReader(new InputStreamReader(is));
+      String url = "";
+      
+		while (true) //appears to be infinite loop
 		{
 			try
 			{
-				while (!r.ready())
-					Thread.sleep(1);
-				line = r.readLine();
-				System.err.println("Request line: (" + line + ")");
+				while (!read.ready()) Thread.sleep(1);
+				line = read.readLine();
+            //if there is a "GET" request, read url for file address           
+            if(line.contains("GET ")) {
+               url = line.substring(4);
+               for(int i = 0; i < url.length(); i++) {
+                  if(url.charAt(i) == ' ') {
+                     url = url.substring(0, i);
+                  }//end if
+               }//end for
+            }//end if
+            System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
-			}
+			}//end try
+         
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
-			}
-		}
-		return;
+            
+			}//end catch
+		}//end while
+		return url;
 	}
 
 	/**
@@ -104,18 +133,29 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, String url) throws Exception
 	{
-		Date d = new Date();
+      
+		Date date = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		df.setTimeZone(TimeZone.getTimeZone("GMT-7")); //set time zone to mountain time
+      String urlCopy = "." + url;
+      //create new file pointing to urlCopy
+      File in = new File(urlCopy);
+      
+     //if file doesn't exist throw 404
+     try {
+         FileReader file = new FileReader(in);
+     } catch(FileNotFoundException e) {
+         System.err.println("File not found: " + url);
+         os.write("HTTP/1.1 404 Not Found\n".getBytes());
+     }
+     //else return 200 ok
+      os.write("HTTP/1.1 200 OK\n".getBytes());      
 		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
+		os.write((df.format(date)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Jess's awesome server\n".getBytes()); //custom server name
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -130,11 +170,67 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String contentType, String url) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
+      //copy date declarations for tag replacement
+        Date d = new Date();
+        DateFormat df = DateFormat.getDateTimeInstance();
+        df.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+        String date = df.format(d);
+        //create a string which contains content of the file
+        String fileContent = "";
+        //urlCopy same as above
+        String urlCopy = "." + url;
+        //new file at urlCopy
+        File in = new File(urlCopy);
+        
+        /*DEBUG*/
+        //System.err.println("Content Type at Write: " + contentType);
 
+        //read contents of file and place into fileContent
+        //for p2 we change to if statement to handle multiple types
+        
+        //process text files
+        if (contentType.equals("text/html")) {
+	        try{
+	        	FileReader f = new FileReader(in);
+	            BufferedReader r = new BufferedReader(f);
+	            while((fileContent = r.readLine()) != null) {
+	            	os.write(fileContent.getBytes());
+	                	os.write("\n".getBytes());
+	                	//if tags are found, replace with date or message
+	                    if (fileContent.contains("<cs371date>")) {
+	                        os.write(date.getBytes());
+	                    }//end if
+	                    if (fileContent.contains("<cs371server>")) {
+	                        os.write("Jessica's Awesome Server\n".getBytes());
+	        			}//end if
+	            }//end while
+	        }//end try 
+	        //if file doesn't exist, throw 404
+	        catch(FileNotFoundException e) {
+	                System.err.println("File not found: " + url);
+	                os.write("<h1>Error: 404 Not found<h1>\n".getBytes());
+	        }//end catch
+        }// end if
+        
+        //if we don't get a text file right away, we'll try images
+        //using .contains, so we don't have to .equals every type
+        else if (contentType.contains("image")) {
+        	try {
+                FileInputStream imgIn = new FileInputStream(in);
+                //create byte array to store image data
+        		byte imgArr[] = new byte [(int) in.length()];
+                imgIn.read(imgArr);
+                //write image to output stream
+        		DataOutputStream imgOut = new DataOutputStream(os);
+        		imgOut.write(imgArr);
+        	}//end try
+        	//if file doesn't exist, throw 404
+	        catch(FileNotFoundException e) {
+	                System.err.println("File not found: " + url);
+	                os.write("<h1>Error: 404 Not found<h1>\n".getBytes());
+	        }//end catch
+        }//end if	
+   }//end writeContent
 } // end class
