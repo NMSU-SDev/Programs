@@ -1,0 +1,14 @@
+  GNU nano 4.8                    p1Questions.txt                               
+1. Estimate the time it will take you to do the assignment, to within a quarter-hour:
+        I estimate the assignment will take about 2 hours
+
+2. Estimate the time it took you to complete the assignment:
+        Thought/ Design: 0.5 hour
+        Programming: 1 hour
+        Debuggging: 1.5 hours
+        Total: 3 hours
+
+3. To within what precent accuracy was your original estimate:
+        This lab wasn't too difficult once you figured it out.
+	I was 67% accurate of my original estimate.
+

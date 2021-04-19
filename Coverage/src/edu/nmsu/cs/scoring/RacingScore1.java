@@ -28,26 +28,36 @@ public class RacingScore1
 		score3 = 0;
 	}
 
+	//No data validation is completed. Thus, the program will take in invalid inputs.
+	//This is for invalid inputs and was not fixed.
 	public void recordScores(int s1, int s2, int s3)
 	{
 		score1 = s1;
 		score2 = s2;
 		score3 = s3;
 	}
-
+	
+	/*
+	 *s needs to be the smallest of the scores which is subtracted off later for the final score
+	 *previously, s was not always the smallest score, so I switched s = score2 to be s = score1
+	 *in the first if block and s = score1 to s = score2 in the first else block. This ensures
+	 *s is the smallest value amongs all the scores.
+	 */
 	public int overallScore()
 	{
 		int s;
 		if (score1 < score2)
-			s = score2;
-		else
 			s = score1;
+		else
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;
 		return s;
 	}
 
+	//No data validation is completed. Thus, the program will take in invalid inputs.
+	//This is for invalid inputs and was not fixed.
 	public static void main(String args[])
 	{
 		int s1, s2, s3;

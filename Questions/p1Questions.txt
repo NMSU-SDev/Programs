@@ -1,0 +1,12 @@
+1. Estimate the time it will take you to do the assignment, to within a quarter-hour:
+	I estimate the assignment will take about 1.5 hours
+
+2. Estimate the time it took you to complete the assignment:
+	Thought/ Design: 1.5 hour
+	Programming: 1 hour
+	Debuggging: 2.5 hours
+	Total: 5 hours
+
+3. To within what precent accuracy was your original estimate:
+	This lab took a lot longer than expected. It took a while to understand what the program did on top of actually knowing how to complete the lab.
+	I was 30% accurate of my original estimate.

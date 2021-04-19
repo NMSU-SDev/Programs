@@ -26,7 +26,7 @@ public class RacingScore2
 		score2 = 0;
 		score3 = 0;
 	}
-
+	
 	public void recordScores(int s1, int s2, int s3)
 	{
 		score1 = s1;
@@ -34,6 +34,14 @@ public class RacingScore2
 		score3 = s3;
 	}
 
+	/*
+	 *In the first else if, s1 and s2 should have been score1 and score3 respectively not score1 and
+	 *score2 like it was. This was changed so the program works as intended.
+	 *
+	 *Also, the program wont work as inteded in that case that all scores are equal. To fix this,
+	 *I changed the else statement to set s1 and s2 as the first two scores not 99. It shouldnt matter
+	 *which two scores I set it to -- either score1, score2, or score3 -- as they are all the same.
+	 */
 	public int overallScore()
 	{
 		int s, s1, s2;
@@ -45,7 +53,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3;
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
@@ -54,8 +62,8 @@ public class RacingScore2
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			s1 = score1;
+			s2 = score2;
 		}
 		s = s1 + s2;
 		return s;
@@ -64,7 +72,9 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		
+		//Impossible for args to be null. Deleted the condition.
+		if ( args.length != 3 )
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
