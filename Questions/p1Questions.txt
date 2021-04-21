@@ -1,0 +1,6 @@
+1. It will take me about an hour
+2.  Thought: 1.5 hours
+    Programming: 1 hour
+    Debugging: 1.5 hour
+    TOTAL: 3.5 hour
+3. I was accurate by 28%

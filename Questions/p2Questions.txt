@@ -1,0 +1,6 @@
+1. It probably took me around 1.5 hours to do this assignment, honestly the hardest thing was getting the images below 10kb and probably would have taken more if I had attempted the favicon.
+2. Thought: 40 minutes
+  Programming: 10 minutes
+  Debugging 15 minutes
+  TOTAL: around 65 minutes
+3. I was 72% accurate
