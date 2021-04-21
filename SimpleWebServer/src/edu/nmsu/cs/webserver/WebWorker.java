@@ -21,19 +21,20 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String filedir;
+	private boolean defaultLine;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -75,6 +76,7 @@ public class WebWorker implements Runnable
 	private void readHTTPRequest(InputStream is)
 	{
 		String line;
+
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -83,6 +85,27 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+
+				//********************NEW STUFF BELOW
+
+
+				if  (line.contains("GET /") && !line.contains("favicon.ico")) {
+					String sub = "src" + line.substring(4, line.length()-8);
+
+					File dir = new File(sub);
+
+					System.out.println(sub + "  <-- This is debugging");
+
+					if (dir.isFile()) {
+						filedir = sub;
+						System.out.println(sub + "  <-- This is debugging in the if dir.isFile");
+					}
+
+
+				}
+
+				//********************
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -124,6 +147,25 @@ public class WebWorker implements Runnable
 	}
 
 	/**
+	 * Output an image stream to the client network connection.
+	 *
+	 * @param filePath
+	 * 			is the file path to the image
+ 	 */
+	/**
+	 * Output an image stream to the client network connection.
+	 *
+	 * @param filepath
+	 * 			is the file path to the image
+	 */
+	private void writeImage(String filepath, OutputStream os) throws Exception {
+		InputStream bitLine = new FileInputStream(filepath);
+		int neatByte;
+		while ((neatByte = bitLine.read()) != -1) {
+			os.write(neatByte);
+		}
+	}
+	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
 	 * 
@@ -132,9 +174,39 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if (filedir == null) {		//404 ERROR
+
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 Not Found</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+
+		} else{
+
+			///////  	//DATE
+			DateFormat date = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+			Date newDate = new Date();
+			///////
+
+			String[] readCharacters = new String[10000];
+			File file = new File(filedir);
+
+			BufferedReader r = new BufferedReader(new FileReader(file)); 	//creates file to output
+
+			for (int count = 0; count < readCharacters.length; count++) {
+				readCharacters[count] = r.readLine();
+				String replaceDate = readCharacters[count].replaceAll("<cs371date>", date.format(newDate));
+				String replaceID = replaceDate.replaceAll("<cs371server>", "Unity Ensemble");
+				os.write(replaceID.getBytes());
+			}
+
+			//writeImage("/Ink.jpg", os);
+
+
+
+			//
+		}
+
+
 	}
 
 } // end class

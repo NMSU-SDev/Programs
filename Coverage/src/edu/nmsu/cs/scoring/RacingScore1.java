@@ -35,10 +35,11 @@ public class RacingScore1
 		score3 = s3;
 	}
 
+	//
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2)
 			s = score2;
 		else
 			s = score1;

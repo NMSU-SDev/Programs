@@ -1,0 +1,9 @@
+Q1: I estimatede it would take about 2 hourr to complete this project.
+
+Q2:
+Thought/Design: 2 hours
+Programming: 1 hour
+Debugging: 8 hours
+TOTAL: 11 hours
+
+Q3: Accuracy: %81.8
