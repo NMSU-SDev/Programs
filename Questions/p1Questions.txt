@@ -1,0 +1,8 @@
+1. I think it will take around 2 and a half hours to complete the assignment from start to finish
+
+2. Time to actual completion
+   Thought/Design: 1 hour
+   Programming: 30 min
+   Debugging: 3 hours
+
+3. Percent accuracy: 44%

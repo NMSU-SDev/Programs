@@ -1,0 +1,30 @@
+<project name = "Program1" default="run" basedir=".">
+    <description>
+        Nicholas Grijalva
+        2/19/2020
+        Buildfile for Program 1 of CS371
+    </description>
+
+    <target name="compile" depends = "clean" description="compile SimpleWebServer">
+        <!-- Compile the Java code from src into bin -->
+        <mkdir dir= "bin/edu/nmsu/cs/webserver"/>
+        <javac srcdir="src" destdir="bin" includeantruntime="true"/>
+    </target>
+
+
+    <target name = "clean" description = "clean SimpleWebServer">
+	    <!-- Clean .class files-->
+	    <delete file="bin/edu/nmsu/cs/webserver/WebServer.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/webserver/WebWorker.class" verbose="true"/>
+    </target>
+
+
+    <target name = "run" depends= "compile" description = "run SimpleWebServer">
+	    <!-- Run SimpleWebServer-->
+	    <java className="edu.nmsu.cs.webserver.WebServer"  classpath="bin"
+            fork = "true"
+            dir = "www"
+        />
+    </target>
+
+</project>

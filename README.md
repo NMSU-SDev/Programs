@@ -1,3 +1,7 @@
+# Lab 1
+Git Username: KnickKnaack
+
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 

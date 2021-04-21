@@ -38,7 +38,7 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2)      //Changed form score1 < score2. the previous execution would incorrectly find score1 or score2 as less than the other
 			s = score2;
 		else
 			s = score1;
@@ -67,6 +67,9 @@ public class RacingScore1
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
+
+		//s1, s2, and s3 may be <0 or >50 which is not viable for the problem.
+
 		RacingScore1 score = new RacingScore1();
 		score.recordScores(s1, s2, s3);
 		System.out.println("Overall score: " + score.overallScore());
