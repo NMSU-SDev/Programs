@@ -1,0 +1,3 @@
+Racingscore1 and racingscore2 had a problem when you put the same value it would give you a incorrect value.
+Racingscore1 also did not have the if statement checking if the value was in between 0 and 50.
+Racingscore2 had a problem with line 50 and 67. I tested all cases but I kept getting that I was missing one for both cases.

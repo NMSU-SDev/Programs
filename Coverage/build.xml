@@ -56,6 +56,43 @@
 				<arg value="6" />
 			</java>
 		</jacoco:coverage>
+		<echo message="TEST RacingScore1: 10 9 6, if in line 41" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="10" />
+				<arg value="9" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore1: 5 3 6, if in line 45" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="3" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore1: 8 9 ,two arguments for line 54 and 56" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="8" />
+				<arg value="9" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore1: 8 9 ,try/catch line 65 and 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="8" />
+				<arg value="9" />
+				<arg value="" />
+			</java>
+		</jacoco:coverage>
+		
+		
 		<echo message="TEST RacingScore2: 8 9 6" />
 		<jacoco:coverage destfile="${result.exec.file}">
 			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
@@ -63,6 +100,178 @@
 				<arg value="8" />
 				<arg value="9" />
 				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 9 6, if line 40" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="9" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 9 4, if line 40" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="9" />
+				<arg value="4" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 4 6, if line 40" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="4" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 4 3,else if line 45" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="4" />
+				<arg value="3" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 10 10 10 ,else if line 50" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="10" />
+				<arg value="10" />
+				<arg value="10" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 3 4,else if line 50" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="2" />
+				<arg value="4" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST RacingScore2: 5 9 , if line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="9" />
+				
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 9 , if try/catch line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="null" />
+				<arg value="null" />
+				<arg value="null" />
+
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 4 3, if try/catch line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="4" />
+				<arg value="3" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 1 3, if try/catch line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="1" />
+				<arg value="3" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 1 4 3, if try/catch line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="1" />
+				<arg value="4" />
+				<arg value="3" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 1 2 3, if try/catch line 67" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="1" />
+				<arg value="2" />
+				<arg value="3" />
+			</java>
+		</jacoco:coverage>
+		
+		
+		<echo message="TEST RacingScore2: 5 9 -1, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="9" />
+				<arg value="-1" />
+				
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 5 -1 2, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="-1" />
+				<arg value="2" />
+				
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: -1 9 2, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="-1" />
+				<arg value="9" />
+				<arg value="2" />
+				
+			</java>
+		</jacoco:coverage>
+				<echo message="TEST RacingScore2: 51 9 2, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="51" />
+				<arg value="9" />
+				<arg value="2" />
+				
+			</java>
+		</jacoco:coverage>
+				<echo message="TEST RacingScore2: 5 51 2, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="51" />
+				<arg value="2" />
+				
+			</java>
+		</jacoco:coverage>
+				<echo message="TEST RacingScore2: 5 9 51, if line 83" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="5" />
+				<arg value="9" />
+				<arg value="51" />
+				
 			</java>
 		</jacoco:coverage>
 	</target>
