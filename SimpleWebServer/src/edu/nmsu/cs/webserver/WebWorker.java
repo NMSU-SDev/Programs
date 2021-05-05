@@ -22,6 +22,8 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -63,6 +65,7 @@ public class WebWorker implements Runnable
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			System.err.println("Output error: " + e);
 		}
 		System.err.println("Done handling connection.");
@@ -132,9 +135,42 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		File f = new File("test.html");
+		String path = f.getAbsolutePath();
+		BufferedReader read = new BufferedReader( new FileReader(path));
+		String line;
+		System.out.println(path);
+		
+		String[] htmlCode = new String[20];
+		int storeIndex = 0;
+		int printIndex = 0;
+		
+		if(!f.exists()) {
+			System.err.print("404 Not Found");
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 Not Found</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+		
+		
+		while((line = read.readLine()) != null) {
+			htmlCode[storeIndex] = line;
+			storeIndex++;
+		}
+		
+		while(htmlCode[printIndex] != null) {
+			os.write(htmlCode[printIndex].getBytes());
+			printIndex++;
+		}
+	
+		
+		//while((line = read.readLine()) != null) {
+			//os.write(Line.getBytes());
+		//}
+		
+		//os.write("<html><head></head><body>\n".getBytes());
+		//os.write("<h3>My web server works!</h3>\n".getBytes());
+		//os.write("</body></html>\n".getBytes());
 	}
 
 } // end class
