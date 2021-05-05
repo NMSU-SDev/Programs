@@ -51,6 +51,9 @@ public class WebServer
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+		
+		System.out.println("Web server up and  listening for connections on prot "+port+".");
+		
 		while (true)
 		{
 			try
@@ -87,7 +90,7 @@ public class WebServer
 		int port = 8080;
 		if (args.length > 1)
 		{
-			System.err.println("Usage: java Webserver <portNumber>");
+			System.err.println("Usage: java WebServer <portNumber>");
 			return;
 		}
 		else if (args.length == 1)

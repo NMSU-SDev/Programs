@@ -1,0 +1,9 @@
+1. I think it will take about 1 hours and a half to complete.
+
+2.
+Thought/Design: 15 minutes
+Programming: 60 minutes
+Debugging: 20 minutes
+TOTAL: 1hr 35 minutes
+
+3. It took around 5 more minutes to finish the project, so the percent accuracy is 94.7%.

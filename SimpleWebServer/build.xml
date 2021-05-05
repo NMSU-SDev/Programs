@@ -1,0 +1,23 @@
+<project name="SimpleWebServer" default = "run" basedir=".">
+   <description>
+      clean and complie SimpoleWebServer with the default argument is 8080
+   </description> 
+   <property name="src" location="src/"/>
+   <property name="bin" location="bin/"/>
+   
+	<!-- Compile the java code from ${src} into ${bin}-->
+   <target name="clean" description="Cleans up .class file found in bin">
+      <delete dir="${bin}"/>
+   </target>
+
+   <target name="build" depends="clean" description="compiles java file">   
+      <delete dir="${bin}"/>
+      <mkdir dir="${bin}"/>
+      <javac srcdir="${src}" destdir="${bin}"/>
+   </target>
+	
+   <target name="run" depends="build" description="run WebServer.java on port 8080">
+      <java dir="www" classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
+   </target>
+   
+</project>
