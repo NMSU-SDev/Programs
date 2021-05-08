@@ -39,9 +39,9 @@ public class RacingScore1
 	{
 		int s;
 		if (score1 < score2)
-			s = score1;
+			s = score1; //logic error--if score1 is the smallest, s should = score 1
 		else
-			s = score2;
+			s = score2; //logic error--if score2 is the smallest, s should = score 2
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

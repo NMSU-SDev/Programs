@@ -45,7 +45,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score3;
+			s2 = score3; //fixed logic error-- if score2 is the smallest, then score3 and score1 should be the top 2 scores
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
