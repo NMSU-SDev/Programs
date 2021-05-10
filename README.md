@@ -1,5 +1,8 @@
 # Programs
-Base code for program assignments in Software Development (C S 371). 
+Base code for program assignments in Software Development (C S 371).
+
+GitHub user ID: thinhtun2000
+Include new placeholders for Program 1 and Program 2. A HelloWorld program was also added.
 
 ## Program 1 and Program 2
 These assignments rely on the SimpleWebServer program. Each gets graded using tags in a cloned repository. 

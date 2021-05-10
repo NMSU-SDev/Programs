@@ -21,19 +21,27 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime; 
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private File file; 
+	private String path;
+	private String filet;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -56,8 +64,39 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+         
+         //****************************
+			file = new File(path);
+			filet = path.substring(path.lastIndexOf(".")+1);
+			if(file.exists() && file.isFile())
+			{
+				//use if statemtent to determine the file type
+				if (filet.equals("gif"))
+				{
+					writeHTTPHeader(os, "image/gif");
+				}
+				else if (filet.equals("png")) 
+				{
+					writeHTTPHeader(os, "image/png");
+				}
+				else if (filet.equals("jpeg"))
+				{
+					writeHTTPHeader(os, "image/jpeg");
+				}
+				else
+				{
+					writeHTTPHeader(os, "text/html");
+				}
+            
+				writeContent(os);
+			}
+			else
+			{
+				//else output 404 Error Page Not Found
+				writeHTTPHeader(os, "text/html");
+				os.write("<html><head></head>".getBytes());
+				os.write("<body><h1><center>404 Error Page Not Found</center></h1></body></html>".getBytes());
+			}
 			os.flush();
 			socket.close();
 		}
@@ -85,7 +124,20 @@ public class WebWorker implements Runnable
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
-					break;
+					break;	
+
+				if (line.substring(0,3).equals("GET"))
+				{
+					String[] parts = line.split(" ");
+					path = "." + parts[1];
+					System.out.println(path);
+					if(path.equals("./"))
+					{
+						System.out.println("Good, server works!");
+
+					}
+
+				}
 			}
 			catch (Exception e)
 			{
@@ -106,17 +158,7 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
-		Date d = new Date();
-		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
-		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
-		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
@@ -132,9 +174,38 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		 //check the file type if it is html
+		if(filet.equals("html"))
+		{
+			//output the html file
+			BufferedReader b = new BufferedReader(new FileReader(file));
+			String s;
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();  
+           
+         while((s = b.readLine()) != null)
+			{
+				s = s.replaceAll("<cs371date>", dtf.format(now));
+				s = s.replaceAll("<cs371server>", "Thinh Le's test server");
+				os.write(s.getBytes());
+			}
+			b.close();
+		}
+		else
+		{
+			//output image and read local image
+			FileInputStream f = new FileInputStream(path);
+			int j = f.available();
+			//use array to store the data
+			byte[] B = new byte[j];
+			f.read(B);
+			f.close();
+			os.write(B);
+
+		}
+		//os.write("<html><head></head><body>\n".getBytes());
+		//os.write("<h3>My web server works!</h3>\n".getBytes());
+		//os.write("</body></html>\n".getBytes());
 	}
 
 } // end class
