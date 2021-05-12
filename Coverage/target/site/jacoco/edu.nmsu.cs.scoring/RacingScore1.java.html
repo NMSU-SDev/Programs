@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RacingScore1.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Ant Example</a> &gt; <a href="index.source.html" class="el_package">edu.nmsu.cs.scoring</a> &gt; <span class="el_source">RacingScore1.java</span></div><h1>RacingScore1.java</h1><pre class="source lang-java linenums">package edu.nmsu.cs.scoring;
+
+/***
+ * Olympic Dragon Racing Scoring Class
+ *
+ * For the Summer Olympics dragon racing event there are three judges, each of which gives a score
+ * from 0 to 50 (inclusive), but the lowest score is thrown out and the competitor's overall score
+ * is just the sum of the two highest scores. This class supports the recording of the three judge's
+ * scores, and the computing of the competitor's overall score.
+ * 
+ * @author Jon Cook, Ph.D.
+ * 
+ ***/
+
+public class RacingScore1
+{
+
+	int	score1;
+
+	int	score2;
+
+	int	score3;
+
+	public RacingScore1()
+<span class="fc" id="L25">	{</span>
+<span class="fc" id="L26">		score1 = 0;</span>
+<span class="fc" id="L27">		score2 = 0;</span>
+<span class="fc" id="L28">		score3 = 0;</span>
+<span class="fc" id="L29">	}</span>
+
+	public void recordScores(int s1, int s2, int s3)
+	{
+<span class="fc" id="L33">		score1 = s1;</span>
+<span class="fc" id="L34">		score2 = s2;</span>
+<span class="fc" id="L35">		score3 = s3;</span>
+<span class="fc" id="L36">	}</span>
+
+	public int overallScore()
+	{
+		int s;
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (score1 &lt; score2)</span>
+<span class="fc" id="L42">			s = score2;</span>
+		else
+<span class="fc" id="L44">			s = score1;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (s &gt; score3)</span>
+<span class="fc" id="L46">			s = score3;</span>
+<span class="fc" id="L47">		s = (score1 + score2 + score3) - s;</span>
+<span class="fc" id="L48">		return s;</span>
+	}
+
+	public static void main(String args[])
+	{
+		int s1, s2, s3;
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		if (args.length != 3)</span>
+		{
+<span class="fc" id="L56">			System.err.println(&quot;Error: must supply three arguments!&quot;);</span>
+<span class="fc" id="L57">			return;</span>
+		}
+		try
+		{
+<span class="fc" id="L61">			s1 = Integer.parseInt(args[0]);</span>
+<span class="fc" id="L62">			s2 = Integer.parseInt(args[1]);</span>
+<span class="fc" id="L63">			s3 = Integer.parseInt(args[2]);</span>
+		}
+<span class="fc" id="L65">		catch (Exception e)</span>
+		{
+<span class="fc" id="L67">			System.err.println(&quot;Error: arguments must be integers! :/&quot;);</span>
+<span class="fc" id="L68">			return;</span>
+<span class="fc" id="L69">		}</span>
+<span class="fc" id="L70">		RacingScore1 score = new RacingScore1();</span>
+<span class="fc" id="L71">		score.recordScores(s1, s2, s3);</span>
+<span class="fc" id="L72">		System.out.println(&quot;Overall score: &quot; + score.overallScore());</span>
+<span class="fc" id="L73">		return;</span>
+	}
+
+} // end class
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

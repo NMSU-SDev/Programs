@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+JaCoCo Ant Example,src.edu.nmsu.cs.scoring,RacingScore2,20,0,0,0,4,0,4,0,4,0
+JaCoCo Ant Example,src.edu.nmsu.cs.scoring,RacingScore1,20,0,0,0,4,0,4,0,4,0
+JaCoCo Ant Example,edu.nmsu.cs.scoring,RacingScore2,0,140,1,23,0,39,1,15,0,4
+JaCoCo Ant Example,edu.nmsu.cs.scoring,RacingScore1,0,98,0,6,0,30,0,7,0,4

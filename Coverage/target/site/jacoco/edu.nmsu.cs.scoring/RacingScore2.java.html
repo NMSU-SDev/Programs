@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RacingScore2.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Ant Example</a> &gt; <a href="index.source.html" class="el_package">edu.nmsu.cs.scoring</a> &gt; <span class="el_source">RacingScore2.java</span></div><h1>RacingScore2.java</h1><pre class="source lang-java linenums">package edu.nmsu.cs.scoring;
+
+/***
+ * Olympic Dragon Racing Scoring Class
+ *
+ * For the Summer Olympics dragon racing event there are three judges, each of which gives a score
+ * from 0 to 50 (inclusive), but the lowest score is thrown out and the competitor's overall score
+ * is just the sum of the two highest scores. This class supports the recording of the three judge's
+ * scores, and the computing of the competitor's overall score.
+ * 
+ * @author Jon Cook, Ph.D.
+ ***/
+
+public class RacingScore2
+{
+
+	int	score1;
+
+	int	score2;
+
+	int	score3;
+
+	public RacingScore2()
+<span class="fc" id="L24">	{</span>
+<span class="fc" id="L25">		score1 = 0;</span>
+<span class="fc" id="L26">		score2 = 0;</span>
+<span class="fc" id="L27">		score3 = 0;</span>
+<span class="fc" id="L28">	}</span>
+
+	public void recordScores(int s1, int s2, int s3)
+	{
+<span class="fc" id="L32">		score1 = s1;</span>
+<span class="fc" id="L33">		score2 = s2;</span>
+<span class="fc" id="L34">		score3 = s3;</span>
+<span class="fc" id="L35">	}</span>
+
+	public int overallScore()
+	{
+		int s, s1, s2;
+<span class="fc bfc" id="L40" title="All 4 branches covered.">		if (score1 &lt;= score2 &amp;&amp; score1 &lt;= score3)</span>
+		{
+<span class="fc" id="L42">			s1 = score2;</span>
+<span class="fc" id="L43">			s2 = score3;</span>
+		}
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">		else if (score2 &lt; score1 &amp;&amp; score2 &lt; score3)</span>
+		{
+<span class="fc" id="L47">			System.err.println(&quot;45 was covered&quot;);</span>
+<span class="fc" id="L48">			s1 = score1;</span>
+<span class="fc" id="L49">			s2 = score2;</span>
+		}
+		else 
+		{
+<span class="fc" id="L53">			s1 = score1;</span>
+<span class="fc" id="L54">			s2 = score2;</span>
+		}
+		
+<span class="fc" id="L57">		s = s1 + s2;</span>
+<span class="fc" id="L58">		return s;</span>
+	}
+
+	public static void main(String args[])
+	{
+		int s1, s2, s3;
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if ( args.length == 0)</span>
+		{
+<span class="fc" id="L66">			System.err.println(&quot;Error: The arguments should not be null!&quot;);</span>
+<span class="fc" id="L67">			return;</span>
+		}
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		else if(args.length!=3) {</span>
+<span class="fc" id="L70">			System.err.println(&quot;Error: You must have three arguments&quot;);</span>
+			
+		}
+		
+		try
+		{
+<span class="fc" id="L76">			s1 = Integer.parseInt(args[0]);</span>
+<span class="fc" id="L77">			s2 = Integer.parseInt(args[1]);</span>
+<span class="fc" id="L78">			s3 = Integer.parseInt(args[2]);</span>
+		}
+<span class="fc" id="L80">		catch (Exception e)</span>
+		{
+<span class="fc" id="L82">			System.err.println(&quot;Error: arguments must be integers! :/&quot;);</span>
+<span class="fc" id="L83">			return;</span>
+<span class="fc" id="L84">		}</span>
+<span class="fc bfc" id="L85" title="All 12 branches covered.">		if (s1 &lt; 0 || s1 &gt; 50 || s2 &lt; 0 || s2 &gt; 50 || s3 &lt; 0 || s3 &gt; 50)</span>
+		{
+<span class="fc" id="L87">			System.err.println(&quot;Error: scores must be between 0 and 50!&quot;);</span>
+<span class="fc" id="L88">			return;</span>
+		}
+<span class="fc" id="L90">		RacingScore2 score = new RacingScore2();</span>
+<span class="fc" id="L91">		score.recordScores(s1, s2, s3);</span>
+<span class="fc" id="L92">		System.out.println(&quot;Overall score: &quot; + score.overallScore());</span>
+<span class="fc" id="L93">		return;</span>
+	}
+
+} // end class
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

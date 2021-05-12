@@ -64,7 +64,7 @@ public class RacingScore1
 		}
 		catch (Exception e)
 		{
-			System.err.println("Error: arguments must be integers!");
+			System.err.println("Error: arguments must be integers! :/");
 			return;
 		}
 		RacingScore1 score = new RacingScore1();
