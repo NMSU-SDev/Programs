@@ -11,12 +11,12 @@ package edu.nmsu.cs.circles;
 
 import org.junit.*; 
 
-public class Circle1Test
+public class Circle2Test
 {
 	// Data you need for each test case
-	private Circle1 circle1;
-	private Circle1 circle2; 
-	private Circle1 circle3;
+	private Circle2 circle1;
+	private Circle2 circle2; 
+	private Circle2 circle3;
 	//
 	// Stuff you want to do before each test case
 	//
@@ -24,9 +24,9 @@ public class Circle1Test
 	public void setup()
 	{
 		System.out.println("\nTest starting...");
-		circle1 = new Circle1(1, 2, 3);
-		circle2 = new Circle1(0, 0, 6);
-		circle3 = new Circle1(2, 1, 4);
+		circle1 = new Circle2(1, 2, 3);
+		circle2 = new Circle2(0, 0, 6);
+		circle3 = new Circle2(2, 1, 4);
 		
 	}
 
@@ -44,7 +44,7 @@ public class Circle1Test
 	//
 	@Test
 	public void simpleMove()
-	{//found error for Circle moveBy()
+	{//found error for Circle2() constructor -x,y was flipped
 		Point p;
 		System.out.println("Running test simpleMove.");
 		p = circle1.moveBy(2, -1);
@@ -53,7 +53,7 @@ public class Circle1Test
 	}
 
 	//
-	// Test a simple scale
+	// Test a simple negative move
 	//
 	@Test
 	public void simpleScale()
@@ -66,8 +66,8 @@ public class Circle1Test
 	// Test intersects - false
 	//
 	@Test
-	public void simpleIntersects10()
-	{//found error for Circle1 intersects() 
+	public void simpleIntersects20()
+	{//found error for Circle2 intersects() 
 		Assert.assertTrue( false == circle1.intersects(circle2));
 		
 	}
@@ -76,8 +76,8 @@ public class Circle1Test
 	// Test intersects - true
 	//
 	@Test
-	public void simpleIntersects11()
-	{ 
+	public void simpleIntersects21()
+	{
 		Assert.assertTrue( true == circle1.intersects(circle3));
 		
 	}

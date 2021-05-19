@@ -16,9 +16,7 @@ public class RacingScore1
 {
 
 	int	score1;
-
 	int	score2;
-
 	int	score3;
 
 	public RacingScore1()
@@ -37,20 +35,24 @@ public class RacingScore1
 
 	public int overallScore()
 	{
-		int s;
-		if (score1 < score2)
+		int s; // s = smallest score
+		
+		if (score1 > score2) //fixed < to find smallest s
 			s = score2;
 		else
 			s = score1;
+		
 		if (s > score3)
 			s = score3;
-		s = (score1 + score2 + score3) - s;
-		return s;
+		
+		return (score1 + score2 + score3) - s; //changed to return without storing to s
 	}
 
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
+		final int MAX_S = 50, MIN_S = 0; //to be more changeable code 
+
 		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
@@ -65,6 +67,11 @@ public class RacingScore1
 		catch (Exception e)
 		{
 			System.err.println("Error: arguments must be integers!");
+			return;
+		}
+		if (s1 < MIN_S || s1 > MAX_S || s2 < MIN_S || s2 > MAX_S || s3 < MIN_S || s3 > MAX_S)
+		{ //added to see if score inputs are in range
+			System.err.println("Error: scores must be between 0 and 50!");
 			return;
 		}
 		RacingScore1 score = new RacingScore1();

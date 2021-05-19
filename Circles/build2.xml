@@ -1,0 +1,49 @@
+   <project name="CircleRun" basedir="." default="test">
+
+    <property name="src.dir"     value="src"/>
+    <property name="bin.dir"   value="bin"/>
+    <property name="lib.dir"     value="lib"/>
+    <path id="JCpath">
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <pathelement path="${bin.dir}"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="JCpath" includeantruntime = "false"/>
+    </target>
+     
+    <target name="run" depends="compile">
+        <java classname= "edu.nmsu.cs.circles.CircleRun" classpath="${bin.dir}" fork ="true">
+        <arg value="4" />
+        <arg value="4" />
+        <arg value="4" />
+        <arg value="8" />
+        <arg value="8" />
+        <arg value="8" />
+        </java>
+    </target>
+
+    <target name="testCircle1" depends="compile">
+        <junit printsummary="yes">
+            <classpath refid="JCpath"/>
+            <formatter type="plain"/>
+            <test name = "edu.nmsu.cs.circles.Circle1Test" todir="${bin.dir}"/>
+        </junit>
+    </target>
+
+    <target name="testCircle2" depends="compile">
+        <junit printsummary="yes">
+            <classpath refid="JCpath"/>
+            <formatter type="plain"/>
+            <test name = "edu.nmsu.cs.circles.Circle2Test" todir="${bin.dir}"/>
+        </junit>
+    </target>
+ 
+    <target name="test" depends="testCircle1,testCircle2"/>
+    
+</project> 

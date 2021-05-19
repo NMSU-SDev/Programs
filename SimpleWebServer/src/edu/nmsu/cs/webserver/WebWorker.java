@@ -1,6 +1,7 @@
 package edu.nmsu.cs.webserver;
 
-/**
+
+/** pulled from https://github.com/NMSU-SDev/Programs, modified by jsy4
  * Web worker: an object of this class executes in its own new thread to receive and respond to a
  * single HTTP request. After the constructor the object executes on its "run" method, and leaves
  * when it is done.
@@ -22,13 +23,16 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.FileReader;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 
 public class WebWorker implements Runnable
 {
@@ -55,9 +59,19 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String fileName = readHTTPRequest(is);
+			boolean goodPage = writeHTTPHeader(os, fileName);
+			if(goodPage) 
+			{
+				writeContent(os, fileName);
+			}//end if
+			else 
+			{ //if 404 not found, display HTML error page
+				os.write("<html><head></head><body>\n".getBytes());
+				os.write("<h3>Sorry...Error! Page couldn't be found.<br/></h3>".getBytes());
+				os.write("</body></html>\n".getBytes());
+			}//end else
+ 
 			os.flush();
 			socket.close();
 		}
@@ -72,10 +86,11 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		String fileName = "";
 		while (true)
 		{
 			try
@@ -84,6 +99,12 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if(line.startsWith("GET")) 
+				{ // line has /filename or /ico
+					String[] spltLine = line.split(" ");
+					fileName = spltLine[1];
+					fileName = fileName.substring(1);
+				}//if
 				if (line.length() == 0)
 					break;
 			}
@@ -93,7 +114,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return fileName; //returns file name
 	}
 
 	/**
@@ -101,40 +122,108 @@ public class WebWorker implements Runnable
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
-	 * @param contentType
-	 *          is the string MIME content type (e.g. "text/html")
+	 * @param contentType was changed to fileName
+	 *          fileName has string MIME content type (e.g. "text/html")
+	 * 
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private boolean writeHTTPHeader(OutputStream os, String fileName) throws Exception
 	{
+		String contentType = "text/html"; //to display error message, type default to HTML
+		// as assignment == "properly change the response status AND provide the HTML message"
+		boolean goodPage = true; //to display error page
+		try 
+		{ 
+			@SuppressWarnings("unused") FileReader f;
+			if (!fileName.equals(""))
+				f = new FileReader(fileName); //checks if it's a readable file by f
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+			//https://stackoverflow.com/questions/51438/getting-a-files-mime-type-in-java
+			//contentType= URLConnection.guessContentTypeFromName(fileName);
+			if(fileName.endsWith(".ico"))
+				contentType = "image/x-icon";
+			else if(fileName.endsWith(".gif"))
+				contentType = "image/gif";
+			else if(fileName.endsWith(".jpg"))
+				contentType = "image/jpeg";
+			else if(fileName.endsWith(".png"))
+				contentType = "image/png";
+		}//try
+		catch(Exception e)
+		{
+			os.write("HTTP/1.1 404 NOT FOUND\n".getBytes());
+			goodPage = false;
+		}//catch
+
+
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: J's first server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
-	}
+		return goodPage;
+	}//writeHTTPheader
 
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
-	 * header has been written out.
+	 * header has been written out. 
+	 * Changes all string that matches the <cs371date> <cs371server> in HTML files
 	 * 
 	 * @param os
-	 *          is the OutputStream object to write to
+	 *          is the OutputStream object to write to, fileName is the file to be written from
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String fileName) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
+		try
+		{   
+			if(fileName.equals("")) //readable file or no input
+			{ //no fileName, default HTML page on 8080
+				//https://superuser.com/questions/532616/grab-favicon-ico-using-google-
+				//chrome-dev-tools/532751#:~:text=In%20the%20address%20bar%2C%20enter,%2F%20%2C%20
+				//followed%20by%20the%20url.&text=Why%20don't%20you%20just,Just%20click%20on%20the%20link.
+				os.write("<html><head><link rel=\"icon\" href=\"/www/favicon.ico\" /></head><body>\n".getBytes());
+				os.write("<h3>My web server works! This is plain flavor of port 8080 *^^* </h3>\n".getBytes());
+				os.write("</body></html>\n".getBytes());
+			}//if
+			else if(fileName.endsWith(".html")) //html type
+			{ // substitute tags in HTML
+				BufferedReader br = new BufferedReader(new FileReader(fileName));
+				String line;
+				String today = new java.util.Date().toString();
+				for(line = br.readLine(); line !=null; line = br.readLine()) 
+				{
+					line = line.replaceAll("<cs371date>", today);
+					line = line.replaceAll("<cs371server>", "J's Server");
+					os.write(line.getBytes());
+				}//end for
+				br.close();
+			}//else if
+			else //other file types
+			{	//using ImageIO gif doesn't work
+				//image files read by byte: http://tutorials.jenkov.com/java-io/inputstream.html
+				InputStream is = new FileInputStream(fileName);
+				int data = is.read();
+				while(data != -1) 
+				{
+					os.write(data);
+					data = is.read();
+				}//while
+				is.close();
+			}//else
+
+		}catch(Exception e) {
+			os.write("Sorry...Error! File couldn't be read correctly. CODE: 404 Not Found.".getBytes());
+		}//catch
+		
+
+	}//writeContent
 
 } // end class
+

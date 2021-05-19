@@ -1,0 +1,96 @@
+<project name="CircleRun" basedir="." default="main">
+    <!--to use-->
+    <property name="src.dir"     value="src"/>
+    <property name="bin.dir"   value="bin"/> 
+    <property name="lib.dir"     value="lib"/>
+    <!--to make-->
+    <property name="jar.dir"     value="${bin.dir}/jar"/>
+    <property name="report.dir"  value="${bin.dir}/junitreport"/>
+    <property name="classes.dir" value="${bin.dir}/classes"/>
+
+    <!--to use lib folder jar files-->
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+   <!--for CircleRun Class-->    
+    <path id="application" location="${jar.dir}/${ant.project.name}.jar"/>
+    <property name="main-class"  value="edu.nmsu.cs.circles.CircleRun"/>
+
+
+    <target name="main" depends="clean,run"/>
+    
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" includeantruntime = "false"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>        
+        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+            <manifest> <!--require bin/classes/file jar-->
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar= "${jar.dir}/${ant.project.name}.jar" fork ="true">
+        <arg value="4" />
+        <arg value="4" />
+        <arg value="4" />
+        <arg value="8" />
+        <arg value="8" />
+        <arg value="8" />
+        </java>
+    </target>
+    
+    <target name="testCircle1" depends="compile">
+        <mkdir dir="${report.dir}"/>
+        <junit printsummary="yes">
+            <classpath>
+                <path refid="classpath"/>
+	 			<pathelement path="${classes.dir}"/>
+            </classpath>    
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${report.dir}">
+                <fileset dir="${src.dir}" includes="**/Circle1Test.java"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="testCircle2" depends="compile">
+        <mkdir dir="${report.dir}"/>
+        <junit printsummary="yes">
+            <classpath>
+                <path refid="classpath"/>
+	 			<pathelement path="${classes.dir}"/>
+            </classpath>    
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${report.dir}">
+                <fileset dir="${src.dir}">
+					<include name ="**/Circle2Test.java"/> 
+				</fileset>
+            </batchtest>
+        </junit>
+    </target>
+    
+ 
+    <target name="test" depends="testCircle1,testCircle2">
+        <junitreport todir="${report.dir}">
+            <fileset dir="${report.dir}" includes="*.xml"/>
+            <report todir="${report.dir}"/>
+        </junitreport>
+    </target>
+        <target name="Test" depends="testCircle1,testCircle2"/>
+
+</project> 
+
+<!--code ref : https://ant.apache.org/manual/tutorial-HelloWorldWithAnt.html-->
+<!-- if the code gives class not found error,
+check if Test class path contains classes.dir and lib dir and include hamicore file-->

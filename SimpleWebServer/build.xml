@@ -1,0 +1,25 @@
+<project name="SimpleWebServer" default="run" basedir=".">
+  <description> SimpleWebServer build file </description>
+	
+  <property name="src" location="src/"/>
+  <property name="bin" location="www/bin/"/>
+
+
+  <target name="compile" description="compile the src to bin dir">
+    <mkdir dir="${bin}"/>
+    <javac srcdir="${src}" destdir="${bin}"/>
+  </target>
+
+  <target name="clean" description="clean up made obj ${bin}">
+    <delete dir="${bin}"/>
+  </target>
+
+  <target name="run" description ="launch on default port" depends = "clean, compile">
+	<java classname="edu.nmsu.cs.webserver.WebServer" fork="true" classpath="${bin}" dir ="./www">
+        <!--<arg value ="8080"/> removed-p2 didn't specify-->
+        <!-- p2's localhost:8080/res/acc/test.html will actually be
+         p1's localhost:8080/www/res/acc/test.html-->
+	</java>
+  </target>
+
+</project>

@@ -1,0 +1,9 @@
+1. Estimate the time it will take you to do the assignment, to within a quarter-hour: 5+7 hours
+
+2. Estimate the time it took you to complete the assignment, broken down as:
+
+Thought/Design: ______2:40_______
+Programming: _______2:40______
+Debugging: _________2:40_________
+TOTAL: __________7_________
+3. To within what percent accuracy was your original estimate: ______58%______

@@ -15,9 +15,7 @@ public class RacingScore2
 {
 
 	int	score1;
-
 	int	score2;
-
 	int	score3;
 
 	public RacingScore2()
@@ -36,36 +34,27 @@ public class RacingScore2
 
 	public int overallScore()
 	{
-		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
-		{
-			s1 = score2;
-			s2 = score3;
-		}
+		//removed s s1 s2 to just return sum of two largest scores
+		
+		//if, else if, else now filter smallest score out
+		if (score1 <= score2 && score1 <= score3)
+			return score2 + score3;
+		
 		else if (score2 < score1 && score2 < score3)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
-		else
-		{
-			s1 = 99;
-			s2 = 99;
-		}
-		s = s1 + s2;
-		return s;
+			return score1 + score3; 
+		
+		else //if (score3 < score1 && score3 < score2)
+			return score1 + score2;
+
 	}
 
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
-		{
+		final int MAX_S = 50, MIN_S = 0; //to make code readable :/
+		
+		if (args.length != 3) //deleted args==null since args str array will never be 'null'
+		{ //when no args provided, args.length == 0, but no reason to check == 0 since != 3 exist 
 			System.err.println("Error: must supply three arguments!");
 			return;
 		}
@@ -80,7 +69,7 @@ public class RacingScore2
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
-		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+		if (s1 < MIN_S || s1 > MAX_S || s2 < MIN_S || s2 > MAX_S || s3 < MIN_S || s3 > MAX_S)
 		{
 			System.err.println("Error: scores must be between 0 and 50!");
 			return;

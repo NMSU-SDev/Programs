@@ -1,6 +1,6 @@
 package edu.nmsu.cs.webserver;
 
-/**
+/** pulled from https://github.com/NMSU-SDev/Programs, modified by jsy4
  * A simple web server: it creates a new WebWorker for each new client connection, so all the
  * WebServer object does is listen on the port for incoming client connection requests.
  *
@@ -51,6 +51,8 @@ public class WebServer
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+		
+		System.out.println("Webserver up, listening on port :" + port);
 		while (true)
 		{
 			try
@@ -87,7 +89,7 @@ public class WebServer
 		int port = 8080;
 		if (args.length > 1)
 		{
-			System.err.println("Usage: java Webserver <portNumber>");
+			System.err.println("Usage: java WebServer <portNumber>");
 			return;
 		}
 		else if (args.length == 1)
