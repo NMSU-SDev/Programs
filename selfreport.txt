@@ -1,0 +1,7 @@
+I wrote a lot of the foundationalcode and worked to keep it up to date throughout the project. 
+My code is the csv fle which reads in the stock notifications I made.
+The buttons and bulding a stage were some of the hardest parts. I had to make them have the right response to a click, 
+where it would change dimensions and change text.
+Then I had make everything readable
+Then we found out if needed to be mor object oriented, which I admit was very helpful. We should have dibe that from the beginning
+Instead of 5 different button codes, we had 1 that worked with everything.

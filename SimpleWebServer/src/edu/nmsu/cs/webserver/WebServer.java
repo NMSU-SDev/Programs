@@ -9,7 +9,7 @@ package edu.nmsu.cs.webserver;
  * method never returns. It uses socket programming to listen for client network connection
  * requests. When one happens, it creates a new object of the WebWorker class and hands that client
  * connection off to the WebWorker object. The WebServer object then just keeps listening for new
- * client connections. See the WebWorker source for more information about it.
+ * client connections. See the WebWorker sorurce for more information about it.
  * 
  * @author Jon Cook, Ph.D.
  * 
@@ -110,3 +110,4 @@ public class WebServer
 	} // end main
 
 } // end class
+

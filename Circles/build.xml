@@ -1,0 +1,62 @@
+<project default= "run">
+
+   <property name="src.dir" location="src/" />
+	<property name="build.dir" location="bin/" />
+   <property name="result.dir" location="./target"/>
+   <property name = "lib.dir" location= "./lib"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+    <target name="cleanAndCompile" depends= "clean,compile">
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="src" destdir="${build.dir}">
+            <classpath location="lib/junit-4.13.1.jar"/>
+        </javac>
+    </target>
+
+    <target name="run" depends="cleanAndCompile">
+       <java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build.dir}" fork="true"/>    
+    </target>
+    
+    <target name= "circle1Test" depends= "cleanAndCompile">
+       <junit printsummary = "yes">
+           <classpath>
+              <fileset dir = "${lib.dir}">
+                 <include name="**/*.jar"/>
+              </fileset>
+              <pathelement path = "${build.dir}"/>
+           </classpath>
+           <test name="edu.nmsu.cs.circles.Circle1Test" haltonfailure = "no" todir="${result.dir}">
+              <formatter type = "plain"/>
+              <formatter type = "xml"/>           
+           </test>
+       </junit>
+    </target>
+
+    <target name= "circle2Test" depends= "cleanAndCompile">
+       <junit printsummary = "yes">
+           <classpath>
+              <fileset dir = "${lib.dir}">
+                 <include name="**/*.jar"/>
+              </fileset>
+              <pathelement path = "${build.dir}"/>
+           </classpath>
+           <test name="edu.nmsu.cs.circles.Circle2Test" haltonfailure = "no" todir="${result.dir}">
+              <formatter type = "plain"/>
+              <formatter type = "xml"/>           
+           </test>
+       </junit>
+    </target>
+    
+    <target name= "test" depends= "circle1Test, circle2Test">
+    </target>
+    
+
+       
+
+</project>

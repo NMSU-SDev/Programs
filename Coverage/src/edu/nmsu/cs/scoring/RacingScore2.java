@@ -37,6 +37,9 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
+      
+      //Each if statement needs to find the smallest value. Once this value is determined, it will be excluded in summation for the final score
+      
 		if (score1 < score2 && score1 < score3)
 		{
 			s1 = score2;
@@ -45,7 +48,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3;
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
@@ -64,6 +67,12 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
+      //if(args == null){
+         //System.out.println("\n\n\n!!!! Null args\n\n\n");
+      //}//end if null
+      //if(args.length!=3){
+         //System.out.println("\n\n\n!!!! Not full length. len = " + args.length + ".\n\n\n");
+      //}//end lenth!=3
 		if (args == null || args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");

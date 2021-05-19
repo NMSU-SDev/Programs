@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="2" hostname="DESKTOP-BT6OIK1" name="edu.nmsu.cs.circles.Circle2Test" skipped="0" tests="2" time="0.034" timestamp="2021-05-10T23:08:39">
+  <properties>
+    <property name="ant.library.dir" value="C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib" />
+    <property name="ant.file.type" value="file" />
+    <property name="java.specification.version" value="15" />
+    <property name="sun.cpu.isalist" value="amd64" />
+    <property name="sun.jnu.encoding" value="Cp1252" />
+    <property name="java.class.path" value="C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-launcher.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-antlr.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-bcel.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-bsf.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-log4j.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-oro.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-regexp.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-resolver.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-apache-xalan2.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-commons-logging.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-commons-net.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-imageio.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-jai.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-javamail.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-jdepend.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-jmf.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-jsch.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-junit.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-junit4.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-junitlauncher.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-launcher.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-netrexx.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-swing.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-testutil.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant-xz.jar;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant.jar" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="user.variant" value="" />
+    <property name="java.vendor.url" value="https://java.oracle.com/" />
+    <property name="java.vm.specification.version" value="15" />
+    <property name="os.name" value="Windows 10" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="user.country" value="US" />
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\bin" />
+    <property name="sun.java.command" value="org.apache.tools.ant.launch.Launcher test" />
+    <property name="jdk.debug" value="release" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="user.home" value="C:\Users\Owner" />
+    <property name="user.language" value="en" />
+    <property name="sun.stderr.encoding" value="cp437" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="java.version.date" value="2021-01-19" />
+    <property name="java.home" value="C:\Program Files\Java" />
+    <property name="basedir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles" />
+    <property name="file.separator" value="\" />
+    <property name="java.vm.compressedOopsMode" value="Zero based" />
+    <property name="line.separator" value="&#xd;&#xa;" />
+    <property name="sun.stdout.encoding" value="cp437" />
+    <property name="ant.java.version" value="15" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="user.script" value="" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="java.runtime.version" value="15.0.2+7-27" />
+    <property name="user.name" value="Owner" />
+    <property name="ant.file" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles\build.xml" />
+    <property name="path.separator" value=";" />
+    <property name="os.version" value="10.0" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="file.encoding" value="Cp1252" />
+    <property name="ant.project.invoked-targets" value="test" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="build.dir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles\bin" />
+    <property name="ant.core.lib" value="C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\lib\ant.jar" />
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/" />
+    <property name="java.io.tmpdir" value="C:\Users\Owner\AppData\Local\Temp\" />
+    <property name="result.dir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles\target" />
+    <property name="java.version" value="15.0.2" />
+    <property name="user.dir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles" />
+    <property name="os.arch" value="amd64" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="ant.home" value="C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9" />
+    <property name="lib.dir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles\lib" />
+    <property name="sun.os.patch.level" value="" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.10.9 compiled on September 27 2020" />
+    <property name="java.library.path" value="C:\Program Files\Java\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Users\Owner\Downloads\apache-ant-1.10.9-bin (1)\apache-ant-1.10.9\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Users\Owner\AppData\Local\Microsoft\WindowsApps;C:\Users\Owner\AppData\Local\GitHubDesktop\bin;C:\Users\Owner\Documents\Java\bin;;." />
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="java.vm.info" value="mixed mode, sharing" />
+    <property name="java.vm.version" value="15.0.2+7-27" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="java.class.version" value="59.0" />
+    <property name="src.dir" value="C:\Users\Owner\Documents\GitHub\Programs\attemptAgainAgain\Programs\Circles\src" />
+    <property name="ant.project.default-target" value="run" />
+  </properties>
+  <testcase classname="edu.nmsu.cs.circles.Circle2Test" name="simpleMove" time="0.013">
+    <failure type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError
+	at edu.nmsu.cs.circles.Circle2Test.simpleMove(Unknown Source)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</failure>
+  </testcase>
+  <testcase classname="edu.nmsu.cs.circles.Circle2Test" name="simpleMoveNeg" time="0.001">
+    <failure type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError
+	at edu.nmsu.cs.circles.Circle2Test.simpleMoveNeg(Unknown Source)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+</failure>
+  </testcase>
+  <system-out><![CDATA[
+Test starting...
+Running test simpleMove.
+
+Test finished.
+
+Test starting...
+Running test simpleMoveNeg.
+
+Test finished.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

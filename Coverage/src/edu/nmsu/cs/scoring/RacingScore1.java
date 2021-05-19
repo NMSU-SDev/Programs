@@ -38,20 +38,27 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
-			s = score2;
-		else
+		if (score1 < score2){
 			s = score1;
-		if (s > score3)
+         }
+		else{
+			s = score2;
+         }
+		if (s > score3){
 			s = score3;
+         }
 		s = (score1 + score2 + score3) - s;
+      //each methos should ask "what is the smallest value". So the first method, either 
+      //score1 or score2 is the smaller method. Then we compare the currrent smallest value 
+      //with score3 and find out if it is the smallest or not. Then, add up all 3 scores and
+      //subtract by the smallest value.
 		return s;
 	}
 
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args.length != 3)
+      if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
