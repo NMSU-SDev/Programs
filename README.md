@@ -1,3 +1,6 @@
+# SarahDiazZ Lab1
+Lab 1 relies on the HelloWorld program. 
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
