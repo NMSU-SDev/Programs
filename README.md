@@ -1,3 +1,7 @@
+# Github Username
+trangtran321
+Lab 1, Software Development - CS371
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
