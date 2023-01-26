@@ -9,3 +9,13 @@ This assignment relies on the Coverage programs.
 
 ## Program 4
 This assignment relies on the Circles programs. 
+
+## HelloWorld
+This assignment prints Hello World
+
+## Questions
+Placeholder for Assignment Questions
+
+## GitHub Account
+GitHub ID: MoriMnz
+In this lab we worked with Git and GitHub. We made several directories and files to experiment with and prepare for future labs.
