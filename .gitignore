@@ -5,6 +5,9 @@
 *.project
 *.classpath
 
+# Apple metadata
+.DS_Store
+
 # Log file
 *.log
 
