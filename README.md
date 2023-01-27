@@ -1,3 +1,11 @@
+## Github User ID: nctNMSU
+
+# Labs
+Lab assignments in Software Development (CS 371).
+
+## Lab 1
+Setup program git repo and ensure git is installed and functioning on development system.
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
