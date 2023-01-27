@@ -1,3 +1,9 @@
+# github user ID
+smilemehran
+
+# Lab1
+This lab is intended to start workin by git.
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
