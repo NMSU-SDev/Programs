@@ -1,4 +1,4 @@
-# Programs
+# Programs from Awesomesauce135
 Base code for program assignments in Software Development (C S 371). 
 
 ## Program 1 and Program 2
@@ -9,3 +9,6 @@ This assignment relies on the Coverage programs.
 
 ## Program 4
 This assignment relies on the Circles programs. 
+
+## Questions
+Contains the questions files for assignments 1 and 2.
