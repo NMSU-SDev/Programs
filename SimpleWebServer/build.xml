@@ -30,7 +30,7 @@
     </target>
 
     <target name="run">
-        <java classname="WebServer" dir="${src}" fork="true"></java>
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="bin" fork="true"></java>
     </target>
 
 </project>
