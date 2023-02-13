@@ -20,6 +20,9 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -53,9 +56,9 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String fileRequest = readHTTPRequest(is);
+			int status = writeHTTPHeader(os, "text/html", fileRequest);
+			writeContent(os, fileRequest, status);
 			os.flush();
 			socket.close();
 		}
@@ -70,9 +73,15 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	/**
+	 * Search request header for any file request. Print to console if found.
+	 * Ryan Schwarzkopf
+	 * 
+	 */
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String fileRequest = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -82,6 +91,10 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if((line.length() > 3) && (line.substring(0, 3).compareTo("GET") == 0) && (line.length() != 14)) {
+					fileRequest = line.substring(5, line.length()-9);
+					System.err.println("File name found: ("+fileRequest+")");
+				}
 				if (line.length() == 0)
 					break;
 			}
@@ -91,7 +104,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return fileRequest;
 	}
 
 	/**
@@ -102,13 +115,25 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	/**
+	 * Search for fileRequest in top directory. Write http header 200 or 404. Return 200 or 404
+	 * Ryan Schwarzkopf
+	 * 
+	 * @param fileRequest
+	 * @return 200: file found 404: file not found
+	 */
+	private int writeHTTPHeader(OutputStream os, String contentType, String fileRequest) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
+		File f = new File(fileRequest);
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
+		if(f.exists()) {
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		} else {
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}
+			os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
 		os.write("Server: Jon's very own server\n".getBytes());
@@ -118,7 +143,8 @@ public class WebWorker implements Runnable
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+		if(!f.exists()) return 404; // Could not find the requestFile
+		return 200; // requestFile found
 	}
 
 	/**
@@ -128,11 +154,33 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	/**
+	 * Search for file and write its contents to output stream
+	 * Returns 200 if file is found. 404 if not found
+	 * Ryan Schwarzkopf
+	 *  
+	 * @param filePath
+	 * 	path to file to read
+	 *
+	 */
+	private void writeContent(OutputStream os, String filePath, int status) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if(status == 404) {
+			os.write("<!DOCTYPE html><html><body><p>404: Not found</p></body>".getBytes());
+		} else {
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(filePath));
+				String line;
+				while((line = in.readLine()) != null) {
+					os.write(line.getBytes());
+				}
+				in.close();
+				return;
+			} catch(FileNotFoundException e) {
+				System.err.println("File not found.");
+				return;
+			}
+		}
 	}
 
 } // end class
