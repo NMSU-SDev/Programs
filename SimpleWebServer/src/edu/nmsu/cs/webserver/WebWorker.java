@@ -71,7 +71,7 @@ public class WebWorker implements Runnable
 	}
 
 	/**
-	 * Read the HTTP request header.
+	 * Read the HTTP request header.s
 	 **/
 	private void readHTTPRequest(InputStream is)
 	{
