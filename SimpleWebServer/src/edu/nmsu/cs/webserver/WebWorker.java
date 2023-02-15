@@ -1,5 +1,11 @@
 package edu.nmsu.cs.webserver;
 
+//// CS 468 -- Software Development P1
+//// Program: WebWorker.java
+//// Name: Rob Armendariz
+//// Date: 02-17-2023
+//// Description: 
+
 /**
  * Web worker: an object of this class executes in its own new thread to receive and respond to a
  * single HTTP request. After the constructor the object executes on its "run" method, and leaves
@@ -21,18 +27,19 @@ package edu.nmsu.cs.webserver;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
-//import java.util.StringTokenizer;
 import java.util.TimeZone;
-
-//import javax.swing.text.Document;
 
 
 public class WebWorker implements Runnable
@@ -235,11 +242,32 @@ public class WebWorker implements Runnable
 			// scanner gets the proper path
 			Scanner scanner = new Scanner(new File(System.getProperty("user.dir") + filePath));
 			
+			// path as string
 			String htmlFile = checkPath.toString();
 			
-			//Document doc = Jsoup.parse(htmlFile);
+			// get path
+			Path path = Paths.get(htmlFile);
+
+			// store HTML file contents into "content"
+			String content = new String(Files.readAllBytes(path));
 			
-			//Elements elements = doc.select("")
+			// set date and time format
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			
+			// get current date and time
+			LocalDateTime now = LocalDateTime.now();
+			
+			// get date and time as a formatted string
+			String dateTime = dtf.format(now);
+			
+			// replace tag "<cs371date>" with current date and time
+			content = content.replaceAll("<cs371date>", dateTime);
+			
+			// replace tag "<cs371server>" with name of server
+			content = content.replaceAll("<cs371server>", "Rob's Server");
+			
+			// overwrite file contents with replaced tags
+			Files.write(path, content.getBytes());
 			
 			// 'htmlPathFile' contains the html file contents
 			String htmlPathFile = scanner.useDelimiter("\\Z").next();

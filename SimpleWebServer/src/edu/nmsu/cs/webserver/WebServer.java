@@ -1,5 +1,11 @@
 package edu.nmsu.cs.webserver;
 
+////CS 468 -- Software Development P1
+////Program: WebServer.java
+////Name: Rob Armendariz
+////Date: 02-17-2023
+////Description: 
+
 /**
  * A simple web server: it creates a new WebWorker for each new client connection, so all the
  * WebServer object does is listen on the port for incoming client connection requests.
