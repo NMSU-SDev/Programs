@@ -226,18 +226,16 @@ public class WebWorker implements Runnable
 		// File object contains possible path
 		File checkPath = new File(System.getProperty("user.dir") + filePath);
 		
-		//System.out.println(checkPath.toString() + "\n\n\n\n");
-		
 		// if path is not valid
 		if(!checkPath.exists()) {
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h3>404 Not Found</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
 		}
+		
 		// path is valid
 		else {
 			
-			//String htmlFile = checkPath.toString();
 		
 			// scanner gets the proper path
 			Scanner scanner = new Scanner(new File(System.getProperty("user.dir") + filePath));
@@ -252,7 +250,7 @@ public class WebWorker implements Runnable
 			String content = new String(Files.readAllBytes(path));
 			
 			// set date and time format
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");  
 			
 			// get current date and time
 			LocalDateTime now = LocalDateTime.now();
@@ -267,16 +265,16 @@ public class WebWorker implements Runnable
 			content = content.replaceAll("<cs371server>", "Rob's Server");
 			
 			// overwrite file contents with replaced tags
-			Files.write(path, content.getBytes());
+			//Files.write(path, content.getBytes());
 			
 			// 'htmlPathFile' contains the html file contents
-			String htmlPathFile = scanner.useDelimiter("\\Z").next();
+			//String htmlPathFile = scanner.useDelimiter("\\Z").next();
 			
 			// close scanner instance
 			scanner.close();
 			
 			// write the data content to the client network connection
-			os.write(htmlPathFile.getBytes());
+			os.write(content.getBytes());
 		}
 //		os.write("<html><head></head><body>\n".getBytes());
 //		os.write("<h3>My web server works!</h3>\n".getBytes());
