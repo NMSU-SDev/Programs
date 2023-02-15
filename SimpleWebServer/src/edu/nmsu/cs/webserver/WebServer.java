@@ -19,14 +19,11 @@ public class WebServer
 {
 	private ServerSocket	socket;
 
-	private boolean				running;
-
 	/**
 	 * Constructor
 	 **/
 	private WebServer()
 	{
-		running = false;
 	}
 
 	/**
