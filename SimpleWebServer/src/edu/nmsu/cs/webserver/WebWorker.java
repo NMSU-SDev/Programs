@@ -51,10 +51,13 @@ public class WebWorker implements Runnable
 		System.err.println("Handling connection...");
 		try
 		{
+			//InputStream is = socket.getInputStream();
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
 			writeHTTPHeader(os, "text/html");
+			
+			//if(os.toString() != )
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -129,7 +132,8 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	private void writeContent(OutputStream os) throws Exception
-	{
+	{	
+		//os.toString()
 		os.write("<html><head></head><body>\n".getBytes());
 		os.write("<h3>My web server works!</h3>\n".getBytes());
 		os.write("</body></html>\n".getBytes());

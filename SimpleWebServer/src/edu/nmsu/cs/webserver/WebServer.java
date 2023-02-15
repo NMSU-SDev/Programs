@@ -41,7 +41,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
-			System.out.println()
+			System.out.println();
 		}
 		catch (Exception e)
 		{
