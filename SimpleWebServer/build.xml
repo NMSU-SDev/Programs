@@ -1,4 +1,4 @@
-<project name="SimpleWebServer" default="compile" basedir=".">
+<project name="SimpleWebServer" default="build" basedir=".">
   <description>
     Build file for P1: SimpleWebServer
   </description>
@@ -9,11 +9,11 @@
 
   <target name="clean"
         description="clean up">
-    <!-- Delete ${classes} directory trees -->
+    <!-- Delete ${classes} directory tree -->
     <delete dir="${classes}"/>
   </target>
 
-  <target name="compile" depends="clean"
+  <target name="build" depends="clean"
         description="compile the source">
     <!-- Compile the Java code from ${src} into ${build} -->
     <javac includeantruntime="false" srcdir="${src}" destdir="${bin}"/>
@@ -21,7 +21,7 @@
 
   <target name="run"
         description="run the web server program">
-    <!-- Run the Java program from ${src} -->
+    <!-- Run the Java program given class path -->
         <java classname="edu.nmsu.cs.webserver.WebServer">
             <classpath path="bin"/>
         </java>

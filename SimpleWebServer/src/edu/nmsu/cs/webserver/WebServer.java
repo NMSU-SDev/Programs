@@ -23,6 +23,7 @@ import java.net.Socket;
 
 public class WebServer
 {
+	// create ServerSocket object
 	private ServerSocket	socket;
 
 	/**
@@ -42,11 +43,18 @@ public class WebServer
 	 **/
 	private boolean start(int port)
 	{
+		// Socket object
 		Socket workerSocket;
+		
+		// WebWorker object
 		WebWorker worker;
+		
 		try
-		{
+		{	
+			// socket is instantiated with port number
 			socket = new ServerSocket(port);
+			
+			// formatting
 			System.out.println();
 		}
 		catch (Exception e)
@@ -54,6 +62,7 @@ public class WebServer
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+		
 		while (true)
 		{
 			try
@@ -68,6 +77,8 @@ public class WebServer
 			}
 			// have new client connection, so fire off a worker on it
 			worker = new WebWorker(workerSocket);
+			
+			// start a new thread to do work (multi-threading)
 			new Thread(worker).start();
 		}
 		return true;
@@ -87,7 +98,9 @@ public class WebServer
 	 **/
 	public static void main(String args[])
 	{
+		// the default port number
 		int port = 8080;
+		
 		if (args.length > 1)
 		{
 			System.err.println("Usage: java Webserver <portNumber>");
@@ -97,6 +110,7 @@ public class WebServer
 		{
 			try
 			{
+				// set port to input port
 				port = Integer.parseInt(args[0]);
 			}
 			catch (Exception e)
@@ -105,7 +119,9 @@ public class WebServer
 				return;
 			}
 		}
+		// create new WebServer object
 		WebServer server = new WebServer();
+		
 		if (!server.start(port))
 		{
 			System.err.println("Execution failed!");
