@@ -18,6 +18,13 @@ package edu.nmsu.cs.webserver;
  * particular format).
  *
  **/
+ 
+ /**
+	Webworker actually serves html files. Respondes given an incorrect filename to header and 404 not found page.
+	Processes dynamic html tags for date and server name.
+	Ryan Schwarzkopf
+ 
+  */
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +37,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 public class WebWorker implements Runnable
 {
@@ -155,7 +163,7 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	/**
-	 * Search for file and write its contents to output stream
+	 * Search for file and write its contents to output stream. Dynamic HTML for date and server name. 
 	 * Returns 200 if file is found. 404 if not found
 	 * Ryan Schwarzkopf
 	 *  
@@ -170,14 +178,15 @@ public class WebWorker implements Runnable
 		} else {
 			try {
 				// Get the date
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-   				LocalDateTime now = LocalDateTime.now();
+				Date date = new Date();
+      			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+       			String str = formatter.format(date);
 				// Get a file reader
 				BufferedReader in = new BufferedReader(new FileReader(filePath));
 				String line;
 				while((line = in.readLine()) != null) {
-					line.replace("<cs371date>", dtf.format(now));
-					line.replace("<cs371server>", "Ryan's server");
+					line = line.replace("<cs371date>", str);
+					line = line.replace("<cs371server>", "Ryan's server");
 					os.write(line.getBytes());
 				}
 				in.close();
