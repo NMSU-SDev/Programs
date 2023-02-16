@@ -45,7 +45,7 @@ import java.util.TimeZone;
 public class WebWorker implements Runnable
 {
 	// used to enable debug statements
-	boolean myDebug = true;
+	boolean myDebug = false;
 
 	private Socket socket;
 
