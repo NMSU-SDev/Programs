@@ -1,1 +1,30 @@
-<project name = "WebWorker>
+<project name="SimpleWebServer" default="compile" basedir=".">
+  <description>
+    Build file for P1: SimpleWebServer
+  </description>
+  <!-- set global properties for this build -->
+  <property name="classes" location="bin/edu/nmsu/cs/webserver"/>
+  <property name="src" location="src/edu/nmsu/cs/webserver/"/>
+  <property name="bin" location="bin"/>
+
+  <target name="clean"
+        description="clean up">
+    <!-- Delete ${classes} directory trees -->
+    <delete dir="${classes}"/>
+  </target>
+
+  <target name="compile" depends="clean"
+        description="compile the source">
+    <!-- Compile the Java code from ${src} into ${build} -->
+    <javac includeantruntime="false" srcdir="${src}" destdir="${bin}"/>
+  </target>
+
+  <target name="run"
+        description="run the web server program">
+    <!-- Run the Java program from ${src} -->
+        <java classname="edu.nmsu.cs.webserver.WebServer">
+            <classpath path="bin"/>
+        </java>
+  </target>
+
+</project>

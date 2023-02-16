@@ -176,7 +176,8 @@ public class WebWorker implements Runnable
 		
 		// if path is not valid
 		if(!checkPath.exists()) {
-		
+			
+			// HTTP header for INVALID path trying to be served
 			Date d = new Date();
 			DateFormat df = DateFormat.getDateTimeInstance();
 			df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -196,6 +197,7 @@ public class WebWorker implements Runnable
 		// path is valid
 		else {
 			
+			// HTTP header for VALID path trying to be served
 			Date d = new Date();
 			DateFormat df = DateFormat.getDateTimeInstance();
 			df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -263,23 +265,13 @@ public class WebWorker implements Runnable
 			
 			// replace tag "<cs371server>" with name of server
 			content = content.replaceAll("<cs371server>", "Rob's Server");
-			
-			// overwrite file contents with replaced tags
-			//Files.write(path, content.getBytes());
-			
-			// 'htmlPathFile' contains the html file contents
-			//String htmlPathFile = scanner.useDelimiter("\\Z").next();
-			
+
 			// close scanner instance
 			scanner.close();
 			
 			// write the data content to the client network connection
 			os.write(content.getBytes());
-		}
-//		os.write("<html><head></head><body>\n".getBytes());
-//		os.write("<h3>My web server works!</h3>\n".getBytes());
-//		os.write("</body></html>\n".getBytes());
-		
+		}		
 	}
 
 } // end class
