@@ -1,0 +1,3 @@
+<project name="WebServer" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
+
+ <!-- Make sure to make a build, run, and clean; modifying prebuilt one should work -->

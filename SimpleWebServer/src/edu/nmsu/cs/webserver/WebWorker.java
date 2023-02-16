@@ -23,10 +23,16 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.io.IOException;
+
+
 
 public class WebWorker implements Runnable
 {
@@ -41,6 +47,8 @@ public class WebWorker implements Runnable
 		socket = s;
 	}
 
+
+
 	/**
 	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
 	 * destroys the thread. This method assumes that whoever created the worker created it with a
@@ -51,11 +59,13 @@ public class WebWorker implements Runnable
 		System.err.println("Handling connection...");
 		try
 		{
+			String fName = "";
+
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			fName = readHTTPRequest(is);
+			writeHTTPHeader(os, "text/html", fName); // Writes header based on file
+			writeContent(os, fName);
 			os.flush();
 			socket.close();
 		}
@@ -67,23 +77,27 @@ public class WebWorker implements Runnable
 		return;
 	}
 
+
+
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
-		String line;
+		String line = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
-			try
+			try // Listening for new line readings
 			{
 				while (!r.ready())
 					Thread.sleep(1);
-				line = r.readLine();
+				line = r.readLine(); // Reads server GET request
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
+				else return line; // New!
 			}
 			catch (Exception e)
 			{
@@ -91,8 +105,84 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return line;
 	}
+
+
+
+	/**
+	 * Check if file exists, else throw error
+	 * 
+	 * @param os
+	 * @param fName
+	 * @throws Exception
+	 */
+private void getFile(OutputStream os, String fName) throws Exception{
+
+	try{
+		File file = new File(fName);
+		FileReader reader = new FileReader(file);
+
+		reader.close();
+	} catch(Exception e){
+		os.write("HTTP/1.1 404 Not Found\n".getBytes());
+	}
+
+} // end getFile
+
+
+/**
+ * Read HTML file and write its contents to web page. Also, replaces
+ * use of tags <cs371date> and <cs371server> with specified strings.
+ * 
+ * @precondition HTML file exists under fName
+ * @precondition should be used in writeContent method
+ * @param fName
+ * @param os
+ */
+private void writeWebPage(String fName, OutputStream os) throws Exception{
+
+	// Get current date
+	Date d = new Date();
+	DateFormat df = DateFormat.getDateTimeInstance();
+	df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
+
+	String line = "";
+
+	fName = fName.substring(5,fName.length()-9); // getting only file name itself
+
+	if(fName.length() < 1) return; // if there's no significant input.
+
+	try{ // Try to open filereader
+		FileReader fReader = new FileReader(fName);
+		BufferedReader bReader = new BufferedReader(fReader);
+
+		// While file has lines remaining
+		while ((line = bReader.readLine()) != null) {
+
+			if(line.contains("<cs371date>")){
+				line = line.replace("<cs371date>", df.format(d));
+			} if(line.contains("<cs371server>")){
+				line = line.replace("<cs371server>", "Ruby H's webserver");
+			} // end if
+
+			os.write(line.getBytes()); // write each line of file to webpage
+		} // end while
+
+		fReader.close();
+		bReader.close();
+
+	} catch(FileNotFoundException e){
+		System.err.println("File missing at \"" + fName + "\"");
+		os.write("<h1>404 Not Found</h1>\n".getBytes());
+	} catch(IOException e){
+		System.err.println("Error reading file \"" + fName + "\"");
+		os.write("<h1>404 Not Found</h1>\n".getBytes());
+	}
+
+} // end writeWebPage
+
+
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -102,16 +192,23 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, String fName) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
+		
+		// by default, throw this
 		os.write("HTTP/1.1 200 OK\n".getBytes());
+
+		// if we encounter a reading error write 404 not found
+		fName = fName.substring(5,fName.length()-9); // getting only file name itself
+		getFile(os, fName);
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Ruby's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -121,6 +218,8 @@ public class WebWorker implements Runnable
 		return;
 	}
 
+
+
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
@@ -128,10 +227,11 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String fName) throws Exception
 	{
 		os.write("<html><head></head><body>\n".getBytes());
 		os.write("<h3>My web server works!</h3>\n".getBytes());
+		writeWebPage(fName, os);
 		os.write("</body></html>\n".getBytes());
 	}
 
