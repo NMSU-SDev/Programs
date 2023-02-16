@@ -44,6 +44,8 @@ import java.util.TimeZone;
 
 public class WebWorker implements Runnable
 {
+	// used to enable debug statements
+	boolean myDebug = true;
 
 	private Socket socket;
 
@@ -145,7 +147,10 @@ public class WebWorker implements Runnable
 				// 'path' is the directory where the file is that we must serve
 				path = tokens[1];
 				
-				System.out.println(path);
+				// debug statement: file path
+				if(myDebug) {
+					System.out.println(path);
+				}
 				
 				// return path as string
 				return path;
@@ -178,6 +183,9 @@ public class WebWorker implements Runnable
 		if(!checkPath.exists()) {
 			
 			// HTTP header for INVALID path trying to be served
+			if(myDebug) {
+				System.out.println("INVALID PATH HEADER USED");
+			}
 			Date d = new Date();
 			DateFormat df = DateFormat.getDateTimeInstance();
 			df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -194,9 +202,12 @@ public class WebWorker implements Runnable
 			os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
 			return;
 		}
+		
 		// path is valid
 		else {
-			
+			if(myDebug) {
+				System.out.println("VALID PATH HEADER USED");
+			}
 			// HTTP header for VALID path trying to be served
 			Date d = new Date();
 			DateFormat df = DateFormat.getDateTimeInstance();
@@ -228,7 +239,7 @@ public class WebWorker implements Runnable
 		// File object contains possible path
 		File checkPath = new File(System.getProperty("user.dir") + filePath);
 		
-		// if path is not valid
+		// if path is not valid, provide the HTML message body
 		if(!checkPath.exists()) {
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h3>404 Not Found</h3>\n".getBytes());
