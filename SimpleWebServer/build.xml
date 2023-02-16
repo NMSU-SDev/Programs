@@ -7,7 +7,12 @@
   <property name="src" location="src/edu/nmsu/cs/webserver/"/>
   <property name="bin" location="bin"/>
 
-  <target name="clean"
+  <target name="init">
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${bin}"/>
+  </target>
+
+  <target name="clean" depends="init"
         description="clean up">
     <!-- Delete ${classes} directory tree -->
     <delete dir="${classes}"/>
