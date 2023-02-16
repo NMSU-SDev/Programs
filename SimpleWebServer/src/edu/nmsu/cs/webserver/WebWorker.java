@@ -27,6 +27,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.io.*;
 
 public class WebWorker implements Runnable
 {
@@ -53,9 +54,23 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
+
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+
+			String path = getPath(is);
+
+			if(path.equals("/"))
+				path = "/index.html";
+
+			System.err.println(path);
+			
+			File file = new File("." + path);
+
+			if(file.exists())
+				serveHTML(os, path.substring(1));
+			else
+				pageNotFound(os);
+
 			os.flush();
 			socket.close();
 		}
@@ -70,28 +85,24 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String getPath(InputStream is)
 	{
-		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
 			try
 			{
-				while (!r.ready())
-					Thread.sleep(1);
-				line = r.readLine();
-				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
-					break;
+				String request = r.readLine();
+				System.err.println(request);
+				String[] ele = request.split(" ");
+				return ele[1];
 			}
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
-				break;
+				return null;
 			}
 		}
-		return;
 	}
 
 	/**
@@ -128,11 +139,25 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void serveHTML(OutputStream os, String path) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		BufferedReader fileReader = new BufferedReader(new FileReader(path));
+		String line;
+		while ((line = fileReader.readLine()) != null) {
+		   os.write(line.getBytes());
+		}
+		fileReader.close();
 	}
 
-} // end class
+	private void pageNotFound(OutputStream os) throws Exception
+	{      
+		BufferedReader fileReader = new BufferedReader(new FileReader("error.html"));
+		String line;
+		while ((line = fileReader.readLine()) != null) {
+		   os.write(line.getBytes());
+		}
+		fileReader.close();
+	
+	} // end class
+
+}
