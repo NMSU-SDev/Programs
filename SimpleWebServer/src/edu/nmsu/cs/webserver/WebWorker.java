@@ -110,27 +110,6 @@ public class WebWorker implements Runnable
 
 
 
-	/**
-	 * Check if file exists, else throw error
-	 * 
-	 * @param os
-	 * @param fName
-	 * @throws Exception
-	 */
-private void getFile(OutputStream os, String fName) throws Exception{
-
-	try{
-		File file = new File(fName);
-		FileReader reader = new FileReader(file);
-
-		reader.close();
-	} catch(Exception e){
-		os.write("HTTP/1.1 404 Not Found\n".getBytes());
-	}
-
-} // end getFile
-
-
 /**
  * Read HTML file and write its contents to web page. Also, replaces
  * use of tags <cs371date> and <cs371server> with specified strings.
@@ -197,13 +176,16 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
-		
-		// by default, throw this
-		os.write("HTTP/1.1 200 OK\n".getBytes());
 
 		// if we encounter a reading error write 404 not found
 		fName = fName.substring(5,fName.length()-9); // getting only file name itself
-		getFile(os, fName);
+
+		File f = new File(fName);
+		if(!f.exists() || f.isDirectory()) { 
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		} else{
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
 
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
