@@ -126,8 +126,8 @@ public class WebWorker implements Runnable
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
-		File f = new File(fileRequest);
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		File f = new File(fileRequest);
 		if(f.exists()) {
 			os.write("HTTP/1.1 200 OK\n".getBytes());
 		} else {
@@ -169,9 +169,15 @@ public class WebWorker implements Runnable
 			os.write("<!DOCTYPE html><html><body><p>404: Not found</p></body>".getBytes());
 		} else {
 			try {
+				// Get the date
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+   				LocalDateTime now = LocalDateTime.now();
+				// Get a file reader
 				BufferedReader in = new BufferedReader(new FileReader(filePath));
 				String line;
 				while((line = in.readLine()) != null) {
+					line.replace("<cs371date>", dtf.format(now));
+					line.replace("<cs371server>", "Ryan's server");
 					os.write(line.getBytes());
 				}
 				in.close();
