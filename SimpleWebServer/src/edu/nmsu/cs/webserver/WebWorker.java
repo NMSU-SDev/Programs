@@ -27,12 +27,13 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.io.File;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-
+	
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -81,6 +82,21 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+
+				// When the request line is at GET, it typically has the file location/directory
+				
+				if (line.contains("GET")){
+					String lineManip = line.substring(4,line.indexOf("HTTP")); //index 4 due to GET and the space after
+					System.out.println("**********" + lineManip + "****" );
+
+					File inputFile = new File(lineManip);
+					if(inputFile.exists()){
+						System.out.println("**********FILE EXISTS 200 OK **********");
+					}else{
+						System.out.println("**********NO FILE EXISTS 404 ERROR **********");						
+					}
+				}
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -103,15 +119,16 @@ public class WebWorker implements Runnable
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
-	{
+	{	
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
 		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Alen's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
