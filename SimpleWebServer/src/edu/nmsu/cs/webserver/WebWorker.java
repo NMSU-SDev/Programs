@@ -33,7 +33,8 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-	public boolean exsitingFile;
+	public boolean existingFile;
+	public String fileDirectory = "";
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -84,15 +85,17 @@ public class WebWorker implements Runnable
 				line = r.readLine();
 
 				// When the request line is at GET, it typically has the file location/directory
-				
+				// Serving .html files
 				if (line.contains("GET")){
 					//get the file seperated from the GET and HTTP portion of the request line
 					String lineManip = line.substring((line.indexOf("/") + 1), (line.indexOf("HTTP") - 1)); 
+					fileDirectory = lineManip;
 					File inputFile = new File(lineManip);
+
 					if(inputFile.exists()){
-						exsitingFile = true;
+						existingFile = true;
 					}else{
-						exsitingFile = false;
+						existingFile = false;
 					}
 				}
 
@@ -123,11 +126,22 @@ public class WebWorker implements Runnable
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-		//200 OK if the file exists and 404 Error if the file doesn't exist
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
-		os.write("\n".getBytes());
+		
+		if(existingFile){
+			//200 OK if the file exists404 Error if the file doesn't exist
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+			os.write("Date: ".getBytes());
+			os.write((df.format(d)).getBytes());
+			os.write("\n".getBytes());
+		}else{
+			//404 Error if the file doesn't exist
+			//throw new HttpRetryException("File Not Found", 404);
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+			os.write("Date: ".getBytes());
+			os.write((df.format(d)).getBytes());
+			os.write("\n".getBytes());
+		}
+
 		os.write("Server: Alen's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
@@ -147,9 +161,25 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		System.out.println(existingFile);
+		if(existingFile){
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>My web server works!</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}else{
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h1><b>404 Error! File Not Found</b></h1>\n".getBytes());
+			os.write("<h3>File Directory: </h3>\n".getBytes());
+
+			//showing what the file directory is if the file doesnt exist
+			if (fileDirectory.equals("")){
+				os.write("<h3>(null) : check if the URL contains a file directory and not just localhost:[PORT]</h3>\n".getBytes());
+				os.write("</body></html>\n".getBytes());
+			}else{
+				os.write(fileDirectory.getBytes());
+				os.write("</body></html>\n".getBytes());
+			}
+		}
 	}
 
 } // end class
