@@ -1,0 +1,28 @@
+<project name="MyProject" default="clean">
+
+  <property name="src.dir" value="src"/>
+  <property name="build.dir" value="build"/>
+  <property name="dist.dir" value="build/dist"/>
+
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${build.dir}"/>
+  </target>
+
+  <target name="dist" depends="compile">
+    <mkdir dir="${dist.dir}"/>
+    <jar destfile="${dist.dir}/SimpleWebServer.jar" basedir="${build.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="edu.nmsu.cs.webserver.WebServer"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="run" depends="dist">
+    <java jar="${dist.dir}/SimpleWebServer.jar" fork="true"/>
+  </target>
+</project>
