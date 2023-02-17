@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.io.*;
+import java.text.SimpleDateFormat;
 
 public class WebWorker implements Runnable
 {
@@ -55,8 +56,6 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 
-			writeHTTPHeader(os, "text/html");
-
 			String path = getPath(is);
 
 			if(path.equals("/"))
@@ -66,8 +65,10 @@ public class WebWorker implements Runnable
 			
 			File file = new File("." + path);
 
-			if(file.exists())
+			if(file.exists()){
+				writeHTTPHeader(os, "text/html");
 				serveHTML(os, path.substring(1));
+			}
 			else
 				pageNotFound(os);
 
@@ -141,22 +142,23 @@ public class WebWorker implements Runnable
 	 **/
 	private void serveHTML(OutputStream os, String path) throws Exception
 	{
-		BufferedReader fileReader = new BufferedReader(new FileReader(path));
+		BufferedReader r = new BufferedReader(new FileReader(path));
 		String line;
-		while ((line = fileReader.readLine()) != null) {
-		   os.write(line.getBytes());
+		while ((line = r.readLine()) != null) {
+			line = line.replaceAll("<cs371date>", "<p>" + (new SimpleDateFormat("yyyy-MM-dd")).format(new Date()).toString() + "</p>");
+			line = line.replaceAll("<cs371server>", "<p>YOSIFSERVER012345</p>");
+			os.write(line.getBytes());
 		}
-		fileReader.close();
+		r.close();
 	}
 
 	private void pageNotFound(OutputStream os) throws Exception
 	{      
-		BufferedReader fileReader = new BufferedReader(new FileReader("error.html"));
-		String line;
-		while ((line = fileReader.readLine()) != null) {
-		   os.write(line.getBytes());
-		}
-		fileReader.close();
+		os.write("HTTP/1.1 404 Not Found\r\n".getBytes());
+		os.write("Content-Type: text/plain\r\n".getBytes());
+		os.write("Connection: close\r\n".getBytes());
+		os.write("\r\n".getBytes());
+		os.write("404 Not Found".getBytes());
 	
 	} // end class
 
