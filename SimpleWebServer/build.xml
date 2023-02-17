@@ -1,0 +1,30 @@
+<project name = "SimpleWebServer" default = "all" basedir = ".">
+    
+    <!-- Setting the global properties -->
+    <property name="src-dir" location="src/"/>
+    <property name="build-dir" location="bin/"/>
+
+    <!-- Creates build directory and compiles Java program -->
+    <target name="compile">
+        <mkdir dir = "${build-dir}"/>
+        <javac srcdir="${src-dir}"  includeantruntime="false" debug="true" destdir="${build-dir}"/>
+    </target>
+    
+    <!-- Runs the Java program with default argument 8080 -->
+    <target name="run" depends = "compile">
+        <java classname ="edu.nmsu.cs.webserver.WebServer"  classpath = "${build-dir}" fork = "true" dir = "${basedir}">
+         	<arg value = "8080" />
+        </java>
+    </target>
+
+    <!-- Default target to clean, compile and run code -->
+    <target name="all" depends="clean,compile,run"/>
+	
+    <target name="clean">
+        <delete dir="${build-dir}"/>   
+    </target>
+    
+
+</project>
+
+

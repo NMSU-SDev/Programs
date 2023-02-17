@@ -16,6 +16,13 @@ package edu.nmsu.cs.webserver;
  * request; it writes out an HTTP header to begin its response, and then it writes out some HTML
  * content for the response content. HTTP requests and responses are just lines of text (in a very
  * particular format).
+ * 
+ * Changes made on February 16, 2022
+ * - Modified readHTTPRequest to return the file referred to by the GET request 
+ * - Modified  writeHTTPHeader to set the response status to either 200 OK or 404 Not Found 
+ * 	 depending on if GET request refers to an existing filename 
+ * - Modified writeContent to write from the HTML file
+ * 
  *
  **/
 
@@ -28,10 +35,14 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class WebWorker implements Runnable
-{
+// added for reading files
+import java.io.File; 
+import java.io.FileReader; 
+
+public class WebWorker implements Runnable {
 
 	private Socket socket;
+	private String serverID = "Hannah's very own server"; // server ID
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -48,41 +59,70 @@ public class WebWorker implements Runnable
 	 **/
 	public void run()
 	{
-		System.err.println("Handling connection...");
+		System.err.println("Handling connection..."); 
 		try
 		{
-			InputStream is = socket.getInputStream();
-			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
-			os.flush();
-			socket.close();
+		
+		    
+			InputStream is = socket.getInputStream(); // from web browser (client) to us (server). Get from socket object
+			OutputStream os = socket.getOutputStream(); // what we (server) send back to web browser
+			File f = readHTTPRequest(is); // file referred to by the GET request
+			writeHTTPHeader(os, "text/html", f.exists());  // writes HTTP header
+			writeContent(os, f); // writes HTTP contents
+			
+			os.flush(); // clear the output stream
+			socket.close(); // shut down socket
 		}
 		catch (Exception e)
 		{
 			System.err.println("Output error: " + e);
 		}
 		System.err.println("Done handling connection.");
-		return;
-	}
+		return; // thread finished
+	} // end of run
 
+	
+	
+	
 	/**
 	 * Read the HTTP request header.
+	 * 
+	 * @param is
+	 * 		the HTTP request header to read
+	 * @precondition
+	 * 		'is' is a non-null, valid HTTP request header
+	 * @postcondition
+	 * 		reads and prints the HTTP request to the console. Returns the file referred to by the GET request
 	 **/
-	private void readHTTPRequest(InputStream is)
+	
+	private File readHTTPRequest(InputStream is) 
 	{
-		String line;
-		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		
+		String line; // temporally holds a line of input
+		BufferedReader r = new BufferedReader(new InputStreamReader(is)); //to read input data
+		File f = null; // to hold file referred to by GET request
+		
 		while (true)
 		{
 			try
 			{
-				while (!r.ready())
-					Thread.sleep(1);
-				line = r.readLine();
-				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
+				// don't do anything until current data comes in
+				while (!r.ready()) 
+					Thread.sleep(1); 
+				
+				line = r.readLine(); // reads one line of input
+				System.err.println("Request line: (" + line + ")"); // prints requested data to error console
+				
+				// Find the GET line and parse requested file path
+				if(line.contains("GET")){ 
+					String fpath = line.substring(line.indexOf("GET /")+5);
+					fpath = fpath.substring(0,fpath.indexOf(" "));
+					//System.out.println(fpath);
+					f = new File(fpath); // file referred to by the GET request. May not exist
+				}
+				
+				// header terminated by blank line 
+				if (line.length() == 0) 
 					break;
 			}
 			catch (Exception e)
@@ -90,9 +130,12 @@ public class WebWorker implements Runnable
 				System.err.println("Request error: " + e);
 				break;
 			}
-		}
-		return;
-	}
+		} //end of while
+		
+		return f; // return file if it exists
+	} //end of read httpRequest
+	
+	
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -100,39 +143,107 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 * @param contentType
-	 *          is the string MIME content type (e.g. "text/html")
+	 *          is the string MIME content type (e.g. "text/html") img/
+	 * @param fileExists
+	 * 			specifies whether the GET request refers to an existing filename 
+	 * @precondition
+	 * 			os is not null
+	 * 			contentType is not null
+	 * @postcondition
+	 * 			writes HTTP header lines to the client network connection
+	 * 		
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, boolean fileExists) throws Exception 
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
+		
+		// Write 200 OK if file exists. Otherwise, write 404 Not Found
+		if (fileExists == false){
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}else{
+			os.write("HTTP/1.1 200 OK\n".getBytes()); 
+		}
+		
+		// Write current date
+		os.write("Date: ".getBytes()); 
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		
+		// Write serverID
+		os.write(("Server: "+serverID+"\n").getBytes());
+		
+		// Network connection closes after the current transaction finishes
 		os.write("Connection: close\n".getBytes());
+		
+		// content type
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
 		return;
-	}
+		
+	} //end of writeHTTPHeader
 
+	
+	
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
+	 * @param f
+	 * 			the file to write the HTML code from
+	 * @precondition 
+	 * 			os is not null
+	 * 			f is not null
+	 * 			writeHTTPHeader() ran before the execution of this method to to write out the HTTP header
+	 * @postcondition
+	 * 		If file f exists, write the content of the file to the client network connection.
+	 * 		Otherwise, write 404 File Not Found
+	 * @note 
+	 * 		the tag <cs371date> is replaced by a formatted date string for the current date,
+	 *  	and the tag <cs371server> is replaced with the server's identification string
+	 * 				
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, File f) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
-
+		if(!f.exists()) { //throw error if file doesn't exist
+			os.write(("<h1>404 File Not Found</h1>").getBytes());
+			return;
+		}
+       	
+		//file exists
+		FileReader fr = new FileReader(f);
+       	try (BufferedReader br = new BufferedReader(fr)) {
+			
+       		String line; 
+      		while((line = br.readLine()) != null)  {
+            	//System.out.println(line);
+          
+            	// Replace <cs371date> with current time
+            	if (line.contains("<cs371date>")){
+            		Date d = new Date();
+            		DateFormat df = DateFormat.getDateTimeInstance();
+            		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+            		line = line.replace("<cs371date>",  df.format(d));
+            	}
+            	
+            	// Replace <cs371server> with serverID
+            	if (line.contains("<cs371server>")){
+            		line = line.replace("<cs371server>",  serverID);
+            	}
+            	
+            	//write one line of the file to output stream
+            	os.write((line).getBytes());
+           	
+      		} //end of while 
+      		
+       	}// end of try	
+       	
+	} // end of writeContent
+	
+	
+	
 } // end class

@@ -17,7 +17,7 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
+	private ServerSocket	socket; //server socket listens for incoming connections
 
 	private boolean				running;
 
@@ -26,7 +26,7 @@ public class WebServer
 	 **/
 	private WebServer()
 	{
-		running = false;
+		running = false; 
 	}
 
 	/**
@@ -42,9 +42,10 @@ public class WebServer
 		WebWorker worker;
 		try
 		{
-			socket = new ServerSocket(port);
+			socket = new ServerSocket(port); 
+			System.out.println("Web server started! Listening on port "+port+".");
 		}
-		catch (Exception e)
+		catch (Exception e) // if something wrong with hardware, throw exception and exit
 		{
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
@@ -54,7 +55,7 @@ public class WebServer
 			try
 			{
 				// wait and listen for new client connection
-				workerSocket = socket.accept();
+				workerSocket = socket.accept(); //function doesn't end until accepts incoming connection (probably 8080)
 			}
 			catch (Exception e)
 			{
@@ -62,8 +63,8 @@ public class WebServer
 				break;
 			}
 			// have new client connection, so fire off a worker on it
-			worker = new WebWorker(workerSocket);
-			new Thread(worker).start();
+			worker = new WebWorker(workerSocket);	//make new WebWorker object and pass in whatever connected to our machine
+			new Thread(worker).start(); //multithreading = multiple lines of code running at same time
 		}
 		return true;
 	} // end start
@@ -82,7 +83,7 @@ public class WebServer
 	 **/
 	public static void main(String args[])
 	{
-		int port = 8080;
+		int port = 8080; //gets arguments and port number from args
 		if (args.length > 1)
 		{
 			System.err.println("Usage: java Webserver <portNumber>");
@@ -100,10 +101,10 @@ public class WebServer
 				return;
 			}
 		}
-		WebServer server = new WebServer();
-		if (!server.start(port))
+		WebServer server = new WebServer(); // construct WebServer object
+		if (!server.start(port)) // start the server and pass in port
 		{
-			System.err.println("Execution failed!");
+			System.err.println("Execution failed!"); //print error if server fails
 		}
 	} // end main
 
