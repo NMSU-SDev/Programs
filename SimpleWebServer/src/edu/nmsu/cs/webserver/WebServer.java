@@ -17,9 +17,9 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
-
-	private boolean				running;
+	private ServerSocket socket;
+	
+	private boolean	running;
 
 	/**
 	 * Constructor
@@ -43,6 +43,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.out.println("Web Server started! Listening on port: " +port+ ".");
 		}
 		catch (Exception e)
 		{
