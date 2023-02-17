@@ -14,19 +14,17 @@ package edu.nmsu.cs.webserver;
  **/
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.*;
 
 public class WebServer
 {
-	private ServerSocket	socket;
-
-	private boolean				running;
+	private ServerSocket socket;
 
 	/**
 	 * Constructor
 	 **/
 	private WebServer()
 	{
-		running = false;
 	}
 
 	/**
@@ -43,6 +41,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.out.println("Web Server started! Listening on port:" + port + ".");
 		}
 		catch (Exception e)
 		{

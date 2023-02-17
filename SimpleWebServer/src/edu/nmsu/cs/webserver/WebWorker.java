@@ -19,10 +19,8 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
+import java.lang.Runnable;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
@@ -32,6 +30,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private static String fileName;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -49,50 +48,77 @@ public class WebWorker implements Runnable
 	public void run()
 	{
 		System.err.println("Handling connection...");
+		boolean path = false;
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
+			path = readHTTPRequest(is);
+			
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			writeContent(os, path);
 			os.flush();
 			socket.close();
-		}
+		} //End try
+
 		catch (Exception e)
 		{
 			System.err.println("Output error: " + e);
-		}
+		} //End catch
+
 		System.err.println("Done handling connection.");
 		return;
-	}
+	} //End run
 
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private boolean readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		while (true)
-		{
+		while(true) {
 			try
 			{
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
+				System.out.println(("LINE: " + line + "\n"));
+				if( line.contains( "res") && line.contains(".html") && line.contains( "GET") ){
+					String refined[] = line.split( " " );
+					fileName = refined[1].substring(9);
+					System.out.println("FILE: " + fileName + "\n");
+					File newOne = new File( fileName );
+					BufferedReader that = new BufferedReader(new FileReader( newOne ) );
+					if( that.read() != -1 )
+						return true;
+				} //End if
+
+				if ( line.contains( ".html" ) && line.contains("GET")){
+					String refineLine[] = line.split( " " );
+					fileName = refineLine[1].substring(1);
+					System.out.println( "Got file: " + fileName );
+					File newFile = new File( fileName );
+					BufferedReader there = new BufferedReader(new FileReader( newFile ));
+					if( there.read() != -1 ){
+						return true;
+					}
+				} //End if
+
+				if (line.length()==0) 
 					break;
-			}
-			catch (Exception e)
-			{
-				System.err.println("Request error: " + e);
-				break;
-			}
-		}
-		return;
-	}
+			} //End try
+
+				catch (Exception e)
+				{
+					System.err.println("Request error: " + e);
+					break;
+				} //End catch
+			} //End while
+		return false;
+	} //End HTTPRequest
+
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -112,14 +138,15 @@ public class WebWorker implements Runnable
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
 		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		//os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+		//os.write("Content-Length: 438\n".getBytes()); 
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
-	}
+   		return;
+
+	} //End writeHTTPHeader
 
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
@@ -128,11 +155,37 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, boolean getIt) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
+		if (getIt == true) 
+		{
+			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
+       		String line = reader.readLine();
+       		String dateString = "";
 
+			while (line != null) {
+				if( line.contains("<cs371date>")){
+					Date da = new Date();
+					DateFormat daf = DateFormat.getDateTimeInstance();
+					daf.setTimeZone(TimeZone.getTimeZone("GMT"));
+					String datee = daf.format(da);
+					dateString = line.replace( "<cs371date>", datee );
+					line = dateString;
+				} //End if
+
+				if ( line.contains("<cs371server>")) {
+					dateString = line.replace( "<cs371server>", "Sarah's server" );
+					line = dateString;
+				} //End if
+				os.write((line + "\n").getBytes());
+				line = reader.readLine();	
+			} //End while
+		} //End if
+
+		else {
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>HTTP/1.1 404 Not Found</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}//end else
+	} //End WriteContent
 } // end class
