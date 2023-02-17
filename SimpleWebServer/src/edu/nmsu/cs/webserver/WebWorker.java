@@ -24,14 +24,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class WebWorker implements Runnable
-{
+{   // Stores file path
+	private String filePath;
 
 	private Socket socket;
+	
+	// Keeps track if file exists
+	private static boolean tag;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -78,9 +87,26 @@ public class WebWorker implements Runnable
 		{
 			try
 			{
-				while (!r.ready())
+				while (!r.ready()) {
 					Thread.sleep(1);
+				}
+				
 				line = r.readLine();
+
+				// Stores path of GET request
+				if (line.startsWith("GET")) {
+					String [] request = line.split(" ");
+					filePath = request[1];
+
+					Path test = Paths.get(filePath.substring(1));
+					
+					// Updates tag to whether file exists or not
+					if (Files.exists(test) && !Files.isDirectory(test)) 
+						tag = true;
+					else 
+						tag = false;
+				}
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -107,13 +133,19 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+
+		// If file exists, the header status is 200 OK
+		if (tag) {
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+		// If it doesn't, the header status is 404 Not Found
+		else {
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Pat's very own server\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -130,9 +162,37 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		// Formats date accordingly
+		String date = "MMMM, dd yyyy";
+		SimpleDateFormat dateF = new SimpleDateFormat(date);
+		String result = dateF.format(new Date());
+
+		Path file = Paths.get(filePath.substring(1));
+
+		// Checks if file exits once more
+		if (Files.exists(file) && !Files.isDirectory(file)) {
+			// Puts contents of file in list
+			List<String> fileContents = Files.readAllLines(file);
+			
+			// Reads list line by line
+			for (String line : fileContents) {
+				// If a specific tag is found, replace with correct info
+				if (line.contains("<cs371date>")) {
+					line = line.replace("<cs371date>", result);
+				}
+				if (line.contains("<cs371server>"))
+					line = line.replace("<cs371server>", "Patrick Jojola's server");
+				// Prints line to screen
+				os.write(line.getBytes());
+			}
+		}
+		
+		// File doesn't exist, 404 Not Found html body is produced
+		else {
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h1>404 File Not Found</h1>\n".getBytes());
+			os.write("</body></html>".getBytes());
+		}
 	}
 
 } // end class
