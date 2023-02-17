@@ -4,10 +4,10 @@
 2. Estimate the time it took you to complete the assignment,
    broken down as:
 
-    Thought/Design: ______________
-    Programming: _________________
-    Debugging: ___________________
-    TOTAL: ______________________
+    Thought/Design: 2 hours
+    Programming: 3 hours
+    Debugging: 1 hour
+    TOTAL: 6 hours
 
 3. To within what percent accuracy was your original
-   estimate: ________________
+   estimate: ~75%
