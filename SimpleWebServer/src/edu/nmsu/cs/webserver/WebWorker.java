@@ -33,7 +33,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-	
+	public boolean exsitingFile;
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -66,7 +66,7 @@ public class WebWorker implements Runnable
 		}
 		System.err.println("Done handling connection.");
 		return;
-	}
+	} //end run
 
 	/**
 	 * Read the HTTP request header.
@@ -86,14 +86,13 @@ public class WebWorker implements Runnable
 				// When the request line is at GET, it typically has the file location/directory
 				
 				if (line.contains("GET")){
-					String lineManip = line.substring(4,line.indexOf("HTTP")); //index 4 due to GET and the space after
-					System.out.println("**********" + lineManip + "****" );
-
+					//get the file seperated from the GET and HTTP portion of the request line
+					String lineManip = line.substring((line.indexOf("/") + 1), (line.indexOf("HTTP") - 1)); 
 					File inputFile = new File(lineManip);
 					if(inputFile.exists()){
-						System.out.println("**********FILE EXISTS 200 OK **********");
+						exsitingFile = true;
 					}else{
-						System.out.println("**********NO FILE EXISTS 404 ERROR **********");						
+						exsitingFile = false;
 					}
 				}
 
@@ -108,7 +107,7 @@ public class WebWorker implements Runnable
 			}
 		}
 		return;
-	}
+	} //end readHTTPRequest
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -124,6 +123,7 @@ public class WebWorker implements Runnable
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
+		//200 OK if the file exists and 404 Error if the file doesn't exist
 		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
