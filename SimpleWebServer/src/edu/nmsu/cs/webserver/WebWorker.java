@@ -19,14 +19,21 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+ // cd C:\Users\brock\OneDrive\Desktop\SWD371\Programs\SimpleWebServer\src
+ // javac edu/nmsu/cs/webserver/*.java -d ../bin
+ // cd..
+ // java -cp bin edu.nmsu.cs.webserver.WebServer
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.FileReader;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.*;
 
 public class WebWorker implements Runnable
 {
@@ -53,9 +60,13 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+
+			// 2/17/23 
+			// Altered readHTTPRequest and writeHTTPHeader to return string
+			// They each return the served HTML file in string formart
+			String res = readHTTPRequest(is);
+			String final_res = writeHTTPHeader(os, "text/html", res);
+			writeContent(os, final_res);
 			os.flush();
 			socket.close();
 		}
@@ -70,7 +81,7 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
@@ -82,16 +93,70 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+
 				if (line.length() == 0)
 					break;
-			}
+
+				// Split each reaed line by whitespace
+				String[] splitStr = line.trim().split("\\s+");
+				int stringSize = splitStr.length;
+
+				// Iterate over elements of string
+				for (int i = 0; i < stringSize; i++){
+
+					// If we have an 'GET' - then we know the next element is path
+					if (splitStr[i].equals("GET")) {
+
+						// THIS IS OUR PATH - splitStr[i+1]
+						String path = splitStr[i + 1];
+
+						// Get path up to SimpleWebServer
+						String prefix_path = System.getProperty("user.dir");
+
+						// Append the path to SWS and to target HTML file
+						String final_path = prefix_path + path;
+
+						// Correct forward slashes
+						String fixed_path = final_path.replace("/","\\");
+
+						// Instantiate builder to return string
+						StringBuilder html = new StringBuilder();
+
+						// TRY - to read file path
+						// If we cannot read, we default to 404
+						try {
+							FileReader fr = new FileReader(final_path);
+
+							BufferedReader br = new BufferedReader(fr);
+
+							String val;
+							while (((val = br.readLine()) != null)){
+								html.append(val);
+							}
+
+							String result = html.toString();
+							System.err.println("Content received, continuing to writeHeader...");
+							return result;
+							
+						} // try
+						
+						// If we can't serve the provided HTML, return 404
+						catch(Exception ex){
+							return "404";
+
+						} // catch
+
+					} // if
+				} // for 
+			} //try 
+
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
 			}
 		}
-		return;
+		return "";
 	}
 
 	/**
@@ -102,23 +167,46 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	/*
+	 * Brock Middleton - 2/17/23
+	 * Added parameter 'result
+	 * Result is the content from the served HTML file
+	 * If we were given an HTML file, but could not read it, we return 404
+	 * If we were not given an HTML, we return a default page. 
+	*/
+	private String writeHTTPHeader(OutputStream os, String contentType, String result) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		String strDate = df.format(d);
+
+		// If result is 404, give proper header
+		if (result == "404"){
+			os.write("HTTP/1.1 404 NOT FOUND".getBytes());
+		}
+		else {
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+
+		// Replace DateTag
+		String result1 = result.replace("<cs371date>", strDate);
+		// Replace ServerTag
+		String result2 = result1.replace("<cs371server>", "Brock's web server");
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Brock's web server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+		System.err.println("Header written, continuing to writeContent...");
+
+		return result2;
 	}
 
 	/**
@@ -128,11 +216,25 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String result) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		// If 404, write 404
+		if (result == "404"){
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 - file not found.</h3>\n".getBytes());
+		    os.write("</body></html>\n".getBytes());
+
+		}
+		// If no HTML provided, give default
+		else if (result.length() == 0){
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>Brock's web server works! No HTML file provided.</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+		// Else, write result
+		else {
+			os.write(result.getBytes());
+		}
 	}
 
 } // end class
