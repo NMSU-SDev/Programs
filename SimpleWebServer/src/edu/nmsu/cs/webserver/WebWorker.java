@@ -20,17 +20,25 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Scanner;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class WebWorker implements Runnable
 {
-
+	//added global variables
+	public static String version;
+	public static String status;
+	public static final String INDEX = "hello.html";
+	
 	private Socket socket;
 
 	/**
@@ -55,7 +63,7 @@ public class WebWorker implements Runnable
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			writeContent(os); //return webpage
 			os.flush();
 			socket.close();
 		}
@@ -74,6 +82,7 @@ public class WebWorker implements Runnable
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		
 		while (true)
 		{
 			try
@@ -82,6 +91,17 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				
+				//check GET request
+				if(line.startsWith("GET")) {
+					version = line.trim().substring(4);
+					if(version.contains(INDEX) || version.contains("1.1")) {
+						status = "200 OK";
+					} else {
+						status = "404 File not Found";
+					}
+				}
+				
 				if (line.length() == 0)
 					break;
 			}
@@ -107,11 +127,16 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		
+		//os.write("HTTP/1.1 200 OK\n".getBytes());
+		os.write(version.getBytes());
+		os.write(" ".getBytes());
+		os.write(status.getBytes());
+		os.write("\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: David's server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -129,10 +154,44 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	{   
+		Date d = new Date();
+		DateFormat df = DateFormat.getDateTimeInstance();
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		
+		if(status.contains("404")) {
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 File not Found</h3>\n".getBytes());
+			os.write("<h2>oopsie whoopsie</h2>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+		//read from html file
+		try {
+			File page = new File(INDEX);
+			Scanner in = new Scanner(page);
+			while(in.hasNextLine()) {
+				String line = in.nextLine();
+				if(line.contains("<cs371date>")) {
+					line.replace("<cs371date>", df.format(d));
+				}
+				if(line.contains("<cs371server>")) {
+					line.replace("<cs371server>", "David's server");
+				}
+				os.write(line.getBytes());
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+	      System.out.println("An error occurred.");
+	      e.printStackTrace();
+	      os.write("<html><head></head><body>\n".getBytes());
+	      os.write("<h3>404 File not Found</h3>\n".getBytes());
+	      os.write("<h2>oopsie whoopsie</h2>\n".getBytes());
+	      os.write("</body></html>\n".getBytes());
+	    }
+		
+		//os.write("<html><head></head><body>\n".getBytes());
+		//os.write("<h3>My web server works!</h3>\n".getBytes());
+		//os.write("</body></html>\n".getBytes());
 	}
 
 } // end class

@@ -19,7 +19,7 @@ public class WebServer
 {
 	private ServerSocket	socket;
 
-	private boolean				running;
+	private boolean		running;
 
 	/**
 	 * Constructor
@@ -43,6 +43,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.err.println("listening on port "+port);
 		}
 		catch (Exception e)
 		{
