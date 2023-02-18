@@ -1,0 +1,8 @@
+Estmiate time: around 4 hours or so.
+
+Thought/design: 15-20 mins
+Programming: 30-40 mins
+Debugging: 2 hours
+Total: just under ~3hours
+
+3: I was around the orignial estimate: adding in an extra hour to just make sure it worked.
