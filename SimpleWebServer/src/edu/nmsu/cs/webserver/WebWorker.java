@@ -38,6 +38,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String serverID = "Ruby H's webserver";
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -142,7 +143,7 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 			if(line.contains("<cs371date>")){
 				line = line.replace("<cs371date>", df.format(d));
 			} if(line.contains("<cs371server>")){
-				line = line.replace("<cs371server>", "Ruby H's webserver");
+				line = line.replace("<cs371server>", serverID);
 			} // end if
 
 			os.write(line.getBytes()); // write each line of file to webpage
@@ -177,9 +178,10 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
 
-		// if we encounter a reading error write 404 not found
 		fName = fName.substring(5,fName.length()-9); // getting only file name itself
 
+		// if we encounter a reading error write 404 not found
+		// Else write 200 OK
 		File f = new File(fName);
 		if(!f.exists() || f.isDirectory()) { 
 			os.write("HTTP/1.1 404 Not Found\n".getBytes());
@@ -190,7 +192,7 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Ruby's very own server\n".getBytes());
+		os.write(("Server: " + serverID + "\n").getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
