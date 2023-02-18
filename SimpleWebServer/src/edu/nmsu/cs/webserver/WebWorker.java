@@ -129,8 +129,7 @@ public class WebWorker implements Runnable
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		//os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write(version.getBytes());
-		os.write(" ".getBytes());
+		os.write("HTTP/1.1 ".getBytes());
 		os.write(status.getBytes());
 		os.write("\n".getBytes());
 		os.write("Date: ".getBytes());
@@ -172,10 +171,10 @@ public class WebWorker implements Runnable
 			while(in.hasNextLine()) {
 				String line = in.nextLine();
 				if(line.contains("<cs371date>")) {
-					line.replace("<cs371date>", df.format(d));
+					line = line.replace("<cs371date>", df.format(d));
 				}
 				if(line.contains("<cs371server>")) {
-					line.replace("<cs371server>", "David's server");
+					line = line.replace("<cs371server>", "David's server");
 				}
 				os.write(line.getBytes());
 			}
