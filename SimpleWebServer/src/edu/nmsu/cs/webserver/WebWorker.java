@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.io.File;
+import java.io.FileReader;
 
 public class WebWorker implements Runnable
 {
@@ -161,12 +162,33 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		System.out.println(existingFile);
+		
 		if(existingFile){
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h3>My web server works!</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
+
+			/* The following code is taken from https://stackoverflow.com/questions/12035316/reading-entire-html-file-to-string 
+			 * from the user Jean Logeart (lifesaver, thanks Jean)
+			 * 
+			 * the file adjustments (to be implemented) is done by me, Alen 
+			*/
+			StringBuilder contentBuilder = new StringBuilder();
+			try {
+				BufferedReader input = new BufferedReader(new FileReader(fileDirectory));
+				String htmlFile;
+				while ((htmlFile = input.readLine()) != null) {
+					contentBuilder.append(htmlFile);
+				}
+				input.close();
+			}catch(Exception e){ /*do nothing*/ }
+
+			String write = contentBuilder.toString();
+			os.write(write.getBytes());
+			
+			
 		}else{
+			//throw the 404 error
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h1><b>404 Error! File Not Found</b></h1>\n".getBytes());
 			os.write("<h3>File Directory: </h3>\n".getBytes());
