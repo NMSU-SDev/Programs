@@ -130,32 +130,24 @@ private void writeHTTPHeader(OutputStream os, String contentType, String status)
 **/
 private void writeContent(OutputStream os, String status) throws Exception
 {
-   
    Path file = Paths.get(filename.substring(1));
    if (Files.exists(file)) {
       List<String> contents = Files.readAllLines(file);
-     // for (String line : contents) {
-         //replace tags with the date
-         
-        Date currentDate = new Date();
-        SimpleDateFormat DateFormat = new SimpleDateFormat ("MMM. d, yyyy");
-        String formattedDate = DateFormat.format(currentDate);
-        replaceAll("<cs371date>", formattedDate);
-
-        // String serverIdentifier = "MyWebServer/1.0";
-        // String content = "<p> Server ID: <cs371server></p>\n";
-        // content = content.replaceAll("<cs371server", serverIdentifier);
-         
-
-
-       //  os.write(html.getBytes());
-      //   os.write(line.getBytes());
-     // }
+      for (String line : contents) {
+         // Replace <cs371date> with current date
+         Date currentDate = new Date();
+         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM. d, yyyy");
+         String formattedDate = dateFormat.format(currentDate);
+         line = line.replaceAll("<cs371date>", formattedDate);
+         // Replace <cs371server> with server identification string
+         line = line.replaceAll("<cs371server>", "MyServer/1.0");
+         os.write(line.getBytes());
+      }
    } else {
-      os.write("<html><head></head><body>\n".getBytes());
-      os.write("<h3>404 File not found!</h3>\n".getBytes());
-      os.write("</body></html>\n".getBytes());
+      // file not found
+      os.write(("HTTP/1.1 404 Not Found\n\n" + "<html><body><h1>File not found</h1></body></html>").getBytes());
    }
 }
+
 
 } // end class
