@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.List;
+import java.net.InetAddress;
 
 public class WebWorker implements Runnable
 {
@@ -133,6 +134,7 @@ private void writeContent(OutputStream os, String status) throws Exception
    Path file = Paths.get(filename.substring(1));
    if (Files.exists(file)) {
       List<String> contents = Files.readAllLines(file);
+      InetAddress inetAddress = InetAddress.getLocalHost();
       for (String line : contents) {
          // Replace <cs371date> with current date
          Date currentDate = new Date();
@@ -140,7 +142,7 @@ private void writeContent(OutputStream os, String status) throws Exception
          String formattedDate = dateFormat.format(currentDate);
          line = line.replaceAll("<cs371date>", formattedDate);
          // Replace <cs371server> with server identification string
-         line = line.replaceAll("<cs371server>", "MyServer/1.0");
+         line = line.replaceAll("<cs371server>", inetAddress.getHostName());
          os.write(line.getBytes());
       }
    } else {
