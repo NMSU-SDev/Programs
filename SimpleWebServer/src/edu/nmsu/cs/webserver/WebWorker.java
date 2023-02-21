@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.io.File;
@@ -36,6 +37,7 @@ public class WebWorker implements Runnable
 	private Socket socket;
 	public boolean existingFile;
 	public String fileDirectory = "";
+	public String serverName = "Alen's Server";
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -137,7 +139,7 @@ public class WebWorker implements Runnable
 		}else{
 			//404 Error if the file doesn't exist
 			//throw new HttpRetryException("File Not Found", 404);
-			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+			os.write("HTTP/1.1 404 NOT FOUND\n".getBytes());
 			os.write("Date: ".getBytes());
 			os.write((df.format(d)).getBytes());
 			os.write("\n".getBytes());
@@ -164,9 +166,9 @@ public class WebWorker implements Runnable
 	{
 		
 		if(existingFile){
-			os.write("<html><head></head><body>\n".getBytes());
-			os.write("<h3>My web server works!</h3>\n".getBytes());
-			os.write("</body></html>\n".getBytes());
+			//os.write("<html><head></head><body>\n".getBytes());
+			//os.write("<h3>My web server works!</h3>\n".getBytes());
+			//os.write("</body></html>\n".getBytes());
 
 			/* The following code is taken from https://stackoverflow.com/questions/12035316/reading-entire-html-file-to-string 
 			 * from the user Jean Logeart (lifesaver, thanks Jean)
@@ -183,10 +185,20 @@ public class WebWorker implements Runnable
 				input.close();
 			}catch(Exception e){ /*do nothing*/ }
 
+			
 			String write = contentBuilder.toString();
+
+			//replacing the needed information with the correct information
+			if (write.contains("<cs371server>")){
+				write = write.replace("<cs371server>", serverName);
+			}
+			if (write.contains("<cs371date>")){
+				SimpleDateFormat date = new SimpleDateFormat("MM-dd-YYYY");
+				write = write.replace("<cs371date>", date.format(new Date()));
+			}
+			
+			
 			os.write(write.getBytes());
-			
-			
 		}else{
 			//throw the 404 error
 			os.write("<html><head></head><body>\n".getBytes());
