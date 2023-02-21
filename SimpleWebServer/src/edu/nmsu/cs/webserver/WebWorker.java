@@ -66,7 +66,7 @@ public class WebWorker implements Runnable
 			File file = new File("." + path);
 
 			if(file.exists()){
-				writeHTTPHeader(os, "text/html");
+				writeHTTPHeader(os, getContentType(file));
 				serveHTML(os, path.substring(1));
 			}
 			else
@@ -160,6 +160,21 @@ public class WebWorker implements Runnable
 		os.write("\r\n".getBytes());
 		os.write("404 Not Found".getBytes());
 	
-	} // end class
+	}
 
+	private static String getContentType(File file){
+		String name = file.getName();
+		if(name.endsWith("jpeg")){
+			return "image/jpeg";
+		}
+		else if(name.endsWith("png")){
+			return "image/png";
+		}
+		else if(name.endsWith("gif")){
+			return "image/gif";
+		}
+		else{
+			return "text/html";
+		}
+	}
 }
