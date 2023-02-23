@@ -13,6 +13,12 @@ This assignment relies on the Coverage programs.
 ## Program 4
 This assignment relies on the Circles programs. 
 
+# Program 1 (2/17/23)
+In this program, all changes were made in SimpleWebServer
+    - Added functionality to 'build.xml'. Now compiles, builds, and runs Java project.
+    - Added ability to serve html files to web server given a directory.
+    - Filled in questions for Program 1. (Worktime estimation)
+
 # Lab 1 (1/24/23)
 In this lab, I created a personal GitHub account, forked, and cloned the required repository at link: https://github.com/NMSU-SDev/Programs
 

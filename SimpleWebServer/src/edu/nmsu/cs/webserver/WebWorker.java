@@ -20,9 +20,7 @@ package edu.nmsu.cs.webserver;
  **/
 
  // cd C:\Users\brock\OneDrive\Desktop\SWD371\Programs\SimpleWebServer\src
- // javac edu/nmsu/cs/webserver/*.java -d ../bin
- // cd..
- // java -cp bin edu.nmsu.cs.webserver.WebServer
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -137,7 +135,7 @@ public class WebWorker implements Runnable
 							String result = html.toString();
 							System.err.println("Content received, continuing to writeHeader...");
 							return result;
-							
+
 						} // try
 						
 						// If we can't serve the provided HTML, return 404
