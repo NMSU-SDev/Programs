@@ -209,6 +209,10 @@ public class WebWorker implements Runnable
 			if (fileDirectory.equals("")){
 				os.write("<h3>(null) : check if the URL contains a file directory and not just localhost:[PORT]</h3>\n".getBytes());
 				os.write("</body></html>\n".getBytes());
+			}else if(fileDirectory.equals("hello")){
+				os.write(fileDirectory.getBytes());
+				os.write("Did you mean <a href=\"hello.html\">localhost:8080/hello.html</a> ?".getBytes());
+
 			}else{
 				os.write(fileDirectory.getBytes());
 				os.write("</body></html>\n".getBytes());
