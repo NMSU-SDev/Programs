@@ -108,11 +108,10 @@ public class WebWorker implements Runnable {
                fileReq = new File(fileName);
 
                // determine availability
-               if (fileReq.exists() || fileName == "")
-                  fileFound = true;
-               else
+               if (!fileReq.exists())
                   fileFound = false;
-
+                  
+               System.err.println("File Name: " + fileName);
                // debug print
                System.err.println("Requested file found: " + fileFound);
 
@@ -193,7 +192,6 @@ public class WebWorker implements Runnable {
             if (fileLine.contains("<cs371server>")) {
                fileLine = fileLine.replace("<cs371server>", cs371server);
             }
-            System.err.println(fileLine + '\n');
             os.write((fileLine + '\n').getBytes());
             fileLine = br.readLine();
          }

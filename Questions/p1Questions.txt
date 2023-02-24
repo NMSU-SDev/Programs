@@ -1,0 +1,11 @@
+1. Estimate the time it will take you to do the assignment, to within a quarter-hour:
+    Since I have no web server experience, my best guess is 4 hours total to learn and design
+    And learn how build files using ant works.
+
+2. Estimate the time it took you to complete the assignment, broken down as:
+    Thought/Design: 2 hours 30 mins
+    Programming:    1 hour 45 mins
+    Debugging:      45 mins
+    Total:          5 hours
+
+3. To within what percent accuracy was your original estimate: 80%
