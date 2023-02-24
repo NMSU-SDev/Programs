@@ -28,6 +28,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import javax.management.ConstructorParameters;
+
 import java.io.File;
 import java.io.FileReader;
 
@@ -172,21 +175,24 @@ public class WebWorker implements Runnable
 
 			/* The following code is taken from https://stackoverflow.com/questions/12035316/reading-entire-html-file-to-string 
 			 * from the user Jean Logeart (lifesaver, thanks Jean)
-			 * 
-			 * the file adjustments (to be implemented) is done by me, Alen 
+			 * the file adjustments is done by me, Alen 
 			*/
+			
+			// reading the inputted html file
 			StringBuilder contentBuilder = new StringBuilder();
 			try {
 				BufferedReader input = new BufferedReader(new FileReader(fileDirectory));
 				String htmlFile;
 				while ((htmlFile = input.readLine()) != null) {
 					contentBuilder.append(htmlFile);
+					//to make sure the html code is not on just one line
+					//can be seen in browser > inspect > network > [filename] > response
+					contentBuilder.append("\n"); 
 				}
 				input.close();
 			}catch(Exception e){ /*do nothing*/ }
 
-			
-			String write = contentBuilder.toString();
+			String write = contentBuilder.toString(); // making the html file as a string to be written to os
 
 			//replacing the needed information with the correct information
 			if (write.contains("<cs371server>")){
@@ -196,9 +202,8 @@ public class WebWorker implements Runnable
 				SimpleDateFormat date = new SimpleDateFormat("MM-dd-YYYY");
 				write = write.replace("<cs371date>", date.format(new Date()));
 			}
-			
-			
 			os.write(write.getBytes());
+
 		}else{
 			//throw the 404 error
 			os.write("<html><head></head><body>\n".getBytes());
@@ -210,9 +215,9 @@ public class WebWorker implements Runnable
 				os.write("<h3>(null) : check if the URL contains a file directory and not just localhost:[PORT]</h3>\n".getBytes());
 				os.write("</body></html>\n".getBytes());
 			}else if(fileDirectory.equals("hello")){
+				//if the file is similar to hello.html, show this recommendation
 				os.write(fileDirectory.getBytes());
 				os.write("Did you mean <a href=\"hello.html\">localhost:8080/hello.html</a> ?".getBytes());
-
 			}else{
 				os.write(fileDirectory.getBytes());
 				os.write("</body></html>\n".getBytes());
