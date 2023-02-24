@@ -2,5 +2,10 @@ Question 1:
     I would say that this assignment would take me a total of an hour or two to finish.
 
 Question 2:
-
-Question 3:
+    Thought/Design: Half an hour
+    Programming: An Hour
+    Debugging: Two hours: The majority of debugging happened when creating the Ant file. Other points of debugging can be found in "checking if file exists" portion of code.
+               A couple of minutes spent on hello.html to make it "look prettier".
+    TOTAL: ~ 3-1/2 hours 
+    
+Question 3: It was about 57% within my estimation.
