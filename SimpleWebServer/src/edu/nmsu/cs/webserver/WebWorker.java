@@ -27,6 +27,7 @@ package edu.nmsu.cs.webserver;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -45,7 +46,7 @@ import java.util.TimeZone;
 public class WebWorker implements Runnable
 {
 	// used to enable debug statements
-	boolean myDebug = false;
+	boolean myDebug = true;
 
 	private Socket socket;
 
@@ -76,15 +77,72 @@ public class WebWorker implements Runnable
 			// read request and store output (path) of method into string 'path'
 			String path = readHTTPRequest(is);
 			
-			// write the HTTP Header to output stream, give 'path' as parameter to determine
-			// whether file trying to be served is valid or not, then output the correct 
-			// HTTP header based on validity
-			writeHTTPHeader(os, "text/html", path);
+			// File object contains possible path
+			File checkPath = new File(System.getProperty("user.dir") + path);
 			
-			// write data content to client network connection, give 'path' as parameter to determine
-			// whether file trying to be served is valid or not, then output the correct content
-			// based on validity
-			writeContent(os, path);
+			// request is a ".gif" file and is valid file path
+			if((path.substring(path.length()-4).compareTo(".gif") == 0) && checkPath.exists()){
+				// write the HTTP Header to output stream, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct 
+				// HTTP header based on validity
+				writeHTTPHeader(os, "image/gif", path);
+				if(myDebug) {
+					System.out.println("----[.gif] recognized----");
+				}
+				
+				// write data content to client network connection, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct content
+				// based on validity
+				writeContent(os, path, 0);
+			}
+			
+			// request is a ".jpg" file and is valid file path
+			else if((path.substring(path.length()-4).compareTo(".jpg") == 0) && checkPath.exists()){
+				// write the HTTP Header to output stream, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct 
+				// HTTP header based on validity
+				writeHTTPHeader(os, "image/jpg", path);
+				if(myDebug) {
+					System.out.println("----[.jpg] recognized----");
+				}
+				
+				// write data content to client network connection, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct content
+				// based on validity
+				writeContent(os, path, 0);
+			}
+			
+			// request is a ".png" file and is valid file path
+			else if((path.substring(path.length()-4).compareTo(".png") == 0) && checkPath.exists()){
+				// write the HTTP Header to output stream, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct 
+				// HTTP header based on validity
+				writeHTTPHeader(os, "image/png", path);
+				if(myDebug) {
+					System.out.println("----[.png] recognized----");
+				}
+				
+				// write data content to client network connection, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct content
+				// based on validity
+				writeContent(os, path, 0);
+			}
+			
+			// request is a ".html" file or INCORRECT FILE/PATH NAME
+			else{
+				// write the HTTP Header to output stream, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct 
+				// HTTP header based on validity
+				writeHTTPHeader(os, "text/html", path);
+				if(myDebug) {
+					System.out.println("----[.html] recognized----");
+				}
+				
+				// write data content to client network connection, give 'path' as parameter to determine
+				// whether file trying to be served is valid or not, then output the correct content
+				// based on validity
+				writeContent(os, path, 1);
+			}
 			
 			// flush the output stream
 			os.flush();
@@ -101,8 +159,10 @@ public class WebWorker implements Runnable
 		System.err.println("Done handling connection.");
 		
 		return;
-	}
+		
+	} // end of run()
 
+	
 	/**
 	 * Read the HTTP request header.
 	 **/
@@ -147,9 +207,11 @@ public class WebWorker implements Runnable
 				// 'path' is the directory where the file is that we must serve
 				path = tokens[1];
 				
-				// debug statement: file path
+				// debug statement: file path and favicon info
 				if(myDebug) {
 					System.out.println(path);
+//					String favicon = tokens[3];
+//					System.out.println(favicon);
 				}
 				
 				// return path as string
@@ -163,8 +225,10 @@ public class WebWorker implements Runnable
 		}
 		// return path as string
 		return path;
-	}
+		
+	} // end of readHTTPRequest(...)
 
+	
 	/**
 	 * Write the HTTP header lines to the client network connection.
 	 * 
@@ -172,6 +236,8 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
+	 * @param filePath
+	 * 			this is the file path of the file we want to write to output stream
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType, String filePath) throws Exception
 	{
@@ -225,16 +291,23 @@ public class WebWorker implements Runnable
 			os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
 			return;
 		}
-	}
+		
+	} // end of writeHTTPHeader(...)
 
+	
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
+	 * @param filePath
+	 * 			this is the file path of the file we want to write to output stream
+	 * @param type
+	 * 			type 0: ".gif", ".jpg", and ".png" files
+	 * 			type 1: ".html" files
 	 **/
-	private void writeContent(OutputStream os, String filePath) throws Exception
+	private void writeContent(OutputStream os, String filePath, int type) throws Exception
 	{	
 		// File object contains possible path
 		File checkPath = new File(System.getProperty("user.dir") + filePath);
@@ -246,43 +319,71 @@ public class WebWorker implements Runnable
 			os.write("</body></html>\n".getBytes());
 		}
 		
-		// path is valid
+		// path is valid		
 		else {
 			
+			// write content for ".gif", ".jpg", and ".png" files
+			if(type == 0) {
+				if(myDebug) {
+					System.out.println("Writing .gif content to os!");
+				}
+				
+				// read in the file input
+				FileInputStream in = new FileInputStream(new File(System.getProperty("user.dir") + filePath));
+				int cursor;
+				
+				// write out content to output stream
+				while((cursor = in.read()) != -1) {
+					os.write(cursor);	
+				}
+			}
+			
+			// write content for ".html" files
+			else if(type == 1) {
+				if(myDebug) {
+					System.out.println("Writing .html content to os!");
+				}
+				
+				// scanner gets the proper path
+				Scanner scanner = new Scanner(new File(System.getProperty("user.dir") + filePath));
+				
+				// path as string
+				String htmlFile = checkPath.toString();
+				
+				// get path
+				Path path = Paths.get(htmlFile);
+	
+				// store HTML file contents into "content"
+				String content = new String(Files.readAllBytes(path));
+				
+				// check if .html file contains "<img>" tag
+				if(content.contains("<img>")) {
+					content = content.replaceAll("\"\"", "mcgavin.gif");
+				}
+				
+				// set date and time format
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");  
+				
+				// get current date and time
+				LocalDateTime now = LocalDateTime.now();
+				
+				// get date and time as a formatted string
+				String dateTime = dtf.format(now);
+				
+				// replace tag "<cs371date>" with current date and time
+				content = content.replaceAll("<cs371date>", dateTime);
+				
+				// replace tag "<cs371server>" with name of server
+				content = content.replaceAll("<cs371server>", "Rob's Server");
+	
+				// close scanner instance
+				scanner.close();
+				
+				// write the data content to the client network connection
+				os.write(content.getBytes());
+			}
+		}	
 		
-			// scanner gets the proper path
-			Scanner scanner = new Scanner(new File(System.getProperty("user.dir") + filePath));
-			
-			// path as string
-			String htmlFile = checkPath.toString();
-			
-			// get path
-			Path path = Paths.get(htmlFile);
-
-			// store HTML file contents into "content"
-			String content = new String(Files.readAllBytes(path));
-			
-			// set date and time format
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");  
-			
-			// get current date and time
-			LocalDateTime now = LocalDateTime.now();
-			
-			// get date and time as a formatted string
-			String dateTime = dtf.format(now);
-			
-			// replace tag "<cs371date>" with current date and time
-			content = content.replaceAll("<cs371date>", dateTime);
-			
-			// replace tag "<cs371server>" with name of server
-			content = content.replaceAll("<cs371server>", "Rob's Server");
-
-			// close scanner instance
-			scanner.close();
-			
-			// write the data content to the client network connection
-			os.write(content.getBytes());
-		}		
-	}
+	} // end of writeContent(...)
 
 } // end class
