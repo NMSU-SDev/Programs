@@ -82,8 +82,10 @@ public class WebServer
 			new Thread(worker).start();
 		}
 		return true;
+		
 	} // end start
 
+	
 	/**
 	 * Does not do anything, since start() never returns.
 	 **/
@@ -126,6 +128,7 @@ public class WebServer
 		{
 			System.err.println("Execution failed!");
 		}
+		
 	} // end main
 
 } // end class

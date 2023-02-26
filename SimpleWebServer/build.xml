@@ -1,4 +1,4 @@
-<project name="SimpleWebServer" default="build" basedir=".">
+<project name="SimpleWebServer" default="run" basedir=".">
   <description>
     Build file for P1: SimpleWebServer
   </description>
@@ -24,7 +24,7 @@
     <javac includeantruntime="false" srcdir="${src}" destdir="${bin}"/>
   </target>
 
-  <target name="run"
+  <target name="run" depends="build"
         description="run the web server program">
     <!-- Run the Java program given class path -->
         <java classname="edu.nmsu.cs.webserver.WebServer">
