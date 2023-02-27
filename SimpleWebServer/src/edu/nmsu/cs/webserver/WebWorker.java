@@ -20,6 +20,7 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -53,9 +54,21 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
+			String request = readHTTPRequest(is);
+			String url = extractURL(request);
 			writeHTTPHeader(os, "text/html");
 			writeContent(os);
+			if (url.endsWith(".html")){
+				File file = new File(url);
+				if (file.exists() && file.isFile()) {
+					writeHTTPHeader(os, "text/html");
+					writeContent(os);
+				} else {
+					write404Error(os);
+				}
+			// }else {
+			// 	write404Error(os);
+			}
 			os.flush();
 			socket.close();
 		}
@@ -70,10 +83,11 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		StringBuilder request = new StringBuilder();
 		while (true)
 		{
 			try
@@ -81,6 +95,7 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				request.append(line).append("\n");
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -91,8 +106,19 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return request.toString();
 	}
+
+	private String extractURL(String request) {
+        String[] lines = request.split("\n");
+        if (lines.length > 0) {
+            String[] parts = lines[0].split(" ");
+            if (parts.length > 1) {
+                return parts[1];
+            }
+        }
+        return "";
+    }
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -132,6 +158,12 @@ public class WebWorker implements Runnable
 	{
 		os.write("<html><head></head><body>\n".getBytes());
 		os.write("<h3>My web server works!</h3>\n".getBytes());
+		os.write("</body></html>\n".getBytes());
+	}
+
+	private void write404Error(OutputStream os) throws Exception {
+		os.write("<html><head></head><body>\n".getBytes());
+		os.write("<h3>404 Not Found!</h3>".getBytes());
 		os.write("</body></html>\n".getBytes());
 	}
 
