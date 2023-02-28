@@ -20,9 +20,6 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -33,89 +30,103 @@ import java.util.TimeZone;
 import java.io.*;
 import java.lang.Runnable;
 
-public class WebWorker implements Runnable {
+public class WebWorker implements Runnable
+{
 
-    private Socket socket;
-    private String store;
+	private Socket socket;
+	private String store;
 
-    /**
-     * Constructor: must have a valid open socket
-     **/
-    public WebWorker(Socket s) {
-        socket = s;
-    }
+	/**
+	 * Constructor: must have a valid open socket
+	 **/
+	public WebWorker(Socket s)
+	{
+		socket = s;
+	}
 
-    /**
-     * Worker thread starting point. Each worker handles just one HTTP request and
-     * then returns, which destroys the thread. This method assumes that whoever
-     * created the worker created it with a valid open socket object.
-     **/
-    public void run() {
-        System.err.println("Handling connection...");
-        try {
-            InputStream is = socket.getInputStream();
-            OutputStream os = socket.getOutputStream();
+	/**
+	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
+	 * destroys the thread. This method assumes that whoever created the worker created it with a
+	 * valid open socket object.
+	 **/
+	public void run()
+	{
+		System.err.println("Handling connection...");
+		try
+		{
+			InputStream is = socket.getInputStream();
+			OutputStream os = socket.getOutputStream();
 
-            store = readHTTPRequest(is);
+			store = readHTTPRequest(is);
+			
+			writeHTTPHeader(os,"text/html", store);
+			writeContent(os,"text/html", store);
+			os.flush();
+			socket.close();
+		}
+		catch (Exception e)
+		{
+			System.err.println("Output error: " + e);
+		}
+		System.err.println("Done handling connection.");
+		return;
+	}
 
-            writeHTTPHeader(os, "text/html", store);
-            writeContent(os, "text/html", store);
-            os.flush();
-            socket.close();
-        } catch (Exception e) {
-            System.err.println("Output error: " + e);
-        }
-        System.err.println("Done handling connection.");
-        return;
-    }
+	/**
+	 * Read the HTTP request header.
+	 **/
+	private String readHTTPRequest(InputStream is)
+	{
+		String line;
+		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 
-    /**
-     * Read the HTTP request header.
-     **/
-    private String readHTTPRequest(InputStream is) {
-        String line;
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		String store = "";
 
-        String store = "";
+		while (true)
+		{
+			try
+			{
+				while (!r.ready())
+					Thread.sleep(1);
+				line = r.readLine();
+				// store = store + line + "\n";
+				String[] vault = line.split(" ");
 
-        while (true) {
-            try {
-                while (!r.ready())
-                    Thread.sleep(1);
-                line = r.readLine();
-                // store = store + line + "\n";
-                String[] vault = line.split(" ");
+				if(line.contains("GET ")){
+					store = line.substring(4);
+					for(int i = 0; i < store.length(); i++){
+						if(store.charAt(i) == ' '){
+							store = store.substring(0, i);
+						}
+					}
+				}
 
-                if (line.contains("GET ")) {
-                    store = line.substring(4);
-                    for (int i = 0; i < store.length(); i++) {
-                        if (store.charAt(i) == ' ') {
-                            store = store.substring(0, i);
-                        }
-                    }
-                }
+				System.err.println("Request line: (" + line + ")");
+				if (line.length() == 0)
+					break;
+			}
+			catch (Exception e)
+			{
+				System.err.println("Request error: " + e);
+				break;
+			}
+		}
+		return store;
+	}
 
-                System.err.println("Request line: (" + line + ")");
-                if (line.length() == 0)
-                    break;
-            } catch (Exception e) {
-                System.err.println("Request error: " + e);
-                break;
-            }
-        }
-        return store;
-    }
-
-    /**
-     * Write the HTTP header lines to the client network connection.
-     *
-     * @param os          is the OutputStream object to write to
-     * @param contentType is the string MIME content type (e.g. "text/html")
-     **/
-    private void writeHTTPHeader(OutputStream os, String contentType, String store) throws Exception {
-        Date d = new Date();
-        DateFormat df = DateFormat.getDateTimeInstance();
-        df.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+	/**
+	 * Write the HTTP header lines to the client network connection.
+	 * 
+	 * @param os
+	 *          is the OutputStream object to write to
+	 * @param contentType
+	 *          is the string MIME content type (e.g. "text/html")
+	 **/
+	private void writeHTTPHeader(OutputStream os, String contentType, String store) throws Exception
+	{
+		Date d = new Date();
+		DateFormat df = DateFormat.getDateTimeInstance();
+		df.setTimeZone(TimeZone.getTimeZone("GMT-7"));
 
 		String cp = '.' + store;
 		File file = new File(cp);
@@ -133,9 +144,6 @@ public class WebWorker implements Runnable {
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Mauri's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -157,7 +165,7 @@ public class WebWorker implements Runnable {
 	{
 		Date d = new Date();
 		DateFormat dformat = DateFormat.getDateTimeInstance();
-		dformat.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+		dformat.setTimeZone(TimeZone.getTimeZone("GMT-7"));
 
 		String fcont = "";
 		String copy = "." + store.substring(0, store.length());
@@ -190,13 +198,6 @@ public class WebWorker implements Runnable {
 			os.write("<h1>Error: 404 Not found<h1>\n".getBytes());
 		} // end try-catch
 
-
-
-		/*
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-		*/
 	}
 
 } // end class
