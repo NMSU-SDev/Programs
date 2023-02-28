@@ -1,0 +1,7 @@
+1. Estimate the time it will take you to do the assignment: 2 hours
+2. Thought/Design: 2 hrs
+   Programming: 4 hrs
+   Debugging: 2 hrs
+   Total: 8 hrs
+
+3. Accuracy percent of original: 25%

@@ -1,3 +1,6 @@
+## GitHub Account
+GitHub ID: MoriMnz
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
@@ -16,6 +19,5 @@ This assignment prints Hello World
 ## Questions
 Placeholder for Assignment Questions
 
-## GitHub Account
-GitHub ID: MoriMnz
-In this lab we worked with Git and GitHub. We made several directories and files to experiment with and prepare for future labs.
+## P1
+This lab is to get used to git, create a repo by forking an existing one, perform an initial checkout the repo to individual workspace, add a directory and files to it,and commit it back
