@@ -17,16 +17,14 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
+	private ServerSocket	socket; // listens for incoming connections
 
-	private boolean				running;
 
 	/**
 	 * Constructor
 	 **/
 	private WebServer()
 	{
-		running = false;
 	}
 
 	/**
@@ -43,12 +41,15 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.out.println("Web Server started. Listening on port: " + port );
 		}
 		catch (Exception e)
 		{
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
+
+		// infinite loop until 
 		while (true)
 		{
 			try
@@ -62,6 +63,7 @@ public class WebServer
 				break;
 			}
 			// have new client connection, so fire off a worker on it
+			// so allows new connections 
 			worker = new WebWorker(workerSocket);
 			new Thread(worker).start();
 		}
@@ -80,7 +82,7 @@ public class WebServer
 	 * Application main: process command line and start web server; default port number is 8080 if not
 	 * given on command line.
 	 **/
-	public static void main(String args[])
+	public static void main(String args[]) //String args array is what reads in input
 	{
 		int port = 8080;
 		if (args.length > 1)
