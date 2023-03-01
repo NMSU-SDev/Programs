@@ -46,7 +46,7 @@ import java.util.TimeZone;
 public class WebWorker implements Runnable
 {
 	// used to enable debug statements
-	boolean myDebug = false;
+	boolean myDebug = true;
 
 	private Socket socket;
 
@@ -128,6 +128,14 @@ public class WebWorker implements Runnable
 				writeContent(os, path, 0);
 			}
 			
+			else if(path.compareTo("/favicon.ico") == 0) {
+				writeHTTPHeader(os, "image/x-icon", path);
+				if(myDebug) {
+					System.out.println("----favicon recognized----");
+				}
+				writeContent(os, path, 2);
+			}
+			
 			// request is a ".html" file or INCORRECT FILE/PATH NAME
 			else{
 				// write the HTTP Header to output stream, give 'path' as parameter to determine
@@ -191,6 +199,10 @@ public class WebWorker implements Runnable
 				// read current line
 				line = r.readLine();
 				
+				if(myDebug) {
+					System.out.println(line);
+				}
+				
 				// while line is not of length 0
 				while(!(line.isEmpty())) {
 					
@@ -199,6 +211,10 @@ public class WebWorker implements Runnable
 					
 					// fetch new line
 					line = r.readLine();
+					
+					if(myDebug) {
+						System.out.println(line);
+					}
 				}
 				
 				// this is the first line of input stream (which contains the directory we must attempt to serve)
@@ -245,8 +261,31 @@ public class WebWorker implements Runnable
 		// File object contains possible path
 		File checkPath = new File(System.getProperty("user.dir") + filePath);
 		
+		if(checkPath.toString().contains("favicon")) {
+			
+			if(myDebug) {
+				System.out.println("VALID PATH HEADER USED");
+			}
+			// HTTP header for VALID path trying to be served
+			Date d = new Date();
+			DateFormat df = DateFormat.getDateTimeInstance();
+			df.setTimeZone(TimeZone.getTimeZone("GMT"));
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+			os.write("Date: ".getBytes());
+			os.write((df.format(d)).getBytes());
+			os.write("\n".getBytes());
+			os.write("Server: Rob's very own server\n".getBytes());
+			// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+			// os.write("Content-Length: 438\n".getBytes());
+			os.write("Connection: close\n".getBytes());
+			os.write("Content-Type: ".getBytes());
+			os.write(contentType.getBytes());
+			os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+			return;
+		}
+		
 		// if path is not valid
-		if(!checkPath.exists()) {
+		else if(!checkPath.exists()) {
 			
 			// HTTP header for INVALID path trying to be served
 			if(myDebug) {
@@ -270,7 +309,7 @@ public class WebWorker implements Runnable
 		}
 		
 		// path is valid
-		else {
+		else if(checkPath.exists()) {
 			if(myDebug) {
 				System.out.println("VALID PATH HEADER USED");
 			}
@@ -382,6 +421,45 @@ public class WebWorker implements Runnable
 				// write the data content to the client network connection
 				os.write(content.getBytes());
 			}
+			
+			else if (type == 2) {
+				if(myDebug) {
+					System.out.println("Writing favicon content to os!");
+				}
+				
+				// read in the file input
+				FileInputStream in = new FileInputStream(new File(System.getProperty("user.dir") + "//www//res//acc//favicon.ico"));
+				int cursor;
+				
+				// write out content to output stream
+				while((cursor = in.read()) != -1) {
+					os.write(cursor);	
+				}
+			}
+			
+//			else if (type == 2) {
+//				if(myDebug) {
+//					System.out.println("Writing favicon content to os!");
+//				}
+//				
+//				// scanner gets the proper path
+//				Scanner scanner = new Scanner(new File(System.getProperty("user.dir") + "//index.html"));
+//				
+//				// path as string
+//				String htmlFile = checkPath.toString();
+//				
+//				// get path
+//				Path path = Paths.get(htmlFile);
+//	
+//				// store HTML file contents into "content"
+//				String content = new String(Files.readAllBytes(path));
+//				
+//				// close scanner instance
+//				scanner.close();
+//				
+//				// write the data content to the client network connection
+//				os.write(content.getBytes());
+//			}
 		}	
 		
 	} // end of writeContent(...)
