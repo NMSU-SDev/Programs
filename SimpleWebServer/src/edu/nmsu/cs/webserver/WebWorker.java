@@ -132,8 +132,24 @@ public class WebWorker implements Runnable
 
 			//sends active dir and file dir to searchFile method
 			searchFile(curDir+address);
-
+			return;
 		}
+
+		if(temp[1].equals("png")){
+				System.out.println("png found");
+			return;
+		}
+
+		if(temp[1].equals("jpeg")){
+			System.out.println("jpeg found");
+			return;
+		}
+
+		if(temp[1].equals("gif")){
+			System.out.println("gif found");
+		return;
+		}
+	
 		
 
 	}
@@ -159,7 +175,7 @@ public class WebWorker implements Runnable
 
 				//Checks if current line is a GET request 
 				if(temp[0].equals("GET")){
-
+					System.out.println("-----GET FOUND-----");
 					//Sends page address to getSort method
 					getSort(temp[1]);
 				}
@@ -195,6 +211,7 @@ public class WebWorker implements Runnable
 		if(code == 404){os.write("HTTP/1.1 404 Page not found\n".getBytes());}
 		else {os.write("HTTP/1.1 200 OK\n".getBytes());}
 
+		
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -203,6 +220,7 @@ public class WebWorker implements Runnable
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+		
 		return;
 	}
 

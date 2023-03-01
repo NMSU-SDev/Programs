@@ -10,9 +10,9 @@
     </target>
 
     <target name="run" depends="compile">
-        <dir dir="www"/>
-        <java  classname="edu.nmsu.cs.webserver.WebServer" classpath="bin/">
+        <java  classname="edu.nmsu.cs.webserver.WebServer" classpath="bin/" dir="www" fork="true">
             <arg value="8080"/>
+             
         </java>
     </target>
 
