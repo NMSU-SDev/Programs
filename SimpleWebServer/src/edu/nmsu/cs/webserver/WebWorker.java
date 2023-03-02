@@ -19,6 +19,7 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -53,9 +54,31 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
+
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+
+			String dirL = locRetrieval(is);
+
+			if(dirL.equals("/"))
+			{
+				dirL = "/index.html";
+			}
+			System.err.println(dirL);
+
+			File doc = new File("." + dirL);
+			if(doc.exists())
+			{
+				writeContent(os, dirL.substring(1));
+			}
+			else
+			{
+				error404(os);
+			}
+
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>My web server works!</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+
 			os.flush();
 			socket.close();
 		}
@@ -74,6 +97,7 @@ public class WebWorker implements Runnable
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+
 		while (true)
 		{
 			try
@@ -102,6 +126,7 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
+
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
 		Date d = new Date();
@@ -128,11 +153,69 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String dirLoc) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		try
+		{
+			BufferedReader readFile = new BufferedReader(new FileReader(dirLoc));
+			String data;
+
+			while((data = readFile.readLine()) != null)
+			{
+				data = data.replaceAll("<cs371date>","2/17/23");
+				data = data.replaceAll("<cs371server>", "myEpicServer.nmsu.edu");
+				os.write(data.getBytes());
+			}
+
+			readFile.close();
+		}
+		catch(Exception e)
+		{
+			System.err.println("Request error: " + e);
+		}
+	}
+	
+	private String locRetrieval(InputStream inStream)
+	{
+
+		BufferedReader readIn = new BufferedReader(new InputStreamReader(inStream));
+
+		while(true)
+		{
+			try
+			{
+
+				String req = readIn.readLine();
+				System.err.println(req);
+				String[] readList = req.split(" ");
+				return readList[1];
+
+			}
+			catch(Exception e)
+			{
+
+				System.err.println("Request error: " + e);
+				return null;
+
+			}
+		}
+
+	}
+
+	private void error404(OutputStream os) throws Exception
+	{
+		try
+		{
+			System.out.println("Error 404: The page you were looking for was not found.");
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>ERROR 404: PAGE NOT FOUND.</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+			return;
+		}
+		catch(Exception e)
+		{
+			System.err.println("Request error: " + e);
+		}
 	}
 
 } // end class
