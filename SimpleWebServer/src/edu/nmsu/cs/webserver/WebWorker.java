@@ -343,6 +343,7 @@ public class WebWorker implements Runnable
 	 * @param type
 	 * 			type 0: ".gif", ".jpg", and ".png" files
 	 * 			type 1: ".html" files
+	 * 			type 2: favicon
 	 **/
 	private void writeContent(OutputStream os, String filePath, int type) throws Exception
 	{	
@@ -420,6 +421,7 @@ public class WebWorker implements Runnable
 				os.write(content.getBytes());
 			}
 			
+			// write content for favicon
 			else if (type == 2) {
 				if(myDebug) {
 					System.out.println("Writing favicon content to os!");
