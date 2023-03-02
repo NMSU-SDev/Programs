@@ -1,1 +1,7 @@
 I figure this program will take about one hour.
+
+I'm unsure the actual time it took me for this project.
+It is hard to say because I had multiple other issues with my home linux system that needed to be worked out.
+Just working on the code was around one hour. It was possibly less.
+However, if I add the time looking at the code there was 1 hour I spent in class while you were talking about it. And I spent another hour looking it over myself at Dions. So in total about 3 hours. I also spent about a half hour trying to figure out ant. 
+But just coding up the Program 1 was pretty quick. I feel like my estimate was decent.

@@ -65,8 +65,9 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			String fileRequest = readHTTPRequest(is);
-			int status = writeHTTPHeader(os, "text/html", fileRequest);
-			writeContent(os, fileRequest, status);
+			String contentType = readFileType(fileRequest);
+			int HTTPstatus = writeHTTPHeader(os, contentType, fileRequest);
+			writeContent(os, fileRequest, HTTPstatus, contentType);
 			os.flush();
 			socket.close();
 		}
@@ -144,7 +145,7 @@ public class WebWorker implements Runnable
 			os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Ryan's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -171,31 +172,49 @@ public class WebWorker implements Runnable
 	 * 	path to file to read
 	 *
 	 */
-	private void writeContent(OutputStream os, String filePath, int status) throws Exception
+	private void writeContent(OutputStream os, String filePath, int HTTPstatus, String contentType) throws Exception
 	{
-		if(status == 404) {
+		if(HTTPstatus == 404) { // File was not found. Cannot write content.
 			os.write("<!DOCTYPE html><html><body><p>404: Not found</p></body>".getBytes());
 		} else {
-			try {
-				// Get the date
-				Date date = new Date();
-      			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-       			String str = formatter.format(date);
-				// Get a file reader
-				BufferedReader in = new BufferedReader(new FileReader(filePath));
-				String line;
-				while((line = in.readLine()) != null) {
-					line = line.replace("<cs371date>", str);
-					line = line.replace("<cs371server>", "Ryan's server");
-					os.write(line.getBytes());
+			if(contentType.equals("text/html")) { // Case text/html
+				try {
+					// Get the date
+					Date date = new Date();
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+					String str = formatter.format(date);
+					// Get a file reader
+					BufferedReader in = new BufferedReader(new FileReader(filePath));
+					String line;
+					while((line = in.readLine()) != null) {
+						line = line.replace("<cs371date>", str);
+						line = line.replace("<cs371server>", "Ryan's server");
+						os.write(line.getBytes());
+					}
+					in.close();
+					return;
+				} catch(FileNotFoundException e) {
+					System.err.println("File not found.");
+					return;
 				}
-				in.close();
-				return;
-			} catch(FileNotFoundException e) {
-				System.err.println("File not found.");
-				return;
-			}
-		}
+			} else {
+				try {
+					File file=new File(filePath);
+        			os.write(file.getBytes());
+				} catch(FileNotFoundException e) {
+					System.err.println("File not found.");
+					return;
+				}
+			} // end if/else
+		} // end file not found catch
+	}
+
+	private String readFileType(String fileRequest) {
+		if(fileRequest.contains("html")) return "text/html";
+		if(fileRequest.contains("jpeg")) return "image/jpeg";
+		if(fileRequest.contains("png")) return "image/png";
+		if(fileRequest.contains("gif")) return "image/gif";
+		return "text/html";
 	}
 
 } // end class
