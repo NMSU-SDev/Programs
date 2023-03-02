@@ -1,21 +1,7 @@
 <html>
 <head>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var currentDate = new Date();
-      var dateString = currentDate.toLocaleString();
-      var cs317dateElements = document.getElementsByTagName('cs317date');
-      for (var i = 0; i < cs317dateElements.length; i++) {
-        cs317dateElements[i].textContent = dateString;
-      }
-	var cs371serverElements = document.getElementsByTagName('cs371server');
-      for (var i = 0; i < cs371serverElements.length; i++) {
-        cs371serverElements[i].textContent = "Mehran's server";
-      }
-    });
-  </script>
 </head>
 <body>
-<p1>Hello world, the current date is: <cs317date></p1>.<p2> The server is: <cs371server>.</p2>
+<p1>Hello world, the current date is: <cs317date></cs317date>. The server is: <cs371server></cs371server>.</p1>
 </body>
 </html>
