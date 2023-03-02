@@ -3,15 +3,15 @@ package edu.nmsu.cs.webserver;
 //Alexander Acuna
 //2/17/2023
 //CS468
-//Program 1: Simple Web Server
+//Program 1: Simple Web Server P2
 
 /*
  * CHANGELOG:
- * - Added http code and page variables
- * - Added getSort and searchFile methods
- * - Changed readHTTPRequest to allow custom html file support 
- * - Changed writeHTTPHeader to support 404 errors 
- * - Changed writeContent to support 404 errors and custom html pages
+ * - Added image and contentType variables
+ * - Added getImage and searchImage methods
+ * - Changed readHTTPRequest for png/jpeg/gif file support 
+ * - Changed writeHTTPHeader to support listed image file types 
+ * - Added writeImage method 
  */
 
 /**
@@ -49,7 +49,9 @@ import java.util.TimeZone;
 public class WebWorker implements Runnable
 {
 	int code; // Integer for http status code
+	int contentType; //Interger to signify content type
 	File page; // File for html page 
+	File image; // File for images 
 	private Socket socket;
 
 	/**
@@ -72,9 +74,40 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
+
+			//calls http request function 
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+
+			//write header/content switch based on get call content type 
+			switch(contentType){
+				//HTML call
+				case 1: 
+					writeHTTPHeader(os, "text/html");
+					writeContent(os);
+					break;
+				//PNG call
+				case 2: 
+					writeHTTPHeader(os, "image/png");
+					writeImage(os);
+					break;
+				//JPEG call
+				case 3: 
+					writeHTTPHeader(os, "image/jpeg");
+					writeImage(os);
+					break;
+				//GIF call 
+				case 4: 
+					writeHTTPHeader(os, "image/gif");
+					writeImage(os);
+					break;
+				//defaults to html call  
+				default:
+					writeHTTPHeader(os, "text/html");
+					writeContent(os);
+					break;
+			}
+			
+			//flushes Output stream and closes socket 
 			os.flush();
 			socket.close();
 		}
@@ -93,6 +126,7 @@ public class WebWorker implements Runnable
 
 		//Trys to find file 
 		try{
+			System.out.println(fileName);
 			//File set to given address
 			File file = new File(fileName);
 			
@@ -113,13 +147,33 @@ public class WebWorker implements Runnable
 		catch(Exception e){System.out.println("File not found");}
 
 	}
+
+	//Image File searcher: Checks directory for request image 
+	//PRE: image address string
+	//POST: Image file address set 
+	public void searchImage(String fileName){
+		File file = new File(fileName);
+
+		if (file.exists()){
+			System.out.println("Image found");
+			image = file;
+
+		}
+		else{
+			System.out.println("Image not found");
+		}
+
+	}
+
+
 	//GET request handeler to search for html page request 
 	//PRE: GET string from input string
-	//POST:  HTML address if GET HTML request 
+	//POST:  Calls search function depending on GET type and sets contentype variable  
 	public void getSort(String getLine){
 		
 		//string array to split file extension 
 		String temp[] = getLine.split("[.]");
+
 	
 		//html check: icon request ignored 
 		if(temp[1].equals("html")){
@@ -132,21 +186,55 @@ public class WebWorker implements Runnable
 
 			//sends active dir and file dir to searchFile method
 			searchFile(curDir+address);
+			contentType = 1; 
 			return;
 		}
 
+		//PNG GET
 		if(temp[1].equals("png")){
-				System.out.println("png found");
+			//System.out.println("png found");
+
+			//Sets contentType 
+			contentType = 2; 
+			//sets address string to windows file seperators
+			String address = getLine.replaceAll("/", "\\\\");
+
+			//finds active directory to string 
+			String curDir = System.getProperty("user.dir");
+
+			//sends active dir and file dir to searchImage method
+			searchImage(curDir+address);
 			return;
 		}
 
+
+		//JPEG GET
 		if(temp[1].equals("jpeg")){
-			System.out.println("jpeg found");
+			//System.out.println("jpeg found");
+			//Sets contentType
+			contentType = 3; 
+
+			//sets address string to windows file seperators
+			String address = getLine.replaceAll("/", "\\\\");
+
+			//finds active directory to string 
+			String curDir = System.getProperty("user.dir");
+			searchImage(curDir+address);
 			return;
 		}
 
+		//GIF GET
 		if(temp[1].equals("gif")){
-			System.out.println("gif found");
+			//Sets contentType 
+			contentType = 4; 
+
+			//System.out.println("gif found");
+			//sets address string to windows file seperators
+			String address = getLine.replaceAll("/", "\\\\");
+
+			//finds active directory to string 
+			String curDir = System.getProperty("user.dir");
+			searchImage(curDir+address);
 		return;
 		}
 	
@@ -224,6 +312,14 @@ public class WebWorker implements Runnable
 		return;
 	}
 
+	//Image sender function: Writes image to requester
+	//PRE: Image address pre-set
+	//POST: OS writes image to requester
+	void writeImage(OutputStream os )throws Exception{	
+
+		os.write(Files.readAllBytes(image.toPath()));
+	}
+
 	/**
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
@@ -233,6 +329,7 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
+		
 		//404 HTML Message 
 		if(code == 404){
 			os.write("<html><head></head><body>\n".getBytes());
@@ -240,6 +337,8 @@ public class WebWorker implements Runnable
 			os.write("<h3>Sorry, page not found :< </h3>\n".getBytes());
 
 		}
+
+
 		//200 HTML Message 
 		else{
 		
