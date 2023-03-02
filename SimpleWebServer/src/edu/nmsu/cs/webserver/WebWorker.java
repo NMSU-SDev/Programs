@@ -118,11 +118,25 @@ private void writeHTTPHeader(OutputStream os, String contentType, String status)
    os.write("\n".getBytes());
    os.write("Server: Jon's very own server\n".getBytes());
    os.write("Connection: close\n".getBytes());
+   
+   //Determine what type of file is based on extension
+  // String contentType;
+   if (filename.endsWith(".gif")){
+      contentType = "image/gif";
+   } else if (filename.endsWith(".jpeg") || filename.endsWith(".jpg") ){
+      contentType = "image/jpeg";
+   }else if (filename.endsWith(".png")){
+      contentType = "image/png";
+      }else{
+         contentType = "text/html";
+      }
+      
    os.write("Content-Type: ".getBytes());
    os.write(contentType.getBytes());
    os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
    return;
 }
+
 
 /**
 * Write the data content to the client network connection. This MUST
@@ -133,6 +147,8 @@ private void writeContent(OutputStream os, String status) throws Exception
 {
    Path file = Paths.get(filename.substring(1));
    if (Files.exists(file)) {
+      byte[] contents1 = Files.readAllBytes(file);
+      os.write(contents1);
       List<String> contents = Files.readAllLines(file);
       InetAddress inetAddress = InetAddress.getLocalHost();
       for (String line : contents) {
