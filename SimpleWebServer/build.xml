@@ -1,4 +1,4 @@
-<project name="Web Server" default="dist" basedir=".">
+<project name="Web Server" default="run" basedir=".">
 
     <property name="src" location="src" />
     <property name="bin" location="bin" />
@@ -29,8 +29,8 @@
         <delete dir="${dist}"/>
     </target>
 
-    <target name="run">
-        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="bin" fork="true"></java>
+    <target name="run" depends="clean,dist">
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="bin" fork="true" dir="test/"></java>
     </target>
 
 </project>

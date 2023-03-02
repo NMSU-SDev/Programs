@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -67,7 +68,12 @@ public class WebWorker implements Runnable
 
 			if(file.exists()){
 				writeHTTPHeader(os, getContentType(file));
-				serveHTML(os, path.substring(1));
+				if(path.endsWith("html") || path.endsWith("htm")){
+					serveHTML(os, path.substring(1));
+				}
+				else{
+					serveImage(os, file);
+				}
 			}
 			else
 				pageNotFound(os);
@@ -177,4 +183,10 @@ public class WebWorker implements Runnable
 			return "text/html";
 		}
 	}
+
+	private static void serveImage(OutputStream os, File file) throws Exception{
+		byte[] data = Files.readAllBytes(file.toPath());
+		os.write(data);
+	}
 }
+
