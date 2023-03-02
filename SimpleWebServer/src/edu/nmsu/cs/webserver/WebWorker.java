@@ -189,6 +189,8 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 			os.write("HTTP/1.1 200 OK\n".getBytes());
 		}
 
+		if(contentType.equals("image/gif"))
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
