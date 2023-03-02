@@ -46,7 +46,7 @@ import java.util.TimeZone;
 public class WebWorker implements Runnable
 {
 	// used to enable debug statements
-	boolean myDebug = true;
+	boolean myDebug = false;
 
 	private Socket socket;
 
@@ -226,8 +226,6 @@ public class WebWorker implements Runnable
 				// debug statement: file path and favicon info
 				if(myDebug) {
 					System.out.println(path);
-//					String favicon = tokens[0];
-//					System.out.println(favicon);
 				}
 				
 				// return path as string
