@@ -1,4 +1,4 @@
-<project name = "SimpleWebServer" default = "all" basedir = "." >
+<project name = "SimpleWebServer" default = "run" basedir = "." >
     
     <!-- Setting the global properties -->
     <property name="src-dir" location="src/"/>
@@ -17,9 +17,6 @@
         </java>
     </target>
 
-    <!-- Default target to clean, compile and run code -->
-    <target name="all" depends="clean,compile,run"/>
-	
     <target name="clean">
         <delete dir="${build-dir}"/>   
     </target>
