@@ -1,4 +1,4 @@
-<project name = "SimpleWebServer" default = "all" basedir = ".">
+<project name = "SimpleWebServer" default = "all" basedir = "." >
     
     <!-- Setting the global properties -->
     <property name="src-dir" location="src/"/>
@@ -10,9 +10,9 @@
         <javac srcdir="${src-dir}"  includeantruntime="false" debug="true" destdir="${build-dir}"/>
     </target>
     
-    <!-- Runs the Java program with default argument 8080 -->
-    <target name="run" depends = "compile">
-        <java classname ="edu.nmsu.cs.webserver.WebServer"  classpath = "${build-dir}" fork = "true" dir = "${basedir}">
+    <!-- Runs the Java program with default argument 8080, out of www subfolder -->
+    <target name="run" depends = "clean,compile">
+        <java classname ="edu.nmsu.cs.webserver.WebServer"  classpath = "${build-dir}" fork = "true" dir = "${basedir}/www">
          	<arg value = "8080" />
         </java>
     </target>

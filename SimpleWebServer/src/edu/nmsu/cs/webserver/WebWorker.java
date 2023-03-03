@@ -18,10 +18,15 @@ package edu.nmsu.cs.webserver;
  * particular format).
  * 
  * Changes made on February 16, 2022
- * - Modified readHTTPRequest to return the file referred to by the GET request 
- * - Modified  writeHTTPHeader to set the response status to either 200 OK or 404 Not Found 
- * 	 depending on if GET request refers to an existing filename 
- * - Modified writeContent to write from the HTML file
+ * - Modified readHTTPRequest to return the file referred to by the GET request.
+ * - Modified  writeHTTPHeader to set the response status to either 200 OK or 404 Not Found. 
+ * 	 depending on if GET request refers to an existing filename. 
+ * - Modified writeContent to write from the HTML file.
+ * 
+ * Changes made on March 2, 2022
+ * - Modified run to find the content type of a requested file.
+ * - Modified writeHTTPHeader to set contentType to the MIME type referred to by the GET request.
+ * - Modified writeContent to open and read the images in binary mode, rather than line-by-line.
  * 
  *
  **/
@@ -36,7 +41,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 // added for reading files
-import java.io.File; 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader; 
 
 public class WebWorker implements Runnable {
@@ -67,8 +73,34 @@ public class WebWorker implements Runnable {
 			InputStream is = socket.getInputStream(); // from web browser (client) to us (server). Get from socket object
 			OutputStream os = socket.getOutputStream(); // what we (server) send back to web browser
 			File f = readHTTPRequest(is); // file referred to by the GET request
-			writeHTTPHeader(os, "text/html", f.exists());  // writes HTTP header
-			writeContent(os, f); // writes HTTP contents
+			
+			//Set contentType to correct file type
+			
+			String fName = f.getPath();
+			String contentType = "";
+			
+			if(fName.contains(".gif")){
+				contentType = "image/gif";
+			}
+			else if (fName.contains(".jpeg")) {
+				contentType = "image/jpeg";	
+			}
+			else if (fName.contains("favicon.ico")) {
+				contentType = "image/x-icon";	
+			}
+			else if (fName.contains(".png")) {
+				contentType = "image/png";	
+			}
+			else if (fName.contains(".html")) {
+				contentType = "text/html";	
+			}
+			else {
+				System.err.println("File type not recognized");
+			}
+			
+			
+			writeHTTPHeader(os, contentType, f.exists());  // writes HTTP header
+			writeContent(os, f, contentType); // writes HTTP contents
 			
 			os.flush(); // clear the output stream
 			socket.close(); // shut down socket
@@ -148,7 +180,7 @@ public class WebWorker implements Runnable {
 	 * 			specifies whether the GET request refers to an existing filename 
 	 * @precondition
 	 * 			os is not null
-	 * 			contentType is not null
+	 * 			contentType is image/gif, image/jpeg, text/html or image/png
 	 * @postcondition
 	 * 			writes HTTP header lines to the client network connection
 	 * 		
@@ -194,11 +226,14 @@ public class WebWorker implements Runnable {
 	 * @param os
 	 *          is the OutputStream object to write to
 	 * @param f
-	 * 			the file to write the HTML code from
+	 * 			is the file to write the HTML code from
+	 * @param contentType
+	 * 			 is the string MIME content type (e.g. "text/html") img/
 	 * @precondition 
 	 * 			os is not null
 	 * 			f is not null
 	 * 			writeHTTPHeader() ran before the execution of this method to to write out the HTTP header
+	 * 			contentType is image/gif, image/jpeg, text/html or image/png
 	 * @postcondition
 	 * 		If file f exists, write the content of the file to the client network connection.
 	 * 		Otherwise, write 404 File Not Found
@@ -207,41 +242,62 @@ public class WebWorker implements Runnable {
 	 *  	and the tag <cs371server> is replaced with the server's identification string
 	 * 				
 	 **/
-	private void writeContent(OutputStream os, File f) throws Exception
+	private void writeContent(OutputStream os, File f, String contentType) throws Exception
 	{
-		if(!f.exists()) { //throw error if file doesn't exist
+		// throw error if file doesn't exist
+		if(!f.exists()) { 
 			os.write(("<h1>404 File Not Found</h1>").getBytes());
 			return;
 		}
        	
-		//file exists
-		FileReader fr = new FileReader(f);
-       	try (BufferedReader br = new BufferedReader(fr)) {
+		// read html files line by line
+		if(contentType.equals("text/html")) { 
+			FileReader fr = new FileReader(f);
+	       	try (BufferedReader br = new BufferedReader(fr)) {
+				
+	       		String line; 
+	      		while((line = br.readLine()) != null)  {
+	            	//System.out.println(line);
+	          
+	            	// Replace <cs371date> with current time
+	            	if (line.contains("<cs371date>")){
+	            		Date d = new Date();
+	            		DateFormat df = DateFormat.getDateTimeInstance();
+	            		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+	            		line = line.replace("<cs371date>",  df.format(d));
+	            	}
+	            	
+	            	// Replace <cs371server> with serverID
+	            	if (line.contains("<cs371server>")){
+	            		line = line.replace("<cs371server>",  serverID);
+	            	}
+	            	
+	            	//write one line of the file to output stream
+	            	os.write((line).getBytes());
+	           	
+	      		} //end of while 
+	      		
+	       	}// end of try	
+	       	catch (Exception e) {
+		    	System.err.println("Error reading file: " + e);
+	       	}
 			
-       		String line; 
-      		while((line = br.readLine()) != null)  {
-            	//System.out.println(line);
-          
-            	// Replace <cs371date> with current time
-            	if (line.contains("<cs371date>")){
-            		Date d = new Date();
-            		DateFormat df = DateFormat.getDateTimeInstance();
-            		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-            		line = line.replace("<cs371date>",  df.format(d));
-            	}
-            	
-            	// Replace <cs371server> with serverID
-            	if (line.contains("<cs371server>")){
-            		line = line.replace("<cs371server>",  serverID);
-            	}
-            	
-            	//write one line of the file to output stream
-            	os.write((line).getBytes());
-           	
-      		} //end of while 
-      		
-       	}// end of try	
-       	
+		}
+		
+		// read images in binary mode
+		else { 
+			try (InputStream is = new FileInputStream(f); ) {
+			            
+				int myByte = -1;
+				//process image byte by byte
+				while ((myByte = is.read()) != -1) {
+					os.write(myByte);
+			    }
+			 } catch (Exception e) {
+			    	System.err.println("Error reading file: " + e);
+			 }
+		}
+		
 	} // end of writeContent
 	
 	
