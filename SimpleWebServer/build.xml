@@ -1,10 +1,10 @@
-<project name="WebServer" default="start" basedir=".">
+<project name="WebServer" default="run" basedir=".">
 
     <property name="src" location="src" />
     <property name="bin" location="bin" />
     <property name="start" location="start"/>
 
-    <target name="intoIt">
+    <target name="intoIt" depends="clean">
         <!-- Create the time stamp -->
         <tstamp/>
         <!-- Create the build directory structure used by compile -->
@@ -29,7 +29,7 @@
         <delete dir="${start}"/>
     </target>
 
-    <target name="run">
+    <target name="run" depends="start">
         <java classname="edu.nmsu.cs.webserver.WebServer" classpath="bin" fork="true"></java>
     </target>
 

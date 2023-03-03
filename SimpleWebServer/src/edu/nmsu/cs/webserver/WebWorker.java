@@ -28,6 +28,8 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+
 
 public class WebWorker implements Runnable
 {
@@ -142,7 +144,7 @@ public class WebWorker implements Runnable
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
-		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+		os.write("\n\n\n\n".getBytes()); // HTTP header ends with 2 newlines
 		return;
 	}
 
@@ -162,11 +164,21 @@ public class WebWorker implements Runnable
 
 			while((data = readFile.readLine()) != null)
 			{
-				data = data.replaceAll("<cs371date>","2/17/23");
-				data = data.replaceAll("<cs371server>", "myEpicServer.nmsu.edu");
+                        TimeZone timezone = TimeZone.getTimeZone("America/Mountain");
+				data = data.replaceAll("<cs371date>",getDate("MMMM dd, yyyy",timezone));
+				data = data.replaceAll("<cs371server>", "newton.cs.nmsu.edu");
+				data = data.replaceAll("<img>", "");
 				os.write(data.getBytes());
-			}
+ 			}
+		
+			writeHTTPHeader(os, "image/png");
 
+			FileInputStream is = new FileInputStream(new File(System.getProperty("user.dir") + "/www/res/acct/creepcreep.png"));
+                  int reader;
+                  while((reader = is.read()) != -1)
+			{
+				os.write(reader);
+			}
 			readFile.close();
 		}
 		catch(Exception e)
@@ -217,5 +229,17 @@ public class WebWorker implements Runnable
 			System.err.println("Request error: " + e);
 		}
 	}
+      
+      public String getDate(String df, TimeZone tz)
+      {
+         Date todayDate = new Date();
+         /* Specifying the format */
+         DateFormat todayDateFormat = new SimpleDateFormat(df);
+         /* Setting the Timezone */
+         todayDateFormat.setTimeZone(tz);
+         /* Picking the date value in the required Format */
+         String strTodayDate = todayDateFormat.format(todayDate);
+         return strTodayDate;
+      }
 
 } // end class
