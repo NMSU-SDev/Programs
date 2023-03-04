@@ -22,6 +22,7 @@ package edu.nmsu.cs.webserver;
 import java.util.StringTokenizer;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -153,12 +154,16 @@ public class WebWorker implements Runnable
 			location = System.getProperty("user.dir")+line;
 		}
 		
+		String imageLocation=System.getProperty( "user.dir")+"\\res\\acc\\image.jpg";
 		try
+		{//read(System.getProperty("user.dir")+"\\res\\acc\"image/png")
+			
+			os.write(read(location).getBytes());
+			//os.write((imageLocation).getBytes());
+			
+		}
+		catch(Exception e)
 		{
-				os.write(read(location).getBytes());
-			}
-			catch(Exception e)
-			{
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("</h>404 not found</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
