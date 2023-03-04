@@ -19,6 +19,8 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+import java.util.StringTokenizer;
+import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,13 +51,14 @@ public class WebWorker implements Runnable
 	public void run()
 	{
 		System.err.println("Handling connection...");
+		String line;
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
+			line = readHTTPRequest(is);
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			writeContent(os, is, line);
 			os.flush();
 			socket.close();
 		}
@@ -70,9 +73,11 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String lines="null";
+		boolean num=false;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -81,6 +86,7 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -90,8 +96,12 @@ public class WebWorker implements Runnable
 				System.err.println("Request error: " + e);
 				break;
 			}
+			if(num==false){
+				lines=line;
+				num=true;
+			}
 		}
-		return;
+		return lines;
 	}
 
 	/**
@@ -104,6 +114,7 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
+		
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -111,7 +122,7 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Hunter's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -128,11 +139,52 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os,InputStream is, String line) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		// System.out.println("qwerty: "+line);
+		String location=System.getProperty("user.dir");
+			String[] parts;
+		if(line!="null"){
+			parts = line.split("T ");
+			line=parts[1];
+			parts = line.split(" H");
+			line=parts[0];
+			System.out.println("|"+line+"|");
+			location = System.getProperty("user.dir")+line;
+		}
+		
+		try
+		{
+				os.write(read(location).getBytes());
+			}
+			catch(Exception e)
+			{
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("</h>404 not found</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
 	}
+		
+	
 
+
+	private String read(String fname) throws Exception{
+		String text = "";
+		String line = "";
+		
+		
+			FileReader FR = new FileReader(fname);
+			try (BufferedReader BR = new BufferedReader(FR)) {
+				while ((line = BR.readLine()) != null) {
+					text = text + " " + line;
+					
+				}
+				FR.close();
+				BR.close();
+			}
+			return text;
+			
+			
+	
+	}
 } // end class
