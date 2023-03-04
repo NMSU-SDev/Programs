@@ -1,4 +1,4 @@
-<project name="SimpleWebServer" basedir="." default="compile">
+<project name="SimpleWebServer" basedir="." default="run">
     <property name="src" location="src/"/>
     <property name="bin" location="bin/"/>
     
