@@ -121,11 +121,6 @@ public class WebWorker implements Runnable
 						contentString = "image/gif";
 					else
 						contentString = "text/html";
-						
-					if (Files.exists(test) && !Files.isDirectory(test)) 
-						tag = true;
-					else 
-						tag = false;
 				}
 
 				System.err.println("Request line: (" + line + ")");
