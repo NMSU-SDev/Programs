@@ -13,10 +13,6 @@
     </target>
     
     <target name="run" depends="compile">
-<<<<<<< HEAD
         <java dir="www" classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
-=======
-        <java dir="." classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
->>>>>>> a1fd5937b738fb5b87f9c66de10e3ef9c85287b3
     </target>
 </project>
