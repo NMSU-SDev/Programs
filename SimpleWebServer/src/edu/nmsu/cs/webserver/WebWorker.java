@@ -37,6 +37,9 @@ public class WebWorker implements Runnable
 {   // Stores file path
 	private String filePath;
 
+	// Stores type of content
+	private String contentString;
+	
 	private Socket socket;
 	
 	// Keeps track if file exists
@@ -63,7 +66,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os, contentString);
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -101,10 +104,23 @@ public class WebWorker implements Runnable
 					Path test = Paths.get(filePath.substring(1));
 					
 					// Updates tag to whether file exists or not
-					if (Files.exists(test) && !Files.isDirectory(test)) 
+					if (Files.exists(test) && !Files.isDirectory(test)) {
 						tag = true;
-					else 
+					}
+
+					else {
 						tag = false;
+					}
+					
+					// Finds what type of content request is
+					if (filePath.endsWith(".jpeg")) 		
+						contentString = "image/jpeg";
+					else if(filePath.endsWith(".png"))
+						contentString = "image/png";
+					else if (filePath.endsWith(".gif"))
+						contentString = "image/gif";
+					else
+						contentString = "text/html";
 				}
 
 				System.err.println("Request line: (" + line + ")");
@@ -167,24 +183,39 @@ public class WebWorker implements Runnable
 		SimpleDateFormat dateF = new SimpleDateFormat(date);
 		String result = dateF.format(new Date());
 
+		// DEFAULT REQUEST - hello.html
+		if ("/".equals(filePath))
+			filePath ="/hello.html";
+
 		Path file = Paths.get(filePath.substring(1));
 
 		// Checks if file exits once more
 		if (Files.exists(file) && !Files.isDirectory(file)) {
 			// Puts contents of file in list
-			List<String> fileContents = Files.readAllLines(file);
-			
-			// Reads list line by line
-			for (String line : fileContents) {
-				// If a specific tag is found, replace with correct info
-				if (line.contains("<cs371date>")) {
-					line = line.replace("<cs371date>", result);
+			if (contentString.equals("text/html")) {
+				List<String> fileContents = Files.readAllLines(file);
+				
+				// Reads list line by line
+				for (String line : fileContents) {
+					// If a specific tag is found, replace with correct info
+					if (line.contains("<cs371date>")) {
+						line = line.replace("<cs371date>", result);
+					}
+
+					if (line.contains("<cs371server>")) {
+						line = line.replace("<cs371server>", "Patrick Jojola's server");
+					}
+
+					// Prints line to screen
+					os.write(line.getBytes());
 				}
-				if (line.contains("<cs371server>"))
-					line = line.replace("<cs371server>", "Patrick Jojola's server");
-				// Prints line to screen
-				os.write(line.getBytes());
+		    }
+
+			// If file is an image
+			else {
+				os.write(Files.readAllBytes(file));
 			}
+		
 		}
 		
 		// File doesn't exist, 404 Not Found html body is produced
