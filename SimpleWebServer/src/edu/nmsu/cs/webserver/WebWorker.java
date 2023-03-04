@@ -104,6 +104,7 @@ public class WebWorker implements Runnable
 					Path test = Paths.get(filePath.substring(1));
 					
 					// Updates tag to whether file exists or not
+<<<<<<< HEAD
 					if (Files.exists(test) && !Files.isDirectory(test)) {
 						tag = true;
 					}
@@ -121,6 +122,12 @@ public class WebWorker implements Runnable
 						contentString = "image/gif";
 					else
 						contentString = "text/html";
+=======
+					if (Files.exists(test) && !Files.isDirectory(test)) 
+						tag = true;
+					else 
+						tag = false;
+>>>>>>> a1fd5937b738fb5b87f9c66de10e3ef9c85287b3
 				}
 
 				System.err.println("Request line: (" + line + ")");
@@ -183,15 +190,19 @@ public class WebWorker implements Runnable
 		SimpleDateFormat dateF = new SimpleDateFormat(date);
 		String result = dateF.format(new Date());
 
+<<<<<<< HEAD
 		// DEFAULT REQUEST - hello.html
 		if ("/".equals(filePath))
 			filePath ="/hello.html";
 
+=======
+>>>>>>> a1fd5937b738fb5b87f9c66de10e3ef9c85287b3
 		Path file = Paths.get(filePath.substring(1));
 
 		// Checks if file exits once more
 		if (Files.exists(file) && !Files.isDirectory(file)) {
 			// Puts contents of file in list
+<<<<<<< HEAD
 			if (contentString.equals("text/html")) {
 				List<String> fileContents = Files.readAllLines(file);
 				
@@ -216,6 +227,21 @@ public class WebWorker implements Runnable
 				os.write(Files.readAllBytes(file));
 			}
 		
+=======
+			List<String> fileContents = Files.readAllLines(file);
+			
+			// Reads list line by line
+			for (String line : fileContents) {
+				// If a specific tag is found, replace with correct info
+				if (line.contains("<cs371date>")) {
+					line = line.replace("<cs371date>", result);
+				}
+				if (line.contains("<cs371server>"))
+					line = line.replace("<cs371server>", "Patrick Jojola's server");
+				// Prints line to screen
+				os.write(line.getBytes());
+			}
+>>>>>>> a1fd5937b738fb5b87f9c66de10e3ef9c85287b3
 		}
 		
 		// File doesn't exist, 404 Not Found html body is produced
