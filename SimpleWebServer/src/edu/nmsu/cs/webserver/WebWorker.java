@@ -20,6 +20,10 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,6 +31,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 
 public class WebWorker implements Runnable
 {
@@ -53,9 +58,10 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String requests = readHTTPRequest(is);
+			File fil = writeHTTPHeader(os, "text/html", requests);
+			writeContent(os, fil);
+			
 			os.flush();
 			socket.close();
 		}
@@ -70,9 +76,11 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
-		String line;
+		String line; 
+		String [] requests = new String[25]; 
+		int count = 0;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -82,8 +90,15 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
+				
+				//Get the request string after http verb 
+				requests[count] = line.split(" ")[1]; 
+				count++; 
+				
+				if (line.length() == 0){
 					break;
+				}
+				
 			}
 			catch (Exception e)
 			{
@@ -91,7 +106,9 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+
+		String addressName = requests[0]; 
+		return addressName;
 	}
 
 	/**
@@ -102,23 +119,32 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private File writeHTTPHeader(OutputStream os, String contentType, String requests) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+		String path = "./src/edu/nmsu/cs/webserver" + requests;
+		System.out.println("THIS IS THE PATH:: " + path + "html") ;
+		
+		File req = new File(path); 
+		
+		if (req.exists()){
+			os.write("HTTP/1.1 200 OK\n".getBytes());}
+		else{
+			os.write("HTTP/1.1 404 NOT FOUND\n".getBytes());}
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: localhost\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+		return req;
 	}
 
 	/**
@@ -127,12 +153,54 @@ public class WebWorker implements Runnable
 	 * 
 	 * @param os
 	 *          is the OutputStream object to write to
+	 * I used an article in GeeksForGeeks to help me write the code to serve a file.
+	 * https://www.geeksforgeeks.org/java-program-to-extract-content-from-a-html-document/
+	 * @throws IOException
+	 * 
 	 **/
-	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	private void writeContent(OutputStream os, File fil) throws IOException
+	{	
+		
+		StringBuilder pageCode = new StringBuilder(); 
+		
+		/**
+		* if the file exists, pageCode - the StringBuilder object - will append every line 
+		* of code from the html file into itself using s - the BufferedReader object. 
+		* The result is then written into the output stream and served. 
+		*/
+		if (fil.exists() && !fil.isDirectory()) {
+			 // write file contents 
+			FileReader fr = new FileReader(fil); 
+			BufferedReader br = new BufferedReader(fr);
+			String s; 
+			while ((s = br.readLine()) != null) {
+				pageCode.append(s); 
+			}
+			String htmlLines = pageCode.toString(); 
+				
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write(htmlLines.getBytes());
+			os.write("</body></html>\n".getBytes());
+			br.close(); 
+			fr.close(); 
+				
+		}
+
+		else if (fil.exists() && fil.isDirectory()){
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>Homepage</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+
+		/**
+		 * If the file does not exist, output "404 Not Found"
+		 */
+		else {
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 Not Found</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+	
 	}
 
 } // end class

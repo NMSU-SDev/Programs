@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="SimpleWebServer" basedir=".">
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="./src/edu/nmsu/cs/webserver" destdir="./build/classes"/>
+    </target> 
+   
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/WebServer.jar" basedir="./build/classes">
+            <manifest> 
+                <attribute name="Main" value="edu.nmsu.cs.webserver.WebServer"/>
+            </manifest> 
+        </jar>
+    </target>
+    
+    <target name="run">
+        <java 
+            classname="edu.nmsu.cs.webserver.WebServer"
+            classpath="./build/classes"/>
+    </target> 
+    
+</project> 

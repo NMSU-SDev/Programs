@@ -1,0 +1,9 @@
+1. Estimate the time it will take you to do the assignment P1: 
+	4 hours
+2. Estimate the time it took you to complete the assignment broken down as: 
+	Thought/Design: 4 hours
+	Programming: 	3 hours
+	Debugging:	2 hours
+	Total: 		9 hours
+3. To within what percent accuracy was your original estimate: 
+I was off by approximately 65% 
