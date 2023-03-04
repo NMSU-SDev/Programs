@@ -1,7 +1,27 @@
-<html>
-<head>
-</head>
-<body>
-<p>Hello world, the current date is: <cs371date>. The server is: <cs371server>.</p>
-</body>
-</html>
+<project name = "SimpleWebServer" default = "run" basedir = "."> 
+<description> Simple build file used to run SimpleWebServer </description>
+
+    <property name="src" location="src/"/>
+    <property name="bin" location="bin/"/>
+
+    <!--CLEAN-->
+    <target name="clean">
+        <delete dir="${bin}"/>
+    </target>
+
+    <!--BUILD-->
+    <target name="build" depends="clean">
+        <mkdir dir="${bin}" />
+        <javac srcdir="${src}" destdir="${bin}" />
+    </target> 
+
+    <!--COMPILE-->
+    <target name="compile" depends="build">
+        <javac srcdir="${src}" destdir="${bin}" />
+    </target>
+
+    <!--RUN-->
+    <target name="run" depends="compile">
+        <java dir="." classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
+    </target> 
+</project>

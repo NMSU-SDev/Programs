@@ -26,7 +26,7 @@ public class WebServer
 	 **/
 	private WebServer()
 	{
-		running = false;
+	
 	}
 
 	/**
@@ -43,6 +43,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.out.println("Web Server is live. Listening on the following port:" + port);
 		}
 		catch (Exception e)
 		{
@@ -82,7 +83,7 @@ public class WebServer
 	 **/
 	public static void main(String args[])
 	{
-		int port = 8085;
+		int port = 8080;
 		if (args.length > 1)
 		{
 			System.err.println("Usage: java Webserver <portNumber>");
