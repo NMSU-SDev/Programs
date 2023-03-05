@@ -119,7 +119,7 @@ public class WebWorker implements Runnable{
       os.write("Date: ".getBytes());
       os.write((df.format(d)).getBytes());
       os.write("\n".getBytes());
-      os.write("Server: Xiana's very own server\n".getBytes());
+      os.write("Server: Nate's server\n".getBytes());
       os.write("Connection: close\n".getBytes());
       os.write("Content-Type: ".getBytes());
       os.write(contentType.getBytes());
