@@ -1,5 +1,3 @@
-BWAHAHAHHADLKFjaslfja; socitruw9f
-
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 These assignments rely on the HelloWorld program.
