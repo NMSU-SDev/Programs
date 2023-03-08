@@ -5,9 +5,9 @@ to within a quarter-hour: 6 hours
 broken down as:
 
     Thought/Design: 2 hours
-    Programming:    
-    Debugging:      
-    TOTAL:          
+    Programming:    1 hour
+    Debugging:      30 min
+    TOTAL:          1 hour 30 min
 
 
 3. To within what percent accuracy was your original estimate:

@@ -29,6 +29,10 @@
     <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}"/>
   </target>
 
+    <target name="run">
+     <java classpath="${build}" classname="edu.nmsu.cs.webserver.WebServer"/>
+   </target>
+
   <target name="clean"
         description="clean up">
     <!-- Delete the ${build} and ${dist} directory trees -->

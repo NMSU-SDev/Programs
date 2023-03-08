@@ -154,12 +154,10 @@ public class WebWorker implements Runnable
 			location = System.getProperty("user.dir")+line;
 		}
 		
-		String imageLocation=System.getProperty( "user.dir")+"\\res\\acc\\image.jpg";
 		try
-		{//read(System.getProperty("user.dir")+"\\res\\acc\"image/png")
-			
+		{
 			os.write(read(location).getBytes());
-			//os.write((imageLocation).getBytes());
+
 			
 		}
 		catch(Exception e)
