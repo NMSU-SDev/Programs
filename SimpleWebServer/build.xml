@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <project basedir="." default="run" name="Raf's Simple Web Server">
 
    <property name="classes.dir" value="bin/edu/nmsu/cs/webserver" />
@@ -19,4 +20,27 @@
       <java classpath="bin" classname="edu.nmsu.cs.webserver.WebServer" />
    </target>
 
+=======
+<project basedir="." default="build" name="Raf's Simple Web Server">
+
+   <property name="classes.dir" value="bin/edu/nmsu/cs/webserver" />
+   <property name="source.dir" value="src/edu/nmsu/cs/webserver" />
+
+   <target name="clean">
+      <delete dir="bin" />
+   </target>
+
+   <target name="init" depends="clean">
+      <mkdir dir="${classes.dir}" />
+   </target>
+
+   <target name="build" depends="init">
+      <javac srcdir="${source.dir}" destdir="bin" />
+   </target>
+
+   <target name="run" depends="build">
+      <java classpath="bin" classname="edu.nmsu.cs.webserver.WebServer" />
+   </target>
+
+>>>>>>> d8becdb9cd3fb34a224227710d9c3d21f1778f9f
 </project>
