@@ -28,6 +28,10 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 public class WebWorker implements Runnable
 {
 
@@ -51,11 +55,12 @@ public class WebWorker implements Runnable
 		System.err.println("Handling connection...");
 		try
 		{
+			String fName = "";
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			fName = readHTTPRequest(is);
+			writeHTTPHeader(os, "text/html", fName);
+			writeContent(os, "hello.html");
 			os.flush();
 			socket.close();
 		}
@@ -70,9 +75,9 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
-		String line;
+		String line = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -84,6 +89,8 @@ public class WebWorker implements Runnable
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
+				else 
+					return line;
 			}
 			catch (Exception e)
 			{
@@ -91,7 +98,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return line;
 	}
 
 	/**
@@ -102,12 +109,20 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, String fName) throws Exception
 	{
+		fName = fName.substring(5,fName.length() - 9);
+		File f = new File(fName);
+        if(!f.exists() || f.isDirectory()){
+			os.write("HTTP/1.1 404 NOT FOUND\n".getBytes());
+		}else{
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+
+
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -128,11 +143,34 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String fname) throws Exception
 	{
 		os.write("<html><head></head><body>\n".getBytes());
 		os.write("<h3>My web server works!</h3>\n".getBytes());
+		//helper function to write content
+		readFileAndOsWrite(os, fname);
 		os.write("</body></html>\n".getBytes());
+	}
+    
+	//Pre: File name of desired html file
+	//Post: Uses FileReader to traverse the html file
+	//and performs os.write line by line to implement the html code stored in the passed in file.
+	private void readFileAndOsWrite(OutputStream os, String fname) throws Exception{
+        String line = "";
+        try {
+            // FileReader reads text files in the default encoding.
+            FileReader fileReader = new FileReader(fname);
+            // Wrap FileReader in BufferedReader.
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+				os.write(line.getBytes());
+            }
+            bufferedReader.close(); // Close file.
+        } catch (FileNotFoundException ex) {
+            System.out.println("Unable to open file '" + fname + "'");
+        } catch (IOException ex) {
+            System.out.println("Error reading file '" + fname + "'");
+        }
 	}
 
 } // end class

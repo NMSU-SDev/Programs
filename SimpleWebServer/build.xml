@@ -1,0 +1,32 @@
+<!-- Program 1 Build File.-->
+
+<project name="WebServer">
+
+    <description>
+        Ant Build File for Program 1; includes clean, build, and run functionality.
+    </description>
+    <property name="src" location="src/"/>
+	<property name="build" location="bin/"/>
+
+<!-- Clean -->
+	<target name="clean" description="Removes the previously compiled files">
+		<delete dir="${build}"/>
+	</target>
+
+<!-- Build -->
+	<target name="build" description="Compiles appropriate files">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" includeantruntime="true" destdir="${build}"/>
+	</target>
+
+<!-- Cleans/Builds-->
+	<target name="cleanbuild" depends="clean,build"/>
+
+<!-- Run -->
+	<target name="run" description="Run with class path edu.nmsu.cs.webserver.WebServer with argument value 8080.">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}">
+			<arg value="8080"/>
+		</java>
+	</target>
+
+</project>

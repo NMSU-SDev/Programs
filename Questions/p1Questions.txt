@@ -1,0 +1,9 @@
+1. I estimate the time needed to complete the assignment will be 2 hours/120 minutes.
+2. Breakdown of assignment:
+-Thought Design: 120 minutes
+-Programming: 90 minutes
+-Debugging: 30 minutes
+-Total: 240 Minutes
+3. The real time to complete the assignment took 240 minutes to complete compared to 
+   the initial 120 minute estimate resulting in an accuracy of 50% It took twice
+   as long as I initially thought to complete the assignment.
