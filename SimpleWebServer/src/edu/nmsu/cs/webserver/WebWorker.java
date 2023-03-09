@@ -24,14 +24,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String filePath;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -59,9 +63,20 @@ public class WebWorker implements Runnable
 			os.flush();
 			socket.close();
 		}
+		/* Output error is printed on the console when there is in error in the request.
+		 * When there is an error, also print on web page that there is an error.
+		 * Therefore, call writeHTTPHeader function.
+		 */
+		
 		catch (Exception e)
 		{
 			System.err.println("Output error: " + e);
+			try {
+				writeHTTPHeader(socket.getOutputStream(), filePath);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		System.err.println("Done handling connection.");
 		return;
@@ -81,6 +96,12 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				if(line.startsWith("GET")) { // if request starts with GET
+					String arr[] = line.split(" "); // split where there's a space
+					filePath = arr[1]; // set file path to second word found after space
+					filePath = filePath.substring(1);
+					System.out.println(filePath);
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -107,13 +128,16 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
+		if(Files.exists(Paths.get(filePath))) {  // check if file exists
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+		os.write("HTTP/1.1 404 not found\n".getBytes()); // print 404 error if there is an error in request
+		os.write("Date: ".getBytes()); // gets recent date
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+//		os.write("Server: Jon's very own server\n".getBytes());
+//		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+//		 os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -129,10 +153,16 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	{	
+		List<String> list = Files.readAllLines(Paths.get(filePath)); // read all lines and store in a List
+		for(String line : list) {
+//			line.replaceAll(line, line);
+			os.write(line.getBytes());
+		}
+//		os.write("<html><head></head><body>\n".getBytes());
+//		os.write("<h3>My web server works!</h3>\n".getBytes());
+//		os.write("</body></html>\n".getBytes());
 	}
 
 } // end class
+
