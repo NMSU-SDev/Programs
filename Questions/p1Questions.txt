@@ -6,4 +6,5 @@ Thought/Design: 30 min
 Programming: 1-2 hours
 Debugging: 2-3 hours
 TOTAL: 4-5 hours
-3. To within what percent accuracy was your original estimate: 100% I really put my blood sweat and tears in this.
+
+3. To within what percent accuracy was your original estimate: 0% I really put my blood sweat and tears in this.
