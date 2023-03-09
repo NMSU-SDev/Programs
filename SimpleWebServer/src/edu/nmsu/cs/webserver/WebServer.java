@@ -43,6 +43,7 @@ public class WebServer
 		try
 		{
 			socket = new ServerSocket(port);
+			System.out.println("Web server started! Listening on port " + port + ".");
 		}
 		catch (Exception e)
 		{
