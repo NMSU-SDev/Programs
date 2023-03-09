@@ -1,0 +1,12 @@
+Program 1 Questions
+Jonathan Barboza
+
+1.) I expect this assignment to take me approximately 2 hours.
+
+2.)
+-Thought/Design: 30 minutes
+-Programming: 45 minutes
+-Debugging: 2 hours and 15 minutes
+-TOTAL: 3 hours and 30 minutes
+
+3.) My approximation was incorrect by -75%. So it was a pretty incorrect prediction, all things considered.

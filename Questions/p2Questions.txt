@@ -1,0 +1,8 @@
+1. I estimate that this assignment will take me about 3 hours and 30
+   minutes to complete.
+2. Time it actually took:
+   Thought/Design: 1 hour
+   Programming: 2 hours
+   Debugging: 1 hour and 30 minutes
+   TOTAL: 4 hours and 30 minutes
+3. My original estimate was off by -22.22%.
