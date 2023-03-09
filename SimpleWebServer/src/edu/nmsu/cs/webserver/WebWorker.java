@@ -175,19 +175,20 @@ public class WebWorker implements Runnable
 	private void writeContent(OutputStream os, String filePath, int HTTPstatus, String contentType) throws Exception
 	{
 		if(HTTPstatus == 404) { // File was not found. Cannot write content.
-			os.write("<!DOCTYPE html><html><body><p>404: Not found</p></body>".getBytes());
+		os.write("".getBytes());
+			os.write("<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/x-icon\" href=\"https://icons8.com/icon/35747/mario-8-bit\"></head><body><p>404: Not found</p></body>".getBytes());
 		} else {
 			if(contentType.equals("text/html")) { // Case text/html
 				try {
 					// Get the date
 					Date date = new Date();
 					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
-					String str = formatter.format(date);
+					String theDate = formatter.format(date);
 					// Get a file reader
 					BufferedReader in = new BufferedReader(new FileReader(filePath));
 					String line;
 					while((line = in.readLine()) != null) {
-						line = line.replace("<cs371date>", str);
+						line = line.replace("<cs371date>", theDate);
 						line = line.replace("<cs371server>", "Ryan's server");
 						os.write(line.getBytes());
 					}
