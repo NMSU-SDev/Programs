@@ -19,10 +19,13 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+ //imported file readers
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
@@ -30,9 +33,12 @@ import java.util.TimeZone;
 
 public class WebWorker implements Runnable
 {
-
+	//added 3 global variables, valid, path and doc
 	private Socket socket;
-
+	public boolean valid = false;
+	public String path;
+	public File doc;
+	
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -70,9 +76,12 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
-	{
+	private void readHTTPRequest(InputStream is) 
+	{	
+		//getting file path after GET
 		String line;
+		String url = null;
+		
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -81,6 +90,14 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				//if i get the path, i check if it exist, if exist, set valid to true
+				if(url == null){
+					url = line;
+					path = url.split("\s")[1];
+					path = path.substring(1);
+					doc = new File(path);
+					valid = doc.exists();
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -104,16 +121,23 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
+		//if file exist, write 200 ok, else write 404
+		if(valid){
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+		else{
+			os.write("HTTP/1.1 404\n".getBytes());
+		}
+
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Mason's very own server\n".getBytes());
+		//os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+		//os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -128,11 +152,41 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
+	private void writeContent(OutputStream os) throws Exception{
+		//check existing file again
+		if(valid){
+			BufferedReader read = new BufferedReader(new FileReader(path));
+			//creating substitution for tags
+			String webServer = "Xindi's Server";
+			Date date = new Date();
+			String sub;
+			String datesub = "date";
+			String websub = "web";
 
+			//replace <cs371date> and <cs371server> with something else
+			while((sub = read.readLine()) != null){
+
+				if(sub.contains("<cs371date>")){
+					datesub = sub.replace("<cs371date>",date.toString());
+				}
+
+				if(sub.contains("<cs371server>")){
+					websub = sub.replace("<cs371server>",webServer);
+				}
+			}
+			//contents that is printing to the screen
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write(("<h3>" + datesub + "</h3>\n").getBytes());
+			os.write(("<h3>" + websub + "</h3>\n").getBytes());
+			os.write(("<h3>demo.0.0</h3>\n").getBytes());
+			os.write("</body></html>\n".getBytes());
+			read.close();
+		}
+		//print 404 to screen if link not found
+		else{
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write(("<h1> 404 not found</h1>\n").getBytes());
+			os.write("</body></html>\n".getBytes());
+		}
+	}
 } // end class

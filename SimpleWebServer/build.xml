@@ -1,0 +1,23 @@
+<project name="SimpleWebServer" basedir=".">
+
+	<property name="src" location="src/"/>
+	<property name="build" location="bin/"/>
+<!-- made clean -->
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+<!-- made build -->
+	<target name="build">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+<!-- made run -->
+	<target name="run">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" dir="${basedir} " fork="true">
+			<arg value="8080"/>
+		</java>
+	</target>
+
+    <target name="clean-build" depends="clean, build"/>
+
+</project>
