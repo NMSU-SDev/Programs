@@ -1,0 +1,13 @@
+1. Estimate: 5 hours 
+2. 
+Thought/Design: 3.5 hours
+Programming: .5 hours
+Debugging: 1 hour 
+
+3. Total: 2.5 hours
+
+Design: 1.5 hours
+Programming: .5 hours
+Debugging: .5 hours 
+
+50% off of estimate 
