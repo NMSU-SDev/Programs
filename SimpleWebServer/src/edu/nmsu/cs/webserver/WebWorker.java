@@ -18,8 +18,18 @@ package edu.nmsu.cs.webserver;
  * particular format).
  *
  **/
+ 
+ /**
+	Webworker actually serves html files. Respondes given an incorrect filename to header and 404 not found page.
+	Processes dynamic html tags for date and server name.
+	Ryan Schwarzkopf
+ 
+  */
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,6 +37,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
 public class WebWorker implements Runnable
 {
@@ -53,9 +64,10 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String fileRequest = readHTTPRequest(is);
+			String contentType = readFileType(fileRequest);
+			int HTTPstatus = writeHTTPHeader(os, contentType, fileRequest);
+			writeContent(os, fileRequest, HTTPstatus, contentType);
 			os.flush();
 			socket.close();
 		}
@@ -70,9 +82,15 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	/**
+	 * Search request header for any file request. Print to console if found.
+	 * Ryan Schwarzkopf
+	 * 
+	 */
+	private String readHTTPRequest(InputStream is)
 	{
 		String line;
+		String fileRequest = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -82,6 +100,10 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if((line.length() > 3) && (line.substring(0, 3).compareTo("GET") == 0) && (line.length() != 14)) {
+					fileRequest = line.substring(5, line.length()-9);
+					System.err.println("File name found: ("+fileRequest+")");
+				}
 				if (line.length() == 0)
 					break;
 			}
@@ -91,7 +113,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return fileRequest;
 	}
 
 	/**
@@ -102,23 +124,36 @@ public class WebWorker implements Runnable
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	/**
+	 * Search for fileRequest in top directory. Write http header 200 or 404. Return 200 or 404
+	 * Ryan Schwarzkopf
+	 * 
+	 * @param fileRequest
+	 * @return 200: file found 404: file not found
+	 */
+	private int writeHTTPHeader(OutputStream os, String contentType, String fileRequest) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
+		File f = new File(fileRequest);
+		if(f.exists()) {
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		} else {
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}
+			os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Ryan's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-		return;
+		if(!f.exists()) return 404; // Could not find the requestFile
+		return 200; // requestFile found
 	}
 
 	/**
@@ -128,11 +163,59 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	/**
+	 * Search for file and write its contents to output stream. Dynamic HTML for date and server name. 
+	 * Returns 200 if file is found. 404 if not found
+	 * Ryan Schwarzkopf
+	 *  
+	 * @param filePath
+	 * 	path to file to read
+	 *
+	 */
+	private void writeContent(OutputStream os, String filePath, int HTTPstatus, String contentType) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		if(HTTPstatus == 404) { // File was not found. Cannot write content.
+		os.write("".getBytes());
+			os.write("<!DOCTYPE html><html><head><link rel=\"icon\" type=\"image/x-icon\" href=\"https://icons8.com/icon/35747/mario-8-bit\"></head><body><p>404: Not found</p></body>".getBytes());
+		} else {
+			if(contentType.equals("text/html")) { // Case text/html
+				try {
+					// Get the date
+					Date date = new Date();
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+					String theDate = formatter.format(date);
+					// Get a file reader
+					BufferedReader in = new BufferedReader(new FileReader(filePath));
+					String line;
+					while((line = in.readLine()) != null) {
+						line = line.replace("<cs371date>", theDate);
+						line = line.replace("<cs371server>", "Ryan's server");
+						os.write(line.getBytes());
+					}
+					in.close();
+					return;
+				} catch(FileNotFoundException e) {
+					System.err.println("File not found.");
+					return;
+				}
+			} else {
+				try {
+					File file=new File(filePath);
+        			os.write(file.getBytes());
+				} catch(FileNotFoundException e) {
+					System.err.println("File not found.");
+					return;
+				}
+			} // end if/else
+		} // end file not found catch
+	}
+
+	private String readFileType(String fileRequest) {
+		if(fileRequest.contains("html")) return "text/html";
+		if(fileRequest.contains("jpeg")) return "image/jpeg";
+		if(fileRequest.contains("png")) return "image/png";
+		if(fileRequest.contains("gif")) return "image/gif";
+		return "text/html";
 	}
 
 } // end class
