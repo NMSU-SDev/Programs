@@ -1,11 +1,30 @@
 <html>
     <body style="background-color:rgb(97, 189, 140);"></body>
+    <body onload = "time()">
+
     <head>
         <h1>Hello world!</h1>
-    </head>
-    <body>
-        <p style = "font-size: 20px">
-        The current date is: <cs371date>. The server is: <cs371server>.
-        </p>
+    </head>  
+    <p style = "font-size: 20px">
+        The current date is: <cs371date>. The server is: <cs371server>. <br> <br>
+        It is currently <span id = "currTime"></span>    
+    </p>
+    
+    <!-- This code was obtained from https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock, with minor adjustments-->
+    <script>
+        function time(){
+            const today = new Date();
+            let hour = today.getHours();
+            let minutes = today.getMinutes();
+            let seconds = today.getSeconds();
+
+            if(minutes < 10){ minutes = "0" + minutes; }
+            if(seconds < 10){ seconds = "0" + seconds; }
+
+            document.getElementById("currTime").innerHTML = hour + ":" + minutes + ":" + seconds;
+            setTimeout(time, 1000);
+        } 
+    </script>
+    
     </body>
 </html>
