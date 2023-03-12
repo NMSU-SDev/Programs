@@ -1,0 +1,11 @@
+Question 1:
+    I estimate that this will take me about 2.5 hours to complete.
+
+Question 2:
+    Thought/Design:
+    Programming:
+    Debugging: 
+    TOTAL: 
+
+Question 3:
+    My Estimation was about ____ within my original estimation
