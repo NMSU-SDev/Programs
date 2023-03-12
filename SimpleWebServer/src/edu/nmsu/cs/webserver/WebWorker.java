@@ -148,7 +148,7 @@ public class WebWorker implements Runnable
 		os.write("Server: Alen's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
-		os.write("Connection: close\n".getBytes());
+		os.write("Connection: keep-alive\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
