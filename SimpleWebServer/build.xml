@@ -17,12 +17,10 @@
     </target>
 
     <target name = "compile" depends = "build" description = "Compiling...">
-        <javac srcdir = "${src}" destdir = "bin" />
+        <javac srcdir = "${src}" destdir = "${bin}" />
     </target>
 
     <target name = "run" depends = "compile" description = "Running the File...">
-        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" dir = "./src/edu/nmsu/cs/webserver"/>
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" dir = "./www"/>
     </target>
-
-    
 </project>

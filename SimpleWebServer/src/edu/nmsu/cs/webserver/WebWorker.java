@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,13 +32,20 @@ import java.util.TimeZone;
 import java.io.File;
 import java.io.FileReader;
 
+
 public class WebWorker implements Runnable
 {
-
 	private Socket socket;
 	public boolean existingFile;
 	public String fileDirectory = "";
+	public String fileContentType = "";
 	public String serverName = "Alen's Server";
+
+	//for URL purposes:
+	public String fullURL;
+	public String host;
+	public String hostPath;
+
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -58,8 +66,8 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			readHTTPRequest(is);	
+			writeHTTPHeader(os, getType(fullURL));
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -87,24 +95,33 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 
+
+				//for URL portion
+				if (line.contains("Host")){
+					host = line.substring(6);
+				}
+
 				// When the request line is at GET, it typically has the file location/directory
 				// Serving .html files
 				if (line.contains("GET")){
 					//get the file seperated from the GET and HTTP portion of the request line
 					String lineManip = line.substring((line.indexOf("/") + 1), (line.indexOf("HTTP") - 1)); 
 					fileDirectory = lineManip;
+					hostPath = line.substring((line.indexOf("/")), (line.indexOf("HTTP") - 1));
 					File inputFile = new File(lineManip);
 
 					if(inputFile.exists()){
 						existingFile = true;
 					}else{
 						existingFile = false;
-					}
+					}	
 				}
 
+				
+	
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
-					break;
+					break;	
 			}
 			catch (Exception e)
 			{
@@ -112,6 +129,7 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
+		fullURL = host + hostPath;
 		return;
 	} //end readHTTPRequest
 
@@ -136,20 +154,24 @@ public class WebWorker implements Runnable
 			os.write("Date: ".getBytes());
 			os.write((df.format(d)).getBytes());
 			os.write("\n".getBytes());
-		}else{
+		}else if(!existingFile){
 			//404 Error if the file doesn't exist
-			//throw new HttpRetryException("File Not Found", 404);
 			os.write("HTTP/1.1 404 NOT FOUND\n".getBytes());
+			os.write("Date: ".getBytes());
+			os.write((df.format(d)).getBytes());
+			os.write("\n".getBytes());
+		}else if(existingFile && !fileContentType.contains("html")){
+			//400 Error if the file does exist, but the server has not been implemented to deal
+			//with that specific file type
+			os.write("HTTP/1.1 400 BAD REQUEST\n".getBytes());
 			os.write("Date: ".getBytes());
 			os.write((df.format(d)).getBytes());
 			os.write("\n".getBytes());
 		}
 
 		os.write("Server: Alen's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: keep-alive\n".getBytes());
-		os.write("Content-Type: ".getBytes());
+		os.write("Content-Type: ".getBytes()); //TO DO: Possible placement for MIME 
 		os.write(contentType.getBytes());
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
 		return;
@@ -165,11 +187,7 @@ public class WebWorker implements Runnable
 	private void writeContent(OutputStream os) throws Exception
 	{
 		
-		if(existingFile && fileDirectory.contains("html")){
-			//os.write("<html><head></head><body>\n".getBytes());
-			//os.write("<h3>My web server works!</h3>\n".getBytes());
-			//os.write("</body></html>\n".getBytes());
-
+		if(existingFile && getType(fullURL).equals("text/html")){
 			/* The following code is taken from https://stackoverflow.com/questions/12035316/reading-entire-html-file-to-string 
 			 * from the user Jean Logeart (lifesaver, thanks Jean)
 			 * the file adjustments is done by me, Alen 
@@ -201,7 +219,15 @@ public class WebWorker implements Runnable
 			}
 			os.write(write.getBytes());
 
-		}else{
+		}
+		
+		if(existingFile && (getType(fullURL).equals("image/jpeg") || getType(fullURL).equals("image/gif") 
+			|| getType(fullURL).equals("image/png"))){
+			byte[] toBytes = Files.readAllBytes(new File(hostPath.substring(1)).toPath());
+			os.write(toBytes);	
+		}
+
+		if (!existingFile){
 			//throw the 404 error
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h1><b>404 Error! File Not Found</b></h1>\n".getBytes());
@@ -214,12 +240,21 @@ public class WebWorker implements Runnable
 			}else if(fileDirectory.equals("hello")){
 				//if the file is similar to hello.html, show this recommendation
 				os.write(fileDirectory.getBytes());
-				os.write("Did you mean <a href=\"hello.html\">localhost:8080/hello.html</a> ?".getBytes());
+				os.write("\nDid you mean <a href=\"hello.html\">localhost:8080/hello.html</a> ?".getBytes());
 			}else{
 				os.write(fileDirectory.getBytes());
 				os.write("</body></html>\n".getBytes());
 			}
 		}
+	}
+
+	private String getType(String url){
+		if (url.endsWith(".html")){ return "text/html"; }
+		if (url.endsWith(".jpg")){ return "image/jpeg"; }
+		if (url.endsWith(".gif")){ return "image/gif"; } 
+		if (url.endsWith(".png")){ return "image/png"; } 
+
+		return "text/html";
 	}
 
 } // end class
