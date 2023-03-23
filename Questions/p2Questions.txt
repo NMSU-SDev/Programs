@@ -1,6 +1,6 @@
 1. Time it will take to do this assignment 5.75 hours. 
-2. Thought/Design : 1.5 hours
-   Programming: 2.5 hours
-   Debugging: 1.75 hours
-   Total: 5.75 hours
-3. 
+2. Thought/Design : 3 hours
+   Programming: 3 hours
+   Debugging: 2 hours
+   Total:  8
+3. I was underestimating the time it would take me to complete the task by 39%.
