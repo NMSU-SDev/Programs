@@ -20,6 +20,9 @@ package edu.nmsu.cs.webserver;
  **/
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -32,7 +35,7 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-
+	public String fileName;
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -82,6 +85,12 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
+				if(line.startsWith("GET")) {
+					fileName = line.substring(4, line.length() - 9);
+					File file = new File(fileName);
+					if (!file.exists()) 
+						throw new FileNotFoundException();
+				}
 				if (line.length() == 0)
 					break;
 			}
@@ -111,7 +120,7 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Jared's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -129,10 +138,33 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	{	
+		String line;
+		Date d = new Date();
+		DateFormat df = DateFormat.getDateTimeInstance();
+		df.setTimeZone(TimeZone.getTimeZone("MST"));
+
+		try {
+
+		File file = new File(fileName);
+		FileInputStream r = new FileInputStream(file);
+		BufferedReader b = new BufferedReader(new InputStreamReader(r));
+
+		while((line = b.readLine()) != null) {
+
+		if(line.contains("<cs371date>")){
+			line = line.replace("<cs371date>", d.toString());
+		}
+		if (line.contains("<cs371server>")) {
+			line = line.replace("<cs371server>", "Jared's Server");
+		}
+		
+			os.write(line.getBytes());
+		
+		}
+	} catch (Exception e) {
+		os.write("404 Not Found".getBytes());
 	}
+ }
 
 } // end class
