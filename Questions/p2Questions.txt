@@ -1,0 +1,6 @@
+1. Estimated time to do the assignment: 2 hours
+
+2. Thought/Design: 30 minutes
+   Programming: 1 hour 
+   Debugging: 30 minutes
+   Total: 2 hours
