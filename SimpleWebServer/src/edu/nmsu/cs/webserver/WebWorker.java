@@ -16,23 +16,37 @@ package edu.nmsu.cs.webserver;
  * request; it writes out an HTTP header to begin its response, and then it writes out some HTML
  * content for the response content. HTTP requests and responses are just lines of text (in a very
  * particular format).
- *
+ * 
+ * I modified readHTTPRequest() function to return the file referred to by the GET request.
+ * I also modified  writeHTTPHeader() function to set the response status to either 200 OK or 
+ *   404 Not Found if the file exists and does not exist, respectively. 
+ * I changed the writeContent() function to write the HTML file (if it exists) line by line.
+ * 
+ * 		Mehran Sasaninia
+ * 		March 30, 2023
  **/
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.File;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class WebWorker implements Runnable
 {
 
 	private Socket socket;
+	private String path;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -54,21 +68,14 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			String request = readHTTPRequest(is);
-			String url = extractURL(request);
+			readHTTPRequest(is);
 			writeHTTPHeader(os, "text/html");
-			writeContent(os);
-			if (url.endsWith(".html")){
-				File file = new File(url);
-				if (file.exists() && file.isFile()) {
-					writeHTTPHeader(os, "text/html");
-					writeContent(os);
-				} else {
-					write404Error(os);
-				}
-			// }else {
-			// 	write404Error(os);
-			}
+			/* if there is not anything after the port in the URL
+			   "My webserver works!" will be shown in output */
+            if (path.substring(1).isEmpty())
+                os.write("<h3>My web server works!</h3>\n".getBytes());
+            else
+                writeContent(os);
 			os.flush();
 			socket.close();
 		}
@@ -82,12 +89,15 @@ public class WebWorker implements Runnable
 
 	/**
 	 * Read the HTTP request header.
+	 *
+	 * Mainly obtains the file request wants server to serve.
+	 *
+	 * @param is the HTTP request
 	 **/
-	private String readHTTPRequest(InputStream is)
+	private void readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
-		StringBuilder request = new StringBuilder();
 		while (true)
 		{
 			try
@@ -95,7 +105,11 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
-				request.append(line).append("\n");
+				// If the line contains "GET" extracts the line to find the path
+				if (line.startsWith("GET")) {
+					String [] lines = line.split(" ");
+					path = lines[1];
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -106,19 +120,8 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return request.toString();
+		return;
 	}
-
-	private String extractURL(String request) {
-        String[] lines = request.split("\n");
-        if (lines.length > 0) {
-            String[] parts = lines[0].split(" ");
-            if (parts.length > 1) {
-                return parts[1];
-            }
-        }
-        return "";
-    }
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -133,13 +136,17 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        File f = new File(path.substring(1));
+        if(!f.exists()) {
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		}else{
+			os.write("HTTP/1.1 200 OK\n".getBytes()); 
+		}
 		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Jason's very own server\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -148,23 +155,42 @@ public class WebWorker implements Runnable
 	}
 
 	/**
-	 * Write the data content to the client network connection. This MUST be done after the HTTP
-	 * header has been written out.
-	 * 
-	 * @param os
+	 * Write the data content to the client network connection. This MUST be done 
+	 * after the HTTP header has been written out.
+	 *
+	 * This will open the file obtained from http request and begin parsing, if that
+	 * file does not exist, the method will write "404 File Not Found" to the output stream.
+	 * If file exists any occurrence of the string "<cs371date>" in the file will be replaced
+	 * with the current date and time in the format "yyyy/MM/dd HH:mm:ss" and Any occurrence
+	 * of the string "<cs371server>" in the file will be replaced with the string "Mehran's server".
+	 *
+	 * param: os
 	 *          is the OutputStream object to write to
+	 * postcondition :
+	 * 			The contents of the file will be written to the output stream.
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
-	}
-
-	private void write404Error(OutputStream os) throws Exception {
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>404 Not Found!</h3>".getBytes());
-		os.write("</body></html>\n".getBytes());
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		
+		Path file = Paths.get(path.substring(1));
+        File f = new File(path.substring(1));
+        if(!f.exists()) { 
+			os.write(("<h3>404 File Not Found</h3>").getBytes());
+			return;
+		}
+		// If file exists
+		else {
+			List<String> contents = Files.readAllLines(file);
+		    for (String line : contents) {
+		        // Replace <cs371date> with current time
+				line = line.replace("<cs371date>", dateFormat.format(now)); 
+				// Replace <cs371server> with my server name
+				line = line.replace("<cs371server>", "Mehran's server");
+				os.write(line.getBytes());
+			}
+		}
 	}
 
 } // end class

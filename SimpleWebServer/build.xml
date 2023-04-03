@@ -1,0 +1,21 @@
+<project name="SimpleWebServer" basedir="." default="compile">
+
+  <property name="src" location="src"/>
+  <property name="bin" location="bin"/>
+
+  <!-- Build project -->
+  <target name="compile" depends="clean" description="compile sources">
+    <mkdir dir="${bin}"/>
+    <javac srcdir="${src}" destdir="${bin}"/>
+  </target>
+
+  <!-- Run the project -->
+  <target name="run" depends="compile" description="run project">
+    <java classpath="${bin}" classname="edu.nmsu.cs.webserver.WebServer" fork="true"/>
+  </target>
+
+  <!-- Clean up build files -->
+  <target name="clean" description="clean up">
+    <delete dir="${bin}"/>
+  </target>
+</project>
