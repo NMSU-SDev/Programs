@@ -22,7 +22,6 @@ package edu.nmsu.cs.webserver;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -35,7 +34,6 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-	public String fileName;
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -62,8 +60,8 @@ public class WebWorker implements Runnable
 			if(path.contains(".png")) {
 				image = "image/png";
 			}
-			else if(path.contains(".jpeg")) {
-				image = "image/jpeg";
+			else if(path.contains(".jpg")) {
+				image = "image/jpg";
 			}
 			else if(path.contains(".gif")) {
 				image = "image/gif";
@@ -158,7 +156,7 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os, String image, String path) throws Exception
 	{	
-		String line;
+		String line = "";
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("MST"));
@@ -166,7 +164,7 @@ public class WebWorker implements Runnable
 		if (path.contains("html")){
 		try {
 
-		File file = new File(fileName);
+		File file = new File(path);
 		FileInputStream r = new FileInputStream(file);
 		BufferedReader b = new BufferedReader(new InputStreamReader(r));
 
@@ -190,10 +188,10 @@ public class WebWorker implements Runnable
 		int place;
 		File file = new File(path.substring(1));
 		FileInputStream ff = new FileInputStream(path.substring(1));
-		int size = (int) file.length();
+		int size = (int)file.length();
 		byte x[] = new byte[size];
-		while((place = ff.read(x)) > 0);
-		os.write(x,0,place);
+		while((place = ff.read(x)) > 0)
+			os.write(x,0,place);
 	} 
  }
 
