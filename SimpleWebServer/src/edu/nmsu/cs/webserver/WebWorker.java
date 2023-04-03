@@ -119,10 +119,23 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType, String path) throws Exception
 	{
+		int flag = 0;
+
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
+
+		try {
+			File file = new File(path);
+		} catch (Exception e) {
+			flag = 404;
+		}
+
+		if (flag == 0)
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+		else 
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -145,7 +158,7 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os, String image, String path) throws Exception
 	{	
-		int flag=0;
+		String line;
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("MST"));
