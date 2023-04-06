@@ -135,6 +135,8 @@ public class WebWorker implements Runnable
 			return "image/jpeg";
 		} else if (contenttype.endsWith(".png")) {
 			return "image/png";
+		} else if (contenttype.endsWith(".ico")) {
+			return "image/x-icon";
 		} else {
 			return "Unkown contenttype";
 		}
@@ -163,7 +165,7 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jason's very own server\n".getBytes());
+		os.write("Server: Mehran's very own server\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
