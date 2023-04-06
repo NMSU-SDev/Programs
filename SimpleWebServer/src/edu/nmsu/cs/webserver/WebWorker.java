@@ -26,6 +26,7 @@ package edu.nmsu.cs.webserver;
  * 		March 30, 2023
  **/
 
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,13 +70,14 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+			String contenttype = ContentType(path);
+			writeHTTPHeader(os, contenttype);
 			/* if there is not anything after the port in the URL
 			   "My webserver works!" will be shown in output */
             if (path.substring(1).isEmpty())
                 os.write("<h3>My web server works!</h3>\n".getBytes());
             else
-                writeContent(os);
+                writeContent(os, contenttype);
 			os.flush();
 			socket.close();
 		}
@@ -121,6 +123,21 @@ public class WebWorker implements Runnable
 			}
 		}
 		return;
+	}
+
+	private String ContentType (String contenttype)
+	{
+		if (contenttype.endsWith(".html")) {
+			return "text/html";
+		} else if (contenttype.endsWith(".gif")) {
+			return "image/gif";
+		} else if (contenttype.endsWith(".jpeg")) {
+			return "image/jpeg";
+		} else if (contenttype.endsWith(".png")) {
+			return "image/png";
+		} else {
+			return "Unkown contenttype";
+		}
 	}
 
 	/**
@@ -169,7 +186,7 @@ public class WebWorker implements Runnable
 	 * postcondition :
 	 * 			The contents of the file will be written to the output stream.
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String contenttype) throws Exception
 	{
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
@@ -181,7 +198,7 @@ public class WebWorker implements Runnable
 			return;
 		}
 		// If file exists
-		else {
+		else if (contenttype == "text/html") {
 			List<String> contents = Files.readAllLines(file);
 		    for (String line : contents) {
 		        // Replace <cs371date> with current time
@@ -189,6 +206,12 @@ public class WebWorker implements Runnable
 				// Replace <cs371server> with my server name
 				line = line.replace("<cs371server>", "Mehran's server");
 				os.write(line.getBytes());
+			}
+		} else if (contenttype == "image/gif" || contenttype == "image/jpeg" || contenttype == "image/png") {
+            FileInputStream fileInputStream = new FileInputStream(f);
+            int data;
+            while ((data = fileInputStream.read()) != -1) {
+                System.out.print(data + " ");
 			}
 		}
 	}
