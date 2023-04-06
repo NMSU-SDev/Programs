@@ -207,11 +207,11 @@ public class WebWorker implements Runnable
 				line = line.replace("<cs371server>", "Mehran's server");
 				os.write(line.getBytes());
 			}
-		} else if (contenttype == "image/gif" || contenttype == "image/jpeg" || contenttype == "image/png") {
-            FileInputStream fileInputStream = new FileInputStream(f);
+		} else {
+            InputStream inputstream = new FileInputStream(f);
             int data;
-            while ((data = fileInputStream.read()) != -1) {
-                System.out.print(data + " ");
+            while ((data = inputstream.read()) != -1) {
+                os.write(data);
 			}
 		}
 	}
