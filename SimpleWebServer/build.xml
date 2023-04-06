@@ -1,4 +1,4 @@
-<project name="SimpleWebServer" basedir="." default="compile">
+<project name="SimpleWebServer" basedir="." default="run">
 
   <property name="src" location="src"/>
   <property name="bin" location="bin"/>
@@ -10,7 +10,7 @@
   </target>
 
   <!-- Run the project -->
-  <target name="run" depends="compile" description="run project">
+  <target name="run" depends="clean,compile" description="run project">
     <java classpath="${bin}" classname="edu.nmsu.cs.webserver.WebServer" fork="true"/>
   </target>
 
