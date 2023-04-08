@@ -9,9 +9,9 @@
     <javac srcdir="${src}" destdir="${bin}"/>
   </target>
 
-  <!-- Run the project -->
+  <!-- Run the project out of the test folder -->
   <target name="run" depends="clean,compile" description="run project">
-    <java classpath="${bin}" classname="edu.nmsu.cs.webserver.WebServer" fork="true"/>
+    <java classpath="${bin}" classname="edu.nmsu.cs.webserver.WebServer" fork="true" dir="${basedir}"/>
   </target>
 
   <!-- Clean up build files -->

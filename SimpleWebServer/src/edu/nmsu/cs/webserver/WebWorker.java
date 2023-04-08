@@ -29,7 +29,7 @@ package edu.nmsu.cs.webserver;
  * to show the content of the file.
  * 
  * 		Mehran Sasaninia
- * 		March 30, 2023
+ * 		April 7, 2023
  **/
 
 import java.io.*;
@@ -76,7 +76,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			// Spesify the type of the file
+			// Specify the type of the file
 			String contenttype = ContentType(path);
 			writeHTTPHeader(os, contenttype);
 			/* if there is not anything after the port in the URL
