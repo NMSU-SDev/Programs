@@ -17,10 +17,16 @@ package edu.nmsu.cs.webserver;
  * content for the response content. HTTP requests and responses are just lines of text (in a very
  * particular format).
  * 
+ * Changes on March 30, 2023:
  * I modified readHTTPRequest() function to return the file referred to by the GET request.
  * I also modified  writeHTTPHeader() function to set the response status to either 200 OK or 
  *   404 Not Found if the file exists and does not exist, respectively. 
  * I changed the writeContent() function to write the HTML file (if it exists) line by line.
+ * 
+ * Changes on April 6, 2023:
+ * Add the ContentType function to specified the format of the file from the HTTP request.
+ * Add some lins of code to the writeContent function to read the file in a binary mode
+ * to show the content of the file.
  * 
  * 		Mehran Sasaninia
  * 		March 30, 2023
@@ -70,6 +76,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
+			// Spesify the type of the file
 			String contenttype = ContentType(path);
 			writeHTTPHeader(os, contenttype);
 			/* if there is not anything after the port in the URL
@@ -125,6 +132,12 @@ public class WebWorker implements Runnable
 		return;
 	}
 
+	/**
+	 * This function uses the path and returns the format of the file that
+	 * is specified in the path.
+	 * @param contenttype
+	 * @return a string that shows the type of the file
+	 */
 	private String ContentType (String contenttype)
 	{
 		if (contenttype.endsWith(".html")) {
@@ -179,15 +192,18 @@ public class WebWorker implements Runnable
 	 *
 	 * This will open the file obtained from http request and begin parsing, if that
 	 * file does not exist, the method will write "404 File Not Found" to the output stream.
-	 * If file exists any occurrence of the string "<cs371date>" in the file will be replaced
-	 * with the current date and time in the format "yyyy/MM/dd HH:mm:ss" and Any occurrence
-	 * of the string "<cs371server>" in the file will be replaced with the string "Mehran's server".
-	 *
-	 * param: os
-	 *          is the OutputStream object to write to
-	 * postcondition :
-	 * 			The contents of the file will be written to the output stream.
-	 **/
+	 * If file exists and is a HTML file, any occurrence of the string "<cs371date>" in the
+	 * file will be replaced with the current date and time in the format "yyyy/MM/dd HH:mm:ss"
+	 * and Any occurrence of the string "<cs371server>" in the file will be replaced with the
+	 * string "Mehran's server".
+	 * If file exists and is not in a HTML format, this code reads the file in a binary mode
+	 * to show the content of the file.
+	 * @param os
+	 * 			is the OutputStream object to write to
+	 * @param contenttype
+	 * 			is the type of the file
+	 * @throws Exception
+	 */
 	private void writeContent(OutputStream os, String contenttype) throws Exception
 	{
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -210,6 +226,7 @@ public class WebWorker implements Runnable
 				os.write(line.getBytes());
 			}
 		} else {
+			// read the file in a binary mode to show the image
             InputStream inputstream = new FileInputStream(f);
             int data;
             while ((data = inputstream.read()) != -1) {
