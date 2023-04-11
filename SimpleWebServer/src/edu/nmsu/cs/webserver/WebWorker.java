@@ -65,18 +65,31 @@ public class WebWorker implements Runnable
 			File htmlFile = new File("."+filePath); 
 			if(htmlFile.exists() && htmlFile.isFile()){ //The server checks if the file requested exists
 				String contentType = Files.probeContentType(Path.of(htmlFile.getAbsolutePath()));
-				writeHTTPHeader(os, contentType);
-				FileInputStream fis = new FileInputStream(htmlFile);
-				String content = new String(Files.readAllBytes(htmlFile.toPath())); //Contents of html file read to string variable
-				DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-				Date currentDate = new Date();
-				String currentDateFormatted = dateFormat.format(currentDate);
-				content = content.replaceAll("<cs371date>", currentDateFormatted); //Replace all used to substitute html tags for corresponding info
-				String serverIdentificationString = "Marco the Electrical Engineer's server";
-				content = content.replaceAll("<cs371server>", serverIdentificationString);
+				if(contentType != null && (contentType.startsWith("image/gif") || contentType.startsWith("image/jpeg") || contentType.startsWith("image/png"))) {
+					writeHTTPHeader(os, contentType);
+					FileInputStream fis = new FileInputStream(htmlFile);
+					byte[] buffer = new byte[1024];
+					int bytesread;
+					while((bytesread = fis.read(buffer)) != -1) {
+						os.write(buffer, 0, bytesread);
+					}
+					fis.close();
+				}
+				else{
+
+					writeHTTPHeader(os, "text/html");
+					FileInputStream fis = new FileInputStream(htmlFile);
+					String content = new String(Files.readAllBytes(htmlFile.toPath())); //Contents of html file read to string variable
+					DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+					Date currentDate = new Date();
+					String currentDateFormatted = dateFormat.format(currentDate);
+					content = content.replaceAll("<cs371date>", currentDateFormatted); //Replace all used to substitute html tags for corresponding info
+					String serverIdentificationString = "Marco the Electrical Engineer's server";
+					content = content.replaceAll("<cs371server>", serverIdentificationString);
 	
-				os.write(content.getBytes());
-				fis.close();
+					os.write(content.getBytes());
+					fis.close();
+				}
 			}
 			else{
 				writeHTTPHeader(os, "text/html"); //If no file exists, 404 message written to header
