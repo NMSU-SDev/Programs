@@ -35,26 +35,27 @@ public class RacingScore2
 
 	public int overallScore()
 	{
+		//if-else statements did not take into account scores being the same.
+		//added an '=' to all the queries and now it does.
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		//changed score1 in second query to score2
+		//so, if score1 is less than score2 & 3, then 2 & 3 are added
+		if (score1 <= score2 && score2 <= score3)
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+
+		else if (score2 <= score1 && score1 <= score3)
 		{
 			s1 = score1;
-			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
+			//changed from score2 to score3
+			s2 = score3;
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			s1 = score1;
+			s2 = score2;
 		}
 		s = s1 + s2;
 		return s;
@@ -63,7 +64,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
@@ -79,6 +80,8 @@ public class RacingScore2
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
+
+
 		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
 		{
 			System.err.println("Error: scores must be between 0 and 50!");
