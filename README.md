@@ -1,6 +1,12 @@
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
+## User ID
+My user ID is buddyhannah
+
+## Lab 1 (L1)
+This assignment relies on the HelloWorld programs. 
+
 ## Program 1 and Program 2
 These assignments rely on the SimpleWebServer program. Each gets graded using tags in a cloned repository. 
 
@@ -9,3 +15,6 @@ This assignment relies on the Coverage programs.
 
 ## Program 4
 This assignment relies on the Circles programs. 
+
+
+
