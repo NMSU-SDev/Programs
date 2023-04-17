@@ -29,11 +29,13 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.nio.file.Files;
 
 public class WebWorker implements Runnable
 {
 	boolean decartes = false; //I file, therefore, I am
 	File filoPilo; // it's a Parks & Rec jokey
+	String fileType;
 	Date d;
 	DateFormat df;
 	private Socket socket;
@@ -59,8 +61,13 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			writeHTTPHeader(os, fileType);
+			if(decartes){
+				writeContent(os);
+			}// end if
+			else{
+				writeErrorContent(os);
+			}
 			os.flush();
 			socket.close();
 		}
@@ -92,22 +99,48 @@ public class WebWorker implements Runnable
 					lineArr = line.split(" ");
 					String fileName;
 					fileName = lineArr[1].substring(1);
-					filoPilo = new File(fileName);
+					if(line.contains(".html")){
+						fileType = "text/html";
+					}// end html case
+					else if(line.contains(".jpg")){
+						fileType = "image/jpeg";
+					}// end jpeg case
+					else if(line.contains(".png")){
+						fileType = "image/png";
+					}// end png case
+					else if(line.contains(".gif")){
+						fileType = "image/gif";
+					}// end gif case
+					else{
+						fileType = "";
+					}// end etcetera
+					if(!fileName.isEmpty()){
+						filoPilo = new File("www/" + fileName);
+					}// end if
+					else{
+						filoPilo = new File(fileName);
+					}// end else
+					System.err.println(filoPilo.exists() || fileName == "");
 					if(filoPilo.exists() || fileName == ""){
 						decartes = true;
 					}// end inner if
+					else{
+						fileType = "";
+					}
+					System.err.println(decartes);
+
 				}// end outer if
 				if (line.length() == 0)
 					break;
-			}
+			}// end try
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
-			}
-		}
+			}// end catch
+		}// end while
 		return;
-	}
+	}// end ReadHTTPRequest
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -151,14 +184,16 @@ public class WebWorker implements Runnable
 	private void writeContent(OutputStream os) throws Exception
 	{	
 		if(decartes && filoPilo.getName() == ""){
+			System.err.println("door #1");
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h3>My web server works!</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
 		}// end if
-		else if(decartes){
+		else if(decartes && fileType == "text/html"){
+			System.err.println("door #2");
 			BufferedReader fileRead = new BufferedReader(new FileReader(filoPilo));
 			String fileInput = fileRead.readLine();
-
+			
 			while(fileInput != null){
 				if(fileInput.contains("<CS371date>")){
 					fileInput = fileInput.replace("<CS371date>", df.format(d));
@@ -169,13 +204,20 @@ public class WebWorker implements Runnable
 				os.write((fileInput + "\n").getBytes());
 				fileInput = fileRead.readLine();
 			}// end while
-		}// end if
-		else{
-			os.write("<html><head></head><body>\n".getBytes());
-			os.write("<h3>Error 404: Not Found. Sorry XP</h3>\n".getBytes());
-			os.write("</body></html>\n".getBytes());
-		}// end else
+		}// end text case
+		else if(decartes && fileType.contains("image")){
+			System.err.println("door #3");
+			byte[] cleo = Files.readAllBytes(filoPilo.toPath());
+			os.write(cleo);
+		}// end image case
 	}
+	private void writeErrorContent(OutputStream os) throws Exception
+	{
+		System.err.println("door #4");
+		os.write("<html><head></head><body>\n".getBytes());
+		os.write("<h3>Error 404: Not Found. Sowwy XP</h3>\n".getBytes());
+		os.write("</body></html>\n".getBytes());
+	}// end writeErrorContent
 
 } // end class
 
