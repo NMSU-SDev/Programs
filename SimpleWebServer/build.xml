@@ -1,0 +1,27 @@
+<project name = "WebServer" default = "freshrun">
+
+	<!-- properties -->
+	<property name = "src.dir" value = "src"/>
+	<property name = "build.dir" value = "build"/>
+
+
+	<target name = "clean">
+		<delete dir = "${build.dir}"/>
+	</target>
+	
+	
+	<target name = "build">
+		<mkdir dir = "${build.dir}"/>
+		<javac srcdir = "${src.dir}" destdir = "${build.dir}"/>
+	</target>
+	
+	
+	<target name = "cleanbuild" depends = "clean,build"/>
+		<target name = "freshrun" depends = "clean,build,run"/>
+		<target name = "run">
+			<java classname = "edu.nmsu.cs.webserver.WebServer" classpath = "${build.dir}" fork = "true" dir = "${basedir}">
+				<arg value = "8080"/>
+				
+			</java>
+		</target>
+	</project>
