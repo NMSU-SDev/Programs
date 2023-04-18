@@ -25,12 +25,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.FileReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
 import java.io.IOException;
+
 
 
 
@@ -64,9 +67,32 @@ public class WebWorker implements Runnable
 
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			fName = readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html", fName); // Writes header based on file
-			writeContent(os, fName);
+			//fName = readHTTPRequest(is);
+			File f = readHTTPRequest(is);
+			fName = f.getPath();
+            String contentType = "";
+
+            // Getting Content Type
+            if(fName.contains(".gif")){
+                contentType = "image/gif";
+            }
+            else if (fName.contains(".jpeg")) {
+                contentType = "image/jpeg";    
+            }
+            else if (fName.contains(".png")) {
+                contentType = "image/png";    
+            }
+            else if (fName.contains(".html")) {
+                contentType = "text/html";    
+            }
+            else if (fName.contains("favicon.ico")) {
+                contentType = "image/x-icon";    
+            }else{
+                System.err.println("File type not recognized");
+            }
+
+			writeHTTPHeader(os, contentType, f.exists());
+            writeContent(os, f, contentType);
 			os.flush();
 			socket.close();
 		}
@@ -83,10 +109,11 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private String readHTTPRequest(InputStream is)
+	private File readHTTPRequest(InputStream is)
 	{
 		String line = "";
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
+		File f = null;
 		while (true)
 		{
 			try // Listening for new line readings
@@ -96,9 +123,15 @@ public class WebWorker implements Runnable
 				line = r.readLine(); // Reads server GET request
 
 				System.err.println("Request line: (" + line + ")");
-				if (line.length() == 0)
+				if(line.contains("GET")){ 
+					String fpath = line.substring(line.indexOf("GET /")+5);
+					fpath = fpath.substring(0,fpath.indexOf(" "));
+
+					f = new File(fpath); // file referred to by the GET request. May not exist
+				}
+
+				if (line.length() == 0) 
 					break;
-				else return line; // New!
 			}
 			catch (Exception e)
 			{
@@ -106,61 +139,9 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return line;
+		return f;
 	}
 
-
-
-/**
- * Read HTML file and write its contents to web page. Also, replaces
- * use of tags <cs371date> and <cs371server> with specified strings.
- * 
- * @precondition HTML file exists under fName
- * @precondition should be used in writeContent method
- * @param fName
- * @param os
- */
-private void writeWebPage(String fName, OutputStream os) throws Exception{
-
-	// Get current date
-	Date d = new Date();
-	DateFormat df = DateFormat.getDateTimeInstance();
-	df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
-
-	String line = "";
-
-	fName = fName.substring(5,fName.length()-9); // getting only file name itself
-
-	if(fName.length() < 1) return; // if there's no significant input.
-
-	try{ // Try to open filereader
-		FileReader fReader = new FileReader(fName);
-		BufferedReader bReader = new BufferedReader(fReader);
-
-		// While file has lines remaining
-		while ((line = bReader.readLine()) != null) {
-
-			if(line.contains("<cs371date>")){
-				line = line.replace("<cs371date>", df.format(d));
-			} if(line.contains("<cs371server>")){
-				line = line.replace("<cs371server>", serverID);
-			} // end if
-
-			os.write(line.getBytes()); // write each line of file to webpage
-		} // end while
-
-		fReader.close();
-		bReader.close();
-
-	} catch(FileNotFoundException e){
-		System.err.println("File missing at \"" + fName + "\"");
-		os.write("<h1>404 Not Found</h1>\n".getBytes());
-	} catch(IOException e){
-		System.err.println("Error reading file \"" + fName + "\"");
-		os.write("<h1>404 Not Found</h1>\n".getBytes());
-	}
-
-} // end writeWebPage
 
 
 
@@ -172,24 +153,18 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 	 * @param contentType
 	 *          is the string MIME content type (e.g. "text/html")
 	 **/
-	private void writeHTTPHeader(OutputStream os, String contentType, String fName) throws Exception
+	private void writeHTTPHeader(OutputStream os, String contentType, boolean fileExists) throws Exception
 	{
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
 
-		fName = fName.substring(5,fName.length()-9); // getting only file name itself
-
 		// if we encounter a reading error write 404 not found
-		// Else write 200 OK
-		File f = new File(fName);
-		if(!f.exists() || f.isDirectory()) { 
+		if (fileExists == false){
 			os.write("HTTP/1.1 404 Not Found\n".getBytes());
-		} else{
-			os.write("HTTP/1.1 200 OK\n".getBytes());
+		}else{ // Else write 200 OK
+			os.write("HTTP/1.1 200 OK\n".getBytes()); 
 		}
-
-		if(contentType.equals("image/gif"))
 
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
@@ -213,12 +188,81 @@ private void writeWebPage(String fName, OutputStream os) throws Exception{
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os, String fName) throws Exception
+	private void writeContent(OutputStream os, File f, String contentType) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		writeWebPage(fName, os);
-		os.write("</body></html>\n".getBytes());
+
+		// Write 404 if file not found
+		if(!f.exists()) { 
+			System.err.println(f.getName());
+			os.write(("<h1>404 File Not Found</h1>").getBytes());
+			return;
+		}
+
+		// If file is a text file
+		if(contentType.equals("text/html")){
+
+			FileReader fReader = new FileReader(f);
+
+			try(BufferedReader bReader = new BufferedReader(fReader);){ // Try to open filereader
+
+				String line;
+	
+				// While file has lines remaining
+				while ((line = bReader.readLine()) != null) {
+	
+					if(line.contains("<cs371date>")){
+						// Get current date
+						Date d = new Date();
+						DateFormat df = DateFormat.getDateTimeInstance();
+						df.setTimeZone(TimeZone.getTimeZone("MST")); // Changed to MST
+						line = line.replace("<cs371date>", df.format(d));
+
+					} if(line.contains("<cs371server>")){
+						// Replace tag with server ID
+						line = line.replace("<cs371server>", serverID);
+					} // end if
+	
+					os.write((line).getBytes()); // write each line of file to webpage
+				} // end while
+	
+			} catch(FileNotFoundException e){
+				System.err.println("File missing at \"" + f.getName() + "\"");
+				os.write("<h1>404 Not Found</h1>\n".getBytes());
+			} catch(IOException e){
+				System.err.println("Error reading file \"" + f.getName() + "\"");
+				os.write("<h1>404 Not Found</h1>\n".getBytes());
+	
+		}
 	}
+
+
+		else { // If file is an image, read byte by byte
+			try (InputStream is = new FileInputStream(f); ) {
+
+				int myByte = -1;
+
+
+				//process image byte by byte
+				while ((myByte = is.read()) != -1) {
+					os.write(myByte);
+				}
+				} catch (Exception e) {
+					System.err.println("Error reading file: " + e);
+				}
+		}
+
+		/* 
+		os.write("<html><head>\n".getBytes());
+		os.write("<title>WebServer</title>\n".getBytes());
+		os.write(parseIconPath().getBytes());
+		os.write("</head><body>\n".getBytes());
+		os.write("<h3>My web server works!</h3>\n".getBytes());
+		writeWebPage(fName, os, contentType);
+		writeImage(os, "icon.png");
+		os.write(("<img src=" + "\"" + "https://html.sammy-codes.com/images/small-profile.jpeg" + "\">").getBytes());
+		os.write("</body></html>\n".getBytes());
+		*/
+	}
+
 
 } // end class
