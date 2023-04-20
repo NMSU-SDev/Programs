@@ -2,10 +2,10 @@ Question 1:
     I estimate that this will take me about 2.5 hours to complete.
 
 Question 2:
-    Thought/Design:
-    Programming:
-    Debugging: 
-    TOTAL: 
+    Thought/Design: .5 hours
+    Programming: 1.5 hours
+    Debugging: 1 hour
+    TOTAL: 3 Hours
 
 Question 3:
-    My Estimation was about ____ within my original estimation
+    My Estimation was about 83% within my original estimation
