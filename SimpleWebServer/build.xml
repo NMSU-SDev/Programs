@@ -1,0 +1,26 @@
+<project name = "SimpleWebServer" default = "run" basedir = "."> 
+    <description>
+        Ant File for SimpleWebServer
+    </description>
+
+    <property name = "src" location = "src"/>
+    <property name="bin" location="bin" />
+
+    <target name = "clean" description = "Cleaning up...">
+        <delete dir = "bin"/>
+        
+    </target>
+
+    <target name = "build" depends = "clean" description = "Building...">
+        <mkdir dir = "${bin}"/>
+        <javac srcdir = "${src}" destdir = "${bin}" includeantruntime = "false" debug = "true" />
+    </target>
+
+    <target name = "compile" depends = "build" description = "Compiling...">
+        <javac srcdir = "${src}" destdir = "${bin}" />
+    </target>
+
+    <target name = "run" depends = "compile" description = "Running the File...">
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" dir = "./www"/>
+    </target>
+</project>
