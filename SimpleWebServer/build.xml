@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="SimpleWebServer" default="run" basedir=".">
+
+<target name="run" depends="build">
+  <java classname="edu.nmsu.cs.webserver.WebServer" fork="true" classpath="bin" dir="../www">
+  </java>
+</target>
+
+<target name="build" depends="clean">
+  <javac includeantruntime="false" srcdir="src/edu/nmsu/cs/webserver" destdir="bin"/>
+</target>
+
+<target name="clean">
+  <delete>
+    <fileset dir="bin/edu/nmsu/cs/webserver" includes="**/*.class"/>
+  </delete>
+</target>
+
+</project>
