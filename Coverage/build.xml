@@ -87,6 +87,12 @@
          <arg value="9"/><arg value="8"/><arg value="2"/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
+      <!-- s3 < s1 && s3 < s2 && s1 > s2-->
+      <echo message="TEST RacingScore2: 9 2 2"/>
+      <java classname="edu.nmsu.cs.scoring.RacingScore2" classpath="bin" fork="true">
+         <arg value="9"/><arg value="2"/><arg value="2"/>
+         <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+      </java>
       <!-- s2 == s1 && s2 == s3 && s1 == s3-->
       <echo message="TEST RacingScore2: 9 9 9"/>
       <java classname="edu.nmsu.cs.scoring.RacingScore2" classpath="bin" fork="true">
@@ -135,7 +141,6 @@
       </java>
       <echo message="TEST RacingScore2:"/>
       <java classname="edu.nmsu.cs.scoring.RacingScore2" classpath="bin" fork="true">
-      <arg line=""/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
       
