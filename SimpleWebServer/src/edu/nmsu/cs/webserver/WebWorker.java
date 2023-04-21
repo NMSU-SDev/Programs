@@ -18,7 +18,11 @@ package edu.nmsu.cs.webserver;
  * particular format).
  *
  **/
-
+import java.net.*;
+import java.util.*;
+import java.io.FileReader;
+import java.io.File;
+import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +36,14 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-
+	public String pFile = "";
+	
+	public String pError = "";
+	public String result = "";
+	public String date = "02/22/2023";
+	public String servID = "Jason's server";
+	public String tag1 = "<cs371date>";
+	public String tag2 = "<cs371server>";
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -40,7 +51,7 @@ public class WebWorker implements Runnable
 	{
 		socket = s;
 	}
-
+	
 	/**
 	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
 	 * destroys the thread. This method assumes that whoever created the worker created it with a
@@ -81,18 +92,41 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				if(line.startsWith("GET")) {
+					pFile = line.substring(4, line.lastIndexOf(" "));
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
 			}
+			
+			
 			catch (Exception e)
 			{
 				System.err.println("Request error: " + e);
 				break;
 			}
 		}
+		try {
+			String val;
+			String currentWorkingDir = System.getProperty("user.dir");
+			File f = new File(currentWorkingDir + pFile);
+			StringBuilder html = new StringBuilder();
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			while ((val = br.readLine()) != null) {
+				html.append(val);
+			}
+		
+			result = html.toString();
+		} 
+		catch(Exception ex){
+			pError = "404";
+		}
+		
 		return;
 	}
+
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -107,17 +141,20 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		os.write("HTTP/1.1 200 OK\n".getBytes());
-		os.write("Date: ".getBytes());
-		os.write((df.format(d)).getBytes());
-		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
-		os.write("Connection: close\n".getBytes());
-		os.write("Content-Type: ".getBytes());
-		os.write(contentType.getBytes());
-		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+		
+		if(pError == "404") 
+			os.write("HTTP/1.1 404 NOT FOUND".getBytes());
+		else {	
+			os.write("HTTP/1.1 200 OK\n".getBytes());
+			os.write("Date: ".getBytes());
+			os.write((df.format(d)).getBytes());
+			os.write("\n".getBytes());
+			os.write("Jason's server\n".getBytes());
+			os.write("Connection: close\n".getBytes());
+			os.write("Content-Type: ".getBytes());
+			os.write(contentType.getBytes());
+			os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
+		} // end else
 		return;
 	}
 
@@ -130,9 +167,10 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+		String result1 = result.replace(tag1,date);
+		String result2 = result1.replace(tag2,servID);
+		os.write(result2.getBytes());
+	
 	}
 
 } // end class
