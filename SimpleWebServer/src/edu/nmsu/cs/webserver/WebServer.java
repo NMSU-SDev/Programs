@@ -18,7 +18,6 @@ import java.net.Socket;
 public class WebServer
 {
 	private ServerSocket	socket;
-
 	
 	/**
 	 * Constructor

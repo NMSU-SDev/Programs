@@ -19,18 +19,24 @@ package edu.nmsu.cs.webserver;
  *
  **/
 
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.net.Socket;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class WebWorker implements Runnable
 {
-
+	public boolean exist;
+	public String address;
+	public File file;
 	private Socket socket;
 
 	/**
@@ -70,7 +76,7 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private void readHTTPRequest(InputStream is) 
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
@@ -81,6 +87,16 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+
+				
+				
+				if(line.contains("GET")){
+					
+					
+					address = line.substring(5,line.indexOf(" ", 4));
+					file = new File(address);
+					exist = file.exists();
+				}
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -107,13 +123,17 @@ public class WebWorker implements Runnable
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		if(exist == true){
 		os.write("HTTP/1.1 200 OK\n".getBytes());
+		}
+		else{os.write("HTTP/1.1 404 Page Not Found\n".getBytes());}
+
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Mason's very own server\n".getBytes());
+		//os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+		//os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -129,10 +149,39 @@ public class WebWorker implements Runnable
 	 *          is the OutputStream object to write to
 	 **/
 	private void writeContent(OutputStream os) throws Exception
-	{
-		os.write("<html><head></head><body>\n".getBytes());
-		os.write("<h3>My web server works!</h3>\n".getBytes());
-		os.write("</body></html>\n".getBytes());
+	{	 
+		if(exist == true){
+			String webServer = "Mason's Server";
+			BufferedReader in = new BufferedReader(new FileReader(address)); 
+			
+				Date date = new Date();
+				String substring;
+				 
+				while((substring = in.readLine()) != null){
+				
+
+					if(substring.contains("<cs371date>")){
+						substring = substring.replace("<cs371date>",date.toString());
+					}
+					if(substring.contains("<cs371server>")){
+						substring = substring.replace("<cs371server>", webServer);
+					}
+					
+					os.write("<html><head></head><body>\n".getBytes());
+					os.write(("<h3>"+ substring +"\n</h3>\n").getBytes());
+					os.write("</body></html>\n".getBytes());
+
+				}
+				in.close();
+
+		}
+		
+		else{
+			os.write("<html><head></head><body>\n".getBytes());
+			os.write("<h3>404 Page Not Found!</h3>\n".getBytes());
+			os.write("</body></html>\n".getBytes());
+			
+		}
 	}
 
 } // end class
