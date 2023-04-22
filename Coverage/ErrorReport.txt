@@ -1,0 +1,33 @@
+P3 (Coverage)
+Hannah Himelright
+April 21, 2023
+
+******************************************************************************
+
+	RacingScore1.java
+
+FIXING FUNCTIONAL ERRORS FOR VALID INPUTS:
+
+I modified the method overallscore() to set s to the lowest score. Before,  if score1 < score2, then s was set to the bigger score, score2. And if score2 < score1,  then s was set to the bigger score, score1.
+ 
+ 
+FUNCTIONAL ERRORS FOR INVALID INPUTS: 
+
+Scores should range from 0 to 50 (inclusive), but the program allows values outside of these limits.
+ 
+ ******************************************************************************
+
+	RacingScore3.java:
+
+ FIXING FUNCTIONAL ERRORS FOR VALID INPUTS:
+
+ I modified the method overallScore() to set  s1 and s2  to the two highest scores. Before, the program always set s2 to score2, even when score2 was the lowest score.
+ 
+I changed overallScore() to handle when multiple scores are the same value. Before, if two scores were equal, the program set s1 and s2 to 99. I fixed this error by changing "<" to "<=", and by removing the code that set set s1 and s2 to 99.
+ 
+I removed the condition  "args == null" from the statement "if (args == null  && args.length != 3)" because command line arguments are never null.
+
+  
+  
+  
+  
