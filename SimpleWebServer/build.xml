@@ -1,0 +1,33 @@
+<!-- Ant build file for SimpleWebServer. Contains build, run, and clean; 
+	should run automatically when compiled with Ant.
+-->
+
+<project name="WebServer" default="run" basedir = ".">
+    <property name="src" location="src/"/>
+	<property name="build" location="bin/"/>
+
+<!-- Delete class files directory -->
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+
+<!-- Compile files to bin folder -->
+	<target name="build">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" includeantruntime="true" destdir="${build}"/>
+	</target>
+
+<!-- Cleans & builds files freshly-->
+	<target name="cleanbuild" depends="clean,build"/>
+
+<!-- Cleans & rebuilds files before run -->
+	<target name="newrun" depends="clean,build,run"/>
+
+<!-- Runs compiled files -->
+	<target name="run">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}/www">
+			<arg value="8080"/>
+		</java>
+	</target>
+
+</project>
