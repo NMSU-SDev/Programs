@@ -32,13 +32,15 @@
          <!-- must delete coverage data file to start afresh (otherwise coverage accumulates) -->
          <fileset dir="." includes="jacoco.exec"/>
       </delete>
-      <echo message="TEST IglooScore1: 8 9 6"/>
-      <java classname="IglooScore1" fork="true">
+      <echo message="TEST RacingScore1: 8 9 6"/>
+      <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+         <classpath path="bin"/>
          <arg value="8"/><arg value="9"/><arg value="6"/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
-      <echo message="TEST IglooScore2: 8 9 6"/>
-      <java classname="IglooScore2" fork="true">
+      <echo message="TEST RacingScore2: 8 9 6"/>
+      <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+         <classpath path="bin"/>
          <arg value="8"/><arg value="9"/><arg value="6"/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
@@ -58,10 +60,10 @@
          </executiondata>
          <structure name="iglooscore">
             <classfiles>
-               <fileset dir="."/>
+               <fileset dir="bin/edu/nmsu/cs/scoring"/>
             </classfiles>
             <sourcefiles encoding="UTF-8">
-               <fileset dir="."/>
+               <fileset dir="bin/edu/nmsu/cs/scoring"/>
             </sourcefiles>
          </structure>
          <html destdir="report"/>
