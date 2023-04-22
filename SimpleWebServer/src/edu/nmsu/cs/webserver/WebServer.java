@@ -17,16 +17,13 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
-
-	private boolean				running;
+	private ServerSocket socket;
 
 	/**
 	 * Constructor
 	 **/
 	private WebServer()
 	{
-		running = false;
 	}
 
 	/**

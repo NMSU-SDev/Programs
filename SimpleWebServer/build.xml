@@ -1,6 +1,6 @@
-<!-- Program 1 Build File.-->
+<!-- Program 3 Build File.-->
 
-<project name="WebServer">
+<project name="WebServer" default="run">
 
     <description>
         Ant Build File for Program 1; includes clean, build, and run functionality.
@@ -22,9 +22,9 @@
 <!-- Cleans/Builds-->
 	<target name="cleanbuild" depends="clean,build"/>
 
-<!-- Run -->
-	<target name="run" description="Run with class path edu.nmsu.cs.webserver.WebServer with argument value 8080.">
-		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}">
+<!-- Depends -->
+	<target name="run" description="Run with class path edu.nmsu.cs.webserver.WebServer with argument value 8080." depends="cleanbuild">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}/www">
 			<arg value="8080"/>
 		</java>
 	</target>
