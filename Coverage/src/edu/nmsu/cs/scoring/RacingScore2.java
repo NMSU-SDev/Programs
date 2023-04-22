@@ -44,7 +44,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3;
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
