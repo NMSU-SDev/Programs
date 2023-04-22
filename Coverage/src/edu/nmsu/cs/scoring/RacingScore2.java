@@ -36,26 +36,29 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+
+		// verify if score1 is the smallest score
+		if (score1 <= score2 && score1 <= score3)
 		{
+		    // if it is, it's excluded and the other two scores are used
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+
+		// fixed error in which score 3 was excluded instead of score 2,
+		// which is the one we are verifying at the moment
+		else if (score2 <= score1 && score2 <= score3)
 		{
 			s1 = score1;
-			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
+			//s2 = score2; WRONG
+			s2 = score3;
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			s1 = score1;
+			s2 = score2;
 		}
+
 		s = s1 + s2;
 		return s;
 	}
