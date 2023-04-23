@@ -16,7 +16,7 @@
    </taskdef>
 
    <!-- standard compile task, but turn debugging on for source viewing -->
-   <target name="compile" description="compile the source">
+   <target name="compile" depends="clean" description="compile the source">
       <mkdir dir="${build-direction}" />
       <javac srcdir="." destdir="${build-direction}" includeantruntime="false" debug="true"/>
    </target>
@@ -43,7 +43,7 @@
       <echo message="TEST RacingScore1: 6 8 9"/>
       <jacoco:coverage destfile="${.exec.file}">
       <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
-         <classpath path="${build-direction}"/>
+         <classpath path="bin"/>
          <arg value="6"/><arg value="8"/><arg value="9"/>
       </java>
       </jacoco:coverage>
