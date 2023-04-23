@@ -2,8 +2,11 @@
 <!-- Jonathan Cook, 17 Sep 2015 -->
 <project name="iglooscore" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
 
+   <!-- Property to allow ant to build to bin directory-->
+   <property name="build" location="bin/"/>
+
    <!-- property to allow ant to find jacoco: CHANGE THE PATH to point to yours -->
-   <property name="jacocodir" location="/home/jcook/tools/jacoco/lib"/>
+   <property name="jacocodir" location="C:\Users\15752\Desktop\CS371\P3\Programs\Coverage\lib"/>
 
    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
       <classpath path="${jacocodir}/jacocoant.jar"/>
@@ -11,7 +14,8 @@
 
    <!-- standard compile task, but turn debugging on for source viewing -->
    <target name="compile" description="compile the source">
-      <javac srcdir="." includeantruntime="false" debug="true"/>
+      <mkdir dir="${build}"/>
+      <javac srcdir="." includeantruntime="false" debug="true" destdir="${build}"/>
    </target>
 
    <!-- tests if new jacoco run is needed by checking if the jacoco.exec file is
@@ -29,13 +33,13 @@
          <!-- must delete coverage data file to start afresh (otherwise coverage accumulates) -->
          <fileset dir="." includes="jacoco.exec"/>
       </delete>
-      <echo message="TEST IglooScore1: 8 9 6"/>
-      <java classname="IglooScore1" fork="true">
+      <echo message="TEST RacingScore1: 8 9 6"/>
+      <java classname="RacingScore1" fork="true">
          <arg value="8"/><arg value="9"/><arg value="6"/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
-      <echo message="TEST IglooScore2: 8 9 6"/>
-      <java classname="IglooScore2" fork="true">
+      <echo message="TEST RacingScore2: 8 9 6"/>
+      <java classname="RacingScore2" fork="true">
          <arg value="8"/><arg value="9"/><arg value="6"/>
          <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
       </java>
@@ -53,7 +57,7 @@
          <executiondata>
             <file file="jacoco.exec"/>
          </executiondata>
-         <structure name="iglooscore">
+         <structure name="racingscore">
             <classfiles>
                <fileset dir="."/>
             </classfiles>
