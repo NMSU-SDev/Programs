@@ -4,7 +4,7 @@
     </target>
 
     <target name="run" depends="compile">
-        <java classname="WebServer" fork="true" />
+        <java classname="WebServer" fork="true" classpath="build" />
     </target>
 
     <target name="clean">

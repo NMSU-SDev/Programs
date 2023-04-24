@@ -30,7 +30,8 @@ public class WebWorker implements Runnable
 {
 
 	private Socket socket;
-	private static String fileName;
+	private String fileName;
+	private String content;
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -53,10 +54,10 @@ public class WebWorker implements Runnable
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			path = readHTTPRequest(is);
-			
-			writeHTTPHeader(os, "text/html");
-			writeContent(os, path);
+			readHTTPRequest(is);
+			// path = readHTTPRequest(is);
+			writeHTTPHeader(os, content);
+			writeContent(os);
 			os.flush();
 			socket.close();
 		} //End try
@@ -73,7 +74,7 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private boolean readHTTPRequest(InputStream is)
+	private void readHTTPRequest(InputStream is)
 	{
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
@@ -84,27 +85,53 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
-				System.out.println(("LINE: " + line + "\n"));
+				// System.out.println(("LINE: " + line + "\n"));
 				if( line.contains( "res") && line.contains(".html") && line.contains( "GET") ){
 					String refined[] = line.split( " " );
+					content = "text/html";
 					fileName = refined[1].substring(9);
-					System.out.println("FILE: " + fileName + "\n");
+					//System.out.println("FILE: " + fileName + "\n");
 					File newOne = new File( fileName );
-					BufferedReader that = new BufferedReader(new FileReader( newOne ) );
-					if( that.read() != -1 )
-						return true;
+					// BufferedReader that = new BufferedReader(new FileReader( newOne ) );
+					// if( that.read() != -1 )
+					// 	return true;
 				} //End if
 
 				if ( line.contains( ".html" ) && line.contains("GET")){
 					String refineLine[] = line.split( " " );
+					content = "text/html";
 					fileName = refineLine[1].substring(1);
 					System.out.println( "Got file: " + fileName );
 					File newFile = new File( fileName );
-					BufferedReader there = new BufferedReader(new FileReader( newFile ));
-					if( there.read() != -1 ){
-						return true;
-					}
+					// BufferedReader there = new BufferedReader(new FileReader( newFile ));
+					// if( there.read() != -1 ){
+					// 	return true;
+					// }
 				} //End if
+
+				if (line.contains(".jpeg") || line.contains(".jpg")) {
+					content = "image/jpg";
+					String refineLine[] = line.split(" ");
+					fileName = refineLine[1].substring(1);
+					System.out.println("Got file: " + fileName);
+					File newFile = new File(fileName);
+				}
+				
+				else if (line.contains(".gif")) {
+					content = "image/gif";
+					String refineLine[] = line.split(" ");
+					fileName = refineLine[1].substring(1);
+					System.out.println("Got file: " + fileName);
+					File newFile = new File(fileName);
+				}
+
+				else if (line.contains(".png")) {
+					content = "image/png";
+					String refineLine[] = line.split(" ");
+					fileName = refineLine[1].substring(1);
+					System.out.println("Got file: " + fileName);
+					File newFile = new File(fileName);
+				}
 
 				if (line.length()==0) 
 					break;
@@ -116,10 +143,21 @@ public class WebWorker implements Runnable
 					break;
 				} //End catch
 			} //End while
-		return false;
+		// return false;
 	} //End HTTPRequest
 
 
+	// private void getDateTag (OutputStream os, String s) throws Exception {
+	// 	File htmlFile = new File(s);
+	// 	String dateString = "";
+	// 	try {
+	// 		BufferedReader br = new BufferedReader(new FileReader(htmlFile));
+	// 		String readLine = br.readLine();
+	// 		while (readLine != null){
+	// 			if (readLine.contains(""))
+	// 		}
+	// 	}
+	// } //End getDateTag
 	/**
 	 * Write the HTTP header lines to the client network connection.
 	 * 
@@ -130,9 +168,10 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
+
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		df.setTimeZone(TimeZone.getTimeZone("MST"));
 		os.write("HTTP/1.1 200 OK\n".getBytes());
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
@@ -155,9 +194,9 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os, boolean getIt) throws Exception
+	private void writeContent(OutputStream os) throws Exception
 	{
-		if (getIt == true) 
+		if (content.equals("text/html")) 
 		{
 			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
        		String line = reader.readLine();
@@ -167,7 +206,7 @@ public class WebWorker implements Runnable
 				if( line.contains("<cs371date>")){
 					Date da = new Date();
 					DateFormat daf = DateFormat.getDateTimeInstance();
-					daf.setTimeZone(TimeZone.getTimeZone("GMT"));
+					daf.setTimeZone(TimeZone.getTimeZone("MST"));
 					String datee = daf.format(da);
 					dateString = line.replace( "<cs371date>", datee );
 					line = dateString;
@@ -179,13 +218,44 @@ public class WebWorker implements Runnable
 				} //End if
 				os.write((line + "\n").getBytes());
 				line = reader.readLine();	
-			} //End while
-		} //End if
+			}
+		}
+		
+			else if (content.contains("image/jpg") || content.contains("image/gif") || content.contains("image/png")) {
+				if (content.contains("image/jpg")) {
+					FileInputStream input = new FileInputStream(fileName);
+					int current = input.read();
+					while(current != -1) {
+						os.write(current);
+						current = input.read();
+					}
+					//input.close();
+				}
+				if (content.contains("image/gif")) {
+					FileInputStream input = new FileInputStream(fileName);
+					int current = input.read();
+					while(current != -1) {
+						os.write(current);
+						current = input.read();
+					}
+					//input.close();
+				}	
+				if (content.contains("image/png")) {
+					FileInputStream input = new FileInputStream(fileName);
+					int current = input.read();
+					while(current != -1) {
+						os.write(current);
+						current = input.read();
+					}
+					//input.close();
+				}
+				// input.close();
+			}	
 
-		else {
-			os.write("<html><head></head><body>\n".getBytes());
-			os.write("<h3>HTTP/1.1 404 Not Found</h3>\n".getBytes());
-			os.write("</body></html>\n".getBytes());
-		}//end else
+				else {
+					os.write("<html><head></head><body>\n".getBytes());
+					os.write("<h3>HTTP/1.1 404 Not Found</h3>\n".getBytes());
+					os.write("</body></html>\n".getBytes());
+				}//end else
 	} //End WriteContent
 } // end class
