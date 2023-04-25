@@ -84,7 +84,6 @@ public class WebWorker implements Runnable
 		return;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Read the HTTP request header.
 	 **/
@@ -102,43 +101,6 @@ public class WebWorker implements Runnable
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;	
-=======
-   /**
-   * Write the HTTP header lines to the client network connection.
-   * @param os is the OutputStream object to write to
-   * @param contentType is the string MIME content type (e.g. "text/html")
-   * @param address is the website address
-   **/
-   private void writeHTTPHeader(OutputStream os, String contentType, String address) throws Exception{
-      
-      Date d = new Date();
-      DateFormat df = DateFormat.getDateTimeInstance();
-      df.setTimeZone(TimeZone.getTimeZone("GMT-6"));
-      
-      String copy = '.' + address;
-      File f1 = new File(copy);
-      
-      try{
-         FileReader file = new FileReader(f1);
-         BufferedReader r = new BufferedReader(file);
-      }catch(FileNotFoundException e){
-         System.out.println("File not found: " + address);
-         os.write("HTTP/1.1 404 Error: Not Found\n".getBytes());
-      }
-      
-      os.write("HTTP/1.1 200 OK\n".getBytes());
-      os.write("Date: ".getBytes());
-      os.write((df.format(d)).getBytes());
-      os.write("\n".getBytes());
-      os.write("Server: Nate's server\n".getBytes());
-      os.write("Connection: close\n".getBytes());
-      os.write("Content-Type: ".getBytes());
-      os.write(contentType.getBytes());
-      os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
-      return;
-      
-   } // of writeHTTPHeader
->>>>>>> ff1db646634be5f7652800e201dd4536d6a362ec
 
 				if (line.substring(0,3).equals("GET"))
 				{
@@ -162,7 +124,6 @@ public class WebWorker implements Runnable
 		return;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Write the HTTP header lines to the client network connection.
 	 * 
@@ -226,6 +187,4 @@ public class WebWorker implements Runnable
 		//os.write("</body></html>\n".getBytes());
 	}
 
-=======
->>>>>>> ff1db646634be5f7652800e201dd4536d6a362ec
 } // end class
