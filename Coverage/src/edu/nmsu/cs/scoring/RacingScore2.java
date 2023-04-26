@@ -44,7 +44,7 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3; // Updated to include score3 instead of score2 if score3 is higher
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
@@ -91,3 +91,6 @@ public class RacingScore2
 	}
 
 } // end class
+
+// The only error I spotted was in overallScore, which would incorrectly calculate the value with score1 and score2 if score2 was the lowest of the three values.
+// It has been fixed. 

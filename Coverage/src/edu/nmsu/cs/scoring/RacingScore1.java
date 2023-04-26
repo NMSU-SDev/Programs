@@ -36,7 +36,7 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2) //Updated to accept the smaller of the values between score1 and score2. Originally took the larger
 			s = score2;
 		else
 			s = score1;
@@ -72,3 +72,5 @@ public class RacingScore1
 	}
 
 } // end class
+// I spotted an error in overallScore where in the first if statement, it was accidentally built to take the greater of score1 and score2 as s. 
+// s needs to be the smallest of the scores, so this has been updated.
