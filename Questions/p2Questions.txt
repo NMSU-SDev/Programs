@@ -1,0 +1,12 @@
+1. Estimate the time it will take you to do the assignment, to within a quarter-hour:
+   Because now I understand the basics of Web servers, I imagine simply adding one functionality won't take too long
+   Likely 2 hrs and 30 mins.
+
+2. Estimate the time it took you to complete the assignment, broken down as:
+
+    Thought/Design: 40 mins
+    Programming:    1 hr
+    Debugging:      20 mins
+    TOTAL:          2 hrs
+
+3. To within what percent accuracy was your original estimate: within 80% accuracy

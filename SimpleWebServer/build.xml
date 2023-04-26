@@ -1,22 +1,19 @@
-<project basedir="." default="build" name="Raf's Simple Web Server">
-
-   <property name="classes.dir" value="bin/edu/nmsu/cs/webserver" />
-   <property name="source.dir" value="src/edu/nmsu/cs/webserver" />
+<project basedir="." default="run" name="Raf's Simple Web Server">
 
    <target name="clean">
-      <delete dir="bin" />
+      <delete dir="www\bin" />
    </target>
 
    <target name="init" depends="clean">
-      <mkdir dir="${classes.dir}" />
+      <mkdir dir="www\bin\edu\nmsu\cs\webserver" />
    </target>
 
    <target name="build" depends="init">
-      <javac srcdir="${source.dir}" destdir="bin" />
+      <javac srcdir="www\src" destdir="www\bin" />
    </target>
 
    <target name="run" depends="build">
-      <java classpath="bin" classname="edu.nmsu.cs.webserver.WebServer" />
+      <java classpath ="www\bin" classname="edu.nmsu.cs.webserver.WebServer"/>
    </target>
 
 </project>
