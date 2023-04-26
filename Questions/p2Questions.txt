@@ -1,1 +1,6 @@
 1. I think I'll finish this assignment in around 3 hours. 
+2. Thought & Design: 3 hours
+   Programming: 2 hours
+   Debugging: 2.5 hours
+   Total: 7.5 hours
+3. My answer was approximately 22.5% correct.
