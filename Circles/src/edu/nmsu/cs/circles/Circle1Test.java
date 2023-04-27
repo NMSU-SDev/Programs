@@ -65,4 +65,50 @@ public class Circle1Test
 	 * " + e); } }
 	 ***/
 
+
+
+	// Test the scale() method
+	@Test
+	public void testScale()
+	{
+		System.out.println("Running test testScale.");
+		double newRadius = circle1.scale(2);
+		Assert.assertEquals(newRadius, 6, 0.00001);
+	}
+
+	// Test intersection with another Circle1
+	@Test
+	public void testIntersectsWithSelf()
+	{
+		System.out.println("Running test testIntersectsWithSelf.");
+		Assert.assertTrue(circle1.intersects(circle1));
+	}
+
+	// Test intersection with another Circle1 that intersects
+	@Test
+	public void testIntersectsWithIntersectingCircle()
+	{
+		System.out.println("Running test testIntersectsWithIntersectingCircle.");
+		Circle1 other = new Circle1(2, 3, 2);
+		Assert.assertTrue(circle1.intersects(other));
+	}
+
+	// Test intersection with another Circle1 that doesn't intersect
+	@Test
+	public void testIntersectsWithNonIntersectingCircle()
+	{
+		System.out.println("Running test testIntersectsWithNonIntersectingCircle.");
+		Circle1 other = new Circle1(10, 10, 1);
+		Assert.assertFalse(circle1.intersects(other));
+	}
+
+	// Test intersection with another Circle2
+	@Test
+	public void testIntersectsWithCircle2()
+	{
+		System.out.println("Running test testIntersectsWithCircle2.");
+		Circle2 other = new Circle2(2, 3, 2);
+		Assert.assertTrue(circle1.intersects(other));
+	}
+
 }
