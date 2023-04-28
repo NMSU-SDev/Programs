@@ -1,0 +1,32 @@
+<project name="CircleProject" default="run" basedir=".">
+  
+  <!-- Set the source directory -->
+  <property name="src.dir" value="src" />
+  
+  <!-- Set the output directory -->
+  <property name="bin.dir" value="bin" />
+  
+  <!-- Define the clean target -->
+  <target name="clean">
+    <delete dir="${bin.dir}" />
+  </target>
+  
+  <!-- Define the compile target -->
+  <target name="compile" depends="clean">
+    <mkdir dir="${bin.dir}" />
+    <javac srcdir="${src.dir}" destdir="${bin.dir}" includeantruntime="false" />
+  </target>
+  
+  <!-- Define the run target -->
+  <target name="run" depends="compile">
+    <java classname="CircleRun">
+     <classpath>
+      <pathelement path="${bin.dir}"/>
+     </classpath>
+      <arg value="defaultArg1" />
+      <arg value="defaultArg2" />
+      <!-- Add more default arguments if needed -->
+    </java>
+  </target>
+  
+</project>
