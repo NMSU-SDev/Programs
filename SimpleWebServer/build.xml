@@ -1,0 +1,33 @@
+<project name="WebServer">
+
+
+    <!-- Compile -->
+    <target name="compile" description="compile the source">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
+    </target>
+
+    <!-- Jar -->
+    <target name="jar"  depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/WebServer.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="edu.nmsu.cs.webserver.WebServer"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Clean -->
+    <target name="clean">
+        <delete dir="build/jar"/>
+    </target>
+
+    <!-- Run -->
+    <target name="run" depends="compile,jar">
+        <java jar="build/jar/WebServer.jar" fork="true"/>
+    </target>
+
+    <!-- Clean build -->
+    <target name="clean-build" depends="clean,jar"/>
+
+</project>

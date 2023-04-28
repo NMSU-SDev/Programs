@@ -1,0 +1,19 @@
+## Brock Middleton
+## SWD-CS-371
+## Feb,17,2023
+## Program1 (SimpleWebServer)
+
+1. Estimate the time it will take you to do the assignment:
+	
+	2 hours
+
+2. Estimate the time it took you to complete the assignment:
+
+	a. Thought/Design: 15 minutes
+	b. Programming:	 45 minutes
+	c. Debugging:	 1 hour and 30 minutes
+	e. ADDITIONAL: 45 minutes to set up ant file correctly. 
+
+	d. TOTAL: 3 hours 15 minutes
+
+3. I underestimated how long this assignment would take by about 60%. 
