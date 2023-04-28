@@ -1,0 +1,48 @@
+<project name="Circle" default="run" basedir=".">
+
+    <property name="src" location="src" />
+    <property name="bin" location="bin" />
+    <property name="start" location="start"/>
+
+    <target name="intoIt" depends="clean">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${bin}"/>
+    </target>
+
+    <target name="compile" depends="intoIt">
+        <javac srcdir="${src}" destdir="bin" />
+    </target>
+
+    <target name="start" depends="compile">
+        <!-- Create the distribution directory -->
+        <mkdir dir="${start}/lib"/>
+
+        <!-- Put everything in ${bin} into the MyProject-${DSTAMP}.jar file -->
+        <jar jarfile="${start}/lib/lab4.jar" basedir="${bin}"/>
+    </target>
+
+    <target name="clean">
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${bin}"/>
+        <delete dir="${start}"/>
+    </target>
+
+    <target name="run" depends="start">
+        <java classname="edu.nmsu.cs.circles.CircleRun.java" classpath="bin" fork="true"></java>
+    </target>
+
+<target name="testCircle1" depends="start">
+        <java classname="edu.nmsu.cs.webserver.CircleRun1.java" classpath="bin" fork="true"></java>
+    </target>
+
+    <target name="testCircle2" depends="start">
+        <java classname="edu.nmsu.cs.webserver.CircleRun2" classpath="bin" fork="true"></java>
+    </target>
+
+    <target name="test" depends="start">
+        <java classname="edu.nmsu.cs.webserver.CircleRun.java" classpath="bin" fork="true"></java>
+    </target>
+
+</project>
