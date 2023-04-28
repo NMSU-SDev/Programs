@@ -124,6 +124,44 @@ public class Circle1Test
 		Assert.assertTrue(circle1.intersects(testCircle));
 	}
 
+	//
+	// Test intersection of two circles with changing y values;
+	// returns true
+	//
+	@Test
+	public void intersectOnlyYChange()
+	{
+		System.out.println("Running test intersectOnlyYChange().");
+		Circle1 testCircle;
+		testCircle = new Circle1(1, 6, 5);
+		Assert.assertTrue(circle1.intersects(testCircle));
+	}
+
+	//
+	// Test intersection of two circles with changing x and y values;
+	// returns true
+	//
+	@Test
+	public void intersectXYChange()
+	{
+		System.out.println("Running test intersectOnlyYChange().");
+		Circle1 testCircle;
+		testCircle = new Circle1(7, 6, 5);
+		Assert.assertTrue(circle1.intersects(testCircle));
+	}
+
+	//
+	// Test no intersection of two circles; returns false
+	//
+	@Test
+	public void noIntersection()
+	{
+		System.out.println("Running test noIntersection.");
+		Circle1 testCircle;
+		testCircle = new Circle1(9, 7, 5);
+		Assert.assertTrue(circle1.intersects(testCircle));
+	}
+
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
 	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
