@@ -49,6 +49,81 @@ public class Circle2Test
 						  testCircle.radius == 7);
 	}
 
+	//
+	// Test circle initialization with all negative values
+	//
+	@Test
+	public void circleInitializationTestNegative()
+	{
+		Circle2 testCircle;
+		System.out.println("Running test circleInitializationTestNegative.");
+		testCircle = new Circle2(-1, -3, -7);
+		Assert.assertTrue(testCircle.center.x == -1 &&
+						  testCircle.center.y == -3 &&
+						  testCircle.radius == 7);
+	}
+
+	//
+	// Test a simple positive move
+	//
+	@Test
+	public void simpleMove()
+	{
+		Point p;
+		System.out.println("Running test simpleMove.");
+		p = circle2.moveBy(1, 1);
+		Assert.assertTrue(p.x == 2 && p.y == 3);
+	}
+
+	//
+	// Test a simple negative move
+	//
+	@Test
+	public void simpleMoveNeg()
+	{
+		Point p;
+		System.out.println("Running test simpleMoveNeg.");
+		p = circle2.moveBy(-1, -1);
+		Assert.assertTrue(p.x == 0 && p.y == 1);
+	}
+
+	//
+	// Test radius increase
+	//
+	@Test
+	public void radiusIncrease()
+	{
+		double r;
+		System.out.println("Running test radiusIncrease.");
+		r = circle2.scale(2);
+		Assert.assertTrue(r == 6);
+	}
+
+	//
+	// Test radius decrease
+	//
+	@Test
+	public void radiusDecrease()
+	{
+		double r;
+		System.out.println("Running test radiusDecrease.");
+		r = circle2.scale(0.5);
+		Assert.assertTrue(r == 1.5);
+	}
+
+	//
+	// Test intersection of two circles with changing x values;
+	// returns true
+	//
+	@Test
+	public void intersectOnlyXChange()
+	{
+		System.out.println("Running test intersectOnlyXChange.");
+		Circle2 testCircle;
+		testCircle = new Circle2(8, 2, 5);
+		Assert.assertTrue(circle2.intersects(testCircle));
+	}
+
 	
 
 	/***
