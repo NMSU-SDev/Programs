@@ -21,7 +21,10 @@ public class CircleRun
 		Circle2 c2;
 		if (args.length != 6)
 		{
-			System.out.println("Error: args must be x1 y1 r1 x2 y2 r2");
+		    // not desriptive enough, added line and edited
+		    // where error is displayed
+		    System.out.println("Error: Not enough arguments.\n");
+			System.out.println("args must be x1 y1 r1 x2 y2 r2");
 			return;
 		}
 		try
@@ -38,7 +41,8 @@ public class CircleRun
 		}
 		catch (Exception e)
 		{
-			System.out.println("Bad arguments! " + e);
+		    // not desriptive enough, made sure to add more detail
+			System.out.println("Arguments must be double type values! " + e);
 			e.printStackTrace();
 			return;
 		}
@@ -47,6 +51,8 @@ public class CircleRun
 	}
 
 }
+
+// FIX: Added all classes to avoid "cannot find symbol" error
 
 public class Point
 {
@@ -87,9 +93,14 @@ public abstract class Circle
 	 *          is the scaling factor (0.8 make it 80% as big, 2.0 doubles its size)
 	 * @return the new radius
 	 **/
+
+	 // ERROR: factor is supposed to scale radius, but it
+	 // performs an addition instead of a multiplication
+	 // FIX: changed plus sign to multiplication sign
 	public double scale(double factor)
 	{
-		radius = radius + factor;
+		//radius = radius + factor; WRONG
+		radius *= factor; // CORRECT
 		return radius;
 	}
 
@@ -128,10 +139,18 @@ public class Circle1 extends Circle
 		super(x, y, radius);
 	}
 
+	// intersects function only works if it's within own radius's length,
+	// does not account for other circle's radius
+	// added lines to accommodate for this calculation error
 	public boolean intersects(Circle other)
 	{
-		if (Math.abs(center.x - other.center.x) < radius &&
-				Math.abs(center.y - other.center.y) < radius)
+	    double maxDist = radius + other.radius; // CORRECT
+
+		// if (Math.abs(center.x - other.center.x) < radius &&
+		//		Math.abs(center.y - other.center.y) < radius) WRONG
+
+		if (Math.abs(center.x - other.center.x) < maxDist &&
+		    Math.abs(center.y - other.center.y) < maxDist) // CORRECT
 			return true;
 		return false;
 	}
@@ -143,18 +162,84 @@ public class Circle2 extends Circle
 
 	public Circle2(double x, double y, double radius)
 	{
-		super(y, x, radius);
+	    // the order of parameters is not correct accoring to
+	    // Circle constructor
+		// super(y, x, radius); WRONG
+	    super(x, y, radius); // CORRECT
 	}
 
+	// intersects function only works if it's within own radius's length,
+	// does not account for other circle's radius
+	// added lines to accommodate for this calculation error
 	public boolean intersects(Circle other)
 	{
 		double d;
+		double maxDist = radius + other.radius; // CORRECT
+
 		d = Math.sqrt(Math.pow(center.x - other.center.x, 2) +
 				Math.pow(center.y - other.center.y, 2));
-		if (d < radius)
+
+		//if (d < radius) WRONG
+		if (d < maxDist) // CORRECT
 			return true;
 		else
 			return false;
 	}
+
+}
+
+public class Circle1Test
+{
+	// Data you need for each test case
+	private Circle1 circle1;
+
+	//
+	// Stuff you want to do before each test case
+	//
+	@Before
+	public void setup()
+	{
+		System.out.println("\nTest starting...");
+		circle1 = new Circle1(1, 2, 3);
+	}
+
+	//
+	// Stuff you want to do after each test case
+	//
+	@After
+	public void teardown()
+	{
+		System.out.println("\nTest finished.");
+	}
+
+	//
+	// Test a simple positive move
+	//
+	@Test
+	public void simpleMove()
+	{
+		Point p;
+		System.out.println("Running test simpleMove.");
+		p = circle1.moveBy(1, 1);
+		Assert.assertTrue(p.x == 2 && p.y == 3);
+	}
+
+	//
+	// Test a simple negative move
+	//
+	@Test
+	public void simpleMoveNeg()
+	{
+		Point p;
+		System.out.println("Running test simpleMoveNeg.");
+		p = circle1.moveBy(-1, -1);
+		Assert.assertTrue(p.x == 0 && p.y == 1);
+	}
+
+	/***
+	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
+	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
+	 * " + e); } }
+	 ***/
 
 }

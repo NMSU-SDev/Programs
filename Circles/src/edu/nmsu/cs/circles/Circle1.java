@@ -8,10 +8,18 @@ public class Circle1 extends Circle
 		super(x, y, radius);
 	}
 
+	// intersects function only works if it's within own radius's length,
+	// does not account for other circle's radius
+	// added lines to accommodate for this calculation error
 	public boolean intersects(Circle other)
 	{
-		if (Math.abs(center.x - other.center.x) < radius &&
-				Math.abs(center.y - other.center.y) < radius)
+	    double maxDist = radius + other.radius; // CORRECT
+
+		// if (Math.abs(center.x - other.center.x) < radius &&
+		//		Math.abs(center.y - other.center.y) < radius) WRONG
+
+		if (Math.abs(center.x - other.center.x) < maxDist &&
+		    Math.abs(center.y - other.center.y) < maxDist) // CORRECT
 			return true;
 		return false;
 	}

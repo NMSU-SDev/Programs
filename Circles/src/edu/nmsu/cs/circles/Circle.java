@@ -35,9 +35,14 @@ public abstract class Circle
 	 *          is the scaling factor (0.8 make it 80% as big, 2.0 doubles its size)
 	 * @return the new radius
 	 **/
+
+	 // ERROR: factor is supposed to scale radius, but it
+	 // performs an addition instead of a multiplication
+	 // FIX: changed plus sign to multiplication sign
 	public double scale(double factor)
 	{
-		radius = radius + factor;
+		//radius = radius + factor; WRONG
+		radius *= factor; // CORRECT
 		return radius;
 	}
 
