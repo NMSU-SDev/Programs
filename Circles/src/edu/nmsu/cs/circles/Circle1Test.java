@@ -87,6 +87,18 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
 
+	//
+	// Test radius increase
+	//
+	@Test
+	public void radiusIncrease()
+	{
+		double r;
+		System.out.println("Running test radiusIncrease.");
+		r = circle1.scale(2);
+		Assert.assertTrue(r == 6);
+	}
+
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
 	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
