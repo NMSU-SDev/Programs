@@ -159,7 +159,7 @@ public class Circle1Test
 		System.out.println("Running test noIntersection.");
 		Circle1 testCircle;
 		testCircle = new Circle1(9, 7, 5);
-		Assert.assertTrue(circle1.intersects(testCircle));
+		Assert.assertTrue(!circle1.intersects(testCircle));
 	}
 
 	/***

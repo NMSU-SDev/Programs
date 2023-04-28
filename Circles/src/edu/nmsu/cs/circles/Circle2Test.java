@@ -124,6 +124,44 @@ public class Circle2Test
 		Assert.assertTrue(circle2.intersects(testCircle));
 	}
 
+	//
+	// Test intersection of two circles with changing y values;
+	// returns true
+	//
+	@Test
+	public void intersectOnlyYChange()
+	{
+		System.out.println("Running test intersectOnlyYChange.");
+		Circle2 testCircle;
+		testCircle = new Circle2(8, 2, 5);
+		Assert.assertTrue(circle2.intersects(testCircle));
+	}
+
+	//
+	// Test intersection of two circles with changing x and y values;
+	// returns true
+	//
+	@Test
+	public void intersectXYChange()
+	{
+		System.out.println("Running test intersectOnlyYChange().");
+		Circle2 testCircle;
+		testCircle = new Circle2(7, 6, 5);
+		Assert.assertTrue(circle2.intersects(testCircle));
+	}
+
+	//
+	// Test no intersection of two circles; returns false
+	//
+	@Test
+	public void noIntersection()
+	{
+		System.out.println("Running test noIntersection.");
+		Circle2 testCircle;
+		testCircle = new Circle2(9, 7, 5);
+		Assert.assertTrue(!circle2.intersects(testCircle));
+	}
+
 	
 
 	/***
