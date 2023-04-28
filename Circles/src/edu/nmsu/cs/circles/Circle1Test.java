@@ -36,6 +36,34 @@ public class Circle1Test
 	}
 
 	//
+	// Test circle initialization with all positive values
+	//
+	@Test
+	public void circleInitializationTestPositive()
+	{
+		Circle1 testCircle;
+		System.out.println("Running test circleInitializationTestPositive.");
+		testCircle = new Circle1(1, 3, 7);
+		Assert.assertTrue(testCircle.center.x == 1 &&
+						  testCircle.center.y == 3 &&
+						  testCircle.radius == 7);
+	}
+
+	//
+	// Test circle initialization with all negative values
+	//
+	@Test
+	public void circleInitializationTestNegative()
+	{
+		Circle1 testCircle;
+		System.out.println("Running test circleInitializationTestNegative.");
+		testCircle = new Circle1(-1, -3, -7);
+		Assert.assertTrue(testCircle.center.x == -1 &&
+						  testCircle.center.y == -3 &&
+						  testCircle.radius == 7);
+	}
+
+	//
 	// Test a simple positive move
 	//
 	@Test
