@@ -67,11 +67,79 @@ public class Circle1Test
 	{
 		double radius;
 		System.out.println("Running test simpleScale.");
-		radius = circle1.scale(0);
+		radius = circle1.scale(2.5);
 		//Assert.assertTrue(radius == 7.5);
 		Assert.assertEquals(7.5, radius,  0.00001);
 		
 	}
+
+	//
+	// Test if the circles are the same
+	//
+	@Test
+	public void sameCircleIntersect()
+	{
+		System.out.println("Running test sameCircleIntersect.");
+		boolean doesIntersect = circle1.intersects(circle1);
+		//Assert.assertTrue(radius == 7.5);
+		Assert.assertTrue(doesIntersect == true);
+		
+	}
+
+
+	//
+	// Test if the circles intersect at two points
+	//
+	@Test
+	public void twoPointIntersect()
+	{
+		System.out.println("Running test twoPointIntersect.");
+		Circle1 circle2 = new Circle1(7, 3, 5);
+		boolean doesIntersect = circle1.intersects(circle2);
+		Assert.assertTrue(doesIntersect == true);
+		
+	}
+
+	//
+	// Test if circles intersect at one point
+	//
+	@Test
+	public void onePointIntersect()
+	{
+		System.out.println("Running test onePointIntersect.");
+		Circle1 circle2 = new Circle1(0, 2, 2);
+		Circle1 circle3 = new Circle1(0, -3, 3);
+		boolean doesIntersect = circle2.intersects(circle3);
+		Assert.assertTrue(doesIntersect == true);
+	}
+
+	//
+	// Test if circles do not intersect 
+	//
+	@Test
+	public void noIntersect()
+	{
+		System.out.println("Running test noIntersect.");
+		Circle1 circle2 = new Circle1(-6, 0, 1);
+		boolean doesIntersect = circle1.intersects(circle2);
+		Assert.assertTrue(doesIntersect == false);
+		
+	}
+
+
+	//
+	//Test if one circle is contained within the other
+	//
+	@Test
+	public void nestedIntersect()
+	{
+		System.out.println("Running test nestedIntersect.");
+		Circle1 circle2 = new Circle1(2, 3.5, 1);
+		boolean doesIntersect = circle1.intersects(circle2);
+		Assert.assertTrue(doesIntersect == true);
+		
+	}
+
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
