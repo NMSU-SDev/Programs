@@ -1,0 +1,64 @@
+<project name="Circles" default="run" basedir=".">
+    
+    <!--  Setting the global properties  -->
+    <property name="src-dir" location="src/"/>
+    <property name="build-dir" location="bin/"/>
+    <property name="junit-dir" location="lib/"/>
+    
+    <!--  Creates build directory and compiles Java program  -->
+    <target name="compile">
+        <mkdir dir="${build-dir}"/>
+         <javac srcdir="${src-dir}" includeantruntime="false" debug="true" destdir="${build-dir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    
+    
+    </target>
+   
+    <!--  Runs CircleRun with default arguments -->
+    <target name="run" depends="clean,compile">
+        <java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build-dir}" fork="true" dir="${basedir}">
+        <arg value="0"/>
+        <arg value="0"/>
+        <arg value="10"/>
+        <arg value="3"/>
+        <arg value="5"/>
+        <arg value="20"/>
+        </java>
+    </target>
+
+     <!--  Runs TestCircle1 with default arguments -->
+    <target name="testCircle1" depends="clean,compile">
+        <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build-dir}"/>
+            </classpath>
+            <arg value="edu.nmsu.cs.circles.Circle1Test"/>
+        </java>
+    </target>
+
+     <!--  Runs TestCircle2 with default arguments -->
+     <!--
+    <target name="testCircle2" depends="clean,compile">
+        <java classname="org.junit.runner.JUnitCore" classpath="${build-dir}" fork="true" dir="${basedir}">
+        
+        </java>
+    </target>
+    -->
+
+     <!--  Runs CircleRun with default arguments -->
+    <target name="test" depends="testCircle1"/>
+
+
+    <!-- Deletes class files  -->
+    <target name="clean">
+        <delete dir="${build-dir}"/>
+    </target>
+</project>

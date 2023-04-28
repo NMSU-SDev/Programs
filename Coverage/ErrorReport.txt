@@ -15,7 +15,7 @@ FUNCTIONAL ERRORS FOR INVALID INPUTS:
 
 Scores should range from 0 to 50 (inclusive), but the program allows values outside of these limits.
  
- ******************************************************************************
+******************************************************************************
 
 	RacingScore3.java:
 
