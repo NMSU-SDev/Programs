@@ -22,7 +22,6 @@
 
     <!--RUN-->
     <target name="run" depends="compile">
-        <java dir="." classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
         <java  dir="www" classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
     </target> 
 </project>
