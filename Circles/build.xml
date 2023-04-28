@@ -1,0 +1,33 @@
+<!--
+  P4: Closed Box Testing with JUnit
+  RObert J. Armendariz
+  April 28, 2023
+-->
+
+<project name = "Circles" default="run">
+     <property name="src" location="src/edu/nmsu/cs/circles"/>
+	
+     <target name="clean">
+          <delete dir="bin"/>
+          <mkdir dir="bin"/>
+     </target>
+
+     <target name = "compile" depends="clean">
+          <javac classpath="lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar" srcdir="${src}" destdir="bin" includeantruntime="false"/>
+     </target>
+
+     <target name = "run" depends="compile">
+          <java classpath="bin" classname="edu.nmsu.cs.circles.CircleRun"/>
+     </target>
+	
+     <target name = "testCircle1" depends="compile">
+          <java fork="true" classpath="bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar" classname="org.junit.runner.JUnitCore" args="edu.nmsu.cs.circles.Circle1Test"/>
+     </target>
+	
+     <target name = "testCircle2" depends="compile">
+     	<java fork="true" classpath="bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar" classname="org.junit.runner.JUnitCore" args="edu.nmsu.cs.circles.Circle2Test"/>
+     </target>
+	 
+     <target name = "test" depends="testCircle2,testCircle1">
+     </target>
+</project>
