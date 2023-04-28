@@ -36,7 +36,10 @@ public class WebWorker implements Runnable
 
 	private Socket socket;
 	private String filePath;
+	
+	private String contentType; // variable for image content
 
+	
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -58,7 +61,8 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
+//			writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os, contentType); // call write function with ime image content
 			writeContent(os);
 			os.flush();
 			socket.close();
@@ -102,6 +106,20 @@ public class WebWorker implements Runnable
 					filePath = filePath.substring(1);
 					System.out.println(filePath);
 				}
+				// in request function, check what contents the request contains
+				if(filePath.endsWith(".png")) {
+					contentType = "image/png";
+				}
+				else if(filePath.endsWith(".gif")) {
+					contentType = "image/gif";
+				}
+				else if(filePath.endsWith(".jpeg")) {
+					contentType = "image/jpeg";
+				}
+				else if(filePath.endsWith("html")) {
+					contentType = "text/html";
+				}
+				
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -154,15 +172,26 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{	
-		List<String> list = Files.readAllLines(Paths.get(filePath)); // read all lines and store in a List
-		for(String line : list) {
-//			line.replaceAll(line, line);
-			os.write(line.getBytes());
+		// check for content type other than html
+		if(!filePath.endsWith("html")) {
+			// reading in as bytes, not line by line
+			byte[] arr = Files.readAllBytes(Paths.get(filePath));
+			os.write(arr);
 		}
+		// runs html files
+		else {
+			List<String> list = Files.readAllLines(Paths.get(filePath)); // read all lines and store in a List
+			for(String line : list) {
+//				line.replaceAll(line, line);
+				os.write(line.getBytes());
+			}
+		}
+	}
+		
 //		os.write("<html><head></head><body>\n".getBytes());
 //		os.write("<h3>My web server works!</h3>\n".getBytes());
 //		os.write("</body></html>\n".getBytes());
-	}
+
 
 } // end class
 
