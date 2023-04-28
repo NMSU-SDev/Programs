@@ -94,6 +94,15 @@
       </java>
       </jacoco:coverage>
 
+      <!-- score1 < score2 but score1 > score3 -->
+      <echo message="TEST RacingScore2: 12 15 9"/>
+      <jacoco:coverage destfile="${.exec.file}">
+      <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+         <classpath path="bin"/>
+         <arg value="12"/><arg value="15"/><arg value="9"/>
+      </java>
+      </jacoco:coverage>
+
       <!-- score2 < score1 && score2 < score3 -->
       <echo message="TEST RacingScore2: 9 5 37"/>
       <jacoco:coverage destfile="${.exec.file}">
@@ -103,12 +112,21 @@
       </java>
       </jacoco:coverage>
 
-      <!-- score3 < score1 && score3 < score2 -->
-      <echo message="TEST RacingScore2: 9 5 1"/>
+      <!-- score2 < score1 but score2 > score3 -->
+      <echo message="TEST RacingScore2: 9 5 3"/>
       <jacoco:coverage destfile="${.exec.file}">
       <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
          <classpath path="bin"/>
-         <arg value="9"/><arg value="5"/><arg value="1"/>
+         <arg value="9"/><arg value="5"/><arg value="3"/>
+      </java>
+      </jacoco:coverage>
+
+      <!-- score3 < score1 but score3 > score2 -->
+      <echo message="TEST RacingScore2: 9 5 7"/>
+      <jacoco:coverage destfile="${.exec.file}">
+      <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+         <classpath path="bin"/>
+         <arg value="9"/><arg value="5"/><arg value="7"/>
       </java>
       </jacoco:coverage>
 
