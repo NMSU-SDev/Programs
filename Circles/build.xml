@@ -20,7 +20,7 @@
         <mkdir dir="${start}/lib"/>
 
         <!-- Put everything in ${bin} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${start}/lib/lab4.jar" basedir="${bin}"/>
+        <!--<jar jarfile="${start}/lib/lab4.jar" basedir="${bin}"/> -->
     </target>
 
     <target name="clean">
@@ -29,20 +29,34 @@
         <delete dir="${start}"/>
     </target>
 
+    <!-- Default test run. Should result in both circles saying true intersection-->
     <target name="run" depends="start">
         <java classname="edu.nmsu.cs.circles.CircleRun.java" classpath="bin" fork="true"></java>
+        <arg value="5"/><arg value="8"/><arg value="5"/><arg value="-2"/><arg value="3"/><arg value="6"/>
     </target>
 
-<target name="testCircle1" depends="start">
-        <java classname="edu.nmsu.cs.webserver.CircleRun1.java" classpath="bin" fork="true"></java>
+    <!-- First test run. Should result in both circles saying false intersection-->
+    <target name="testCircle1" depends="start">
+        <java classname="edu.nmsu.cs.webserver.CircleRun.java" classpath="bin" fork="true"></java>
+        <arg value="0"/><arg value="5"/><arg value="1"/><arg value="3"/><arg value="5"/><arg value="1"/>
     </target>
 
+    <!-- Second test run. Program should say there aren't enough arguments-->
     <target name="testCircle2" depends="start">
-        <java classname="edu.nmsu.cs.webserver.CircleRun2" classpath="bin" fork="true"></java>
+        <java classname="edu.nmsu.cs.webserver.CircleRun.java" classpath="bin" fork="true"></java>
+        <arg value="1"/><arg value="2"/><arg value="3"/><arg value="4"/><arg value="5"/>
     </target>
 
+    <!-- Third test run. Program should say the arguments need to be double type-->
+    <target name="testCircle3" depends="start">
+        <java classname="edu.nmsu.cs.webserver.CircleRun.java" classpath="bin" fork="true"></java>
+        <arg value="1"/><arg value="2"/><arg value="a"/><arg value="4"/><arg value="5"/><arg value="6"/>
+    </target>
+
+    <!-- Default test run. Should result in both circles saying true intersection-->
     <target name="test" depends="start">
         <java classname="edu.nmsu.cs.webserver.CircleRun.java" classpath="bin" fork="true"></java>
+        <arg value="1"/><arg value="2"/><arg value="3"/><arg value="4"/><arg value="5"/><arg value="6"/>
     </target>
 
 </project>
