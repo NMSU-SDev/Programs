@@ -4,6 +4,6 @@
 
 Thought/Design: _____3____
 Programming: ____4____
-Debugging: _____7____
+Debugging: _____3____
 TOTAL: ____10____
 3. To within what percent accuracy was your original estimate: _____%80____
