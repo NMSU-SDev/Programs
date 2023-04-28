@@ -99,6 +99,31 @@ public class Circle1Test
 		Assert.assertTrue(r == 6);
 	}
 
+	//
+	// Test radius decrease
+	//
+	@Test
+	public void radiusDecrease()
+	{
+		double r;
+		System.out.println("Running test radiusDecrease.");
+		r = circle1.scale(0.5);
+		Assert.assertTrue(r == 1.5);
+	}
+
+	//
+	// Test intersection of two circles with changing x values;
+	// returns true
+	//
+	@Test
+	public void intersectOnlyXChange()
+	{
+		System.out.println("Running test intersectOnlyXChange.");
+		Circle1 testCircle;
+		testCircle = new Circle1(8, 2, 5);
+		Assert.assertTrue(circle1.intersects(testCircle));
+	}
+
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
 	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
