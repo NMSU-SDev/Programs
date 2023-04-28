@@ -177,10 +177,19 @@
 				<arg value="6" />
 			</java>
 		</jacoco:coverage>
-				<echo message="TEST RacingScore2: Args = null" />
+		<echo message="TEST RacingScore2: Args = null" />
 		<jacoco:coverage destfile="${result.exec.file}">
 			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
 				<classpath path="${build.dir}" />
+			</java>
+		</jacoco:coverage>
+		<echo message="TEST RacingScore2: 6 4 5 " />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="4" />
+				<arg value="7" />
 			</java>
 		</jacoco:coverage>
 	</target>

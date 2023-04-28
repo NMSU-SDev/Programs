@@ -1,0 +1,65 @@
+<project name="circles" default="compile" basedir = ".">
+    <description> "Build file for Circles" </description>
+    <property name="src.dir" location="src/"/>
+    <property name="build.dir" location="bin/"/>
+    <property name="junit.dir" location="junit/"/>
+
+    <target name="clean" description="deletes all class files">
+        <delete dir="bin"/>
+    </target>
+
+    <target name="compile" depends="clean" description="compiles Circle java files">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}">
+            <classpath>
+                <fileset dir="${junit.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="CircleRunTest" depends="compile" description="Runs CircleRun with default values">
+        <java classname="edu.nmsu.cs.circles.CircleRun"
+            classpath="${build.dir}" fork="true">
+                <arg value="0"/>
+                <arg value="0"/>
+                <arg value="5"/>
+                <arg value="5"/>
+                <arg value="10"/>
+                <arg value="10"/>
+        </java>
+    </target>
+
+    <target name="testCircle1" depends="compile" description="Runs tests on Circle1 file">
+        <java classname="org.junit.runner.JUnitCore" fork="true">
+            <classpath>
+                <fileset dir="${junit.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.dir}"/>
+            </classpath>
+            <arg
+                value="edu.nmsu.cs.circles.Circle1Test" />
+        </java>
+    </target>
+
+    <target name="testCircle2" depends="compile" description="Runs tests on Circle2 file">
+        <java classname="org.junit.runner.JUnitCore" fork="true">
+            <classpath>
+                <fileset dir="${junit.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build.dir}"/>
+            </classpath>
+            <arg
+                value="edu.nmsu.cs.circles.Circle2Test" />
+        </java>
+    </target>
+
+    <target name="test" depends="testCircle1, testCircle2" description="Runs both Circle1 and Circle2 test files" />
+</project>
+
+
+
+
