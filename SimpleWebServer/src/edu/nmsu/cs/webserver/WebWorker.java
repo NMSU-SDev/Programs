@@ -37,7 +37,7 @@ public class WebWorker implements Runnable
 	private Socket socket;
 	private String filePath;
 	
-	private String contentType; // variable for image content
+	private String contentType; // Variable for image content
 
 	
 	/**
