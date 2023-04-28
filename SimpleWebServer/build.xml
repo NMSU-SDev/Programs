@@ -1,5 +1,5 @@
 <project name = "SimpleWebServer" default = "run" basedir = "."> 
-<description> Simple build file used to run SimpleWebServer </description>
+<description> Simple build file used to run www in SimpleWebServer </description>
 
     <property name="src" location="src/"/>
     <property name="bin" location="bin/"/>
@@ -23,5 +23,6 @@
     <!--RUN-->
     <target name="run" depends="compile">
         <java dir="." classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
+        <java  dir="www" classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" />
     </target> 
 </project>

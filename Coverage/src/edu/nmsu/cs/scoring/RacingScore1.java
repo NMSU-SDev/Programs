@@ -36,7 +36,7 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2)	//FIXED: smaller score is subracted
 			s = score2;
 		else
 			s = score1;
@@ -65,6 +65,14 @@ public class RacingScore1
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
+
+		// ADDED this from racing score 2 
+		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+		{
+			System.err.println("Error: scores must be between 0 and 50!");
+			return;
+		}
+
 		RacingScore1 score = new RacingScore1();
 		score.recordScores(s1, s2, s3);
 		System.out.println("Overall score: " + score.overallScore());

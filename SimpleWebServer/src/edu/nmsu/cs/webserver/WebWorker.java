@@ -30,12 +30,15 @@ import java.util.TimeZone;
 import java.io.File;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
+import java.nio.file.Files;
 
 public class WebWorker implements Runnable
 {
 	private String pathName; 
 	private Boolean fileExists; 
 	private Socket socket;
+
+	private String contentType; 
 
 
 	/**
@@ -59,7 +62,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream(); // whatever the browser is sending to us 
 			OutputStream os = socket.getOutputStream(); // whatever stuff we send back to browser
 			readHTTPRequest(is);
-			writeHTTPHeader(os,"text/html");
+			writeHTTPHeader(os, contentType);
 			writeContent(os);
 			os.flush(); // pushed the data to network
 			socket.close();
@@ -94,7 +97,8 @@ public class WebWorker implements Runnable
 
 				if( line.startsWith("GET")) { 
 					String[] request = line.split(" "); 
-					pathName = request[1].substring(1); // char '/' 
+					pathName = request[1].substring(1); // char '/'  
+					System.err.println("**File is " + pathName); 
 					File requestFile = new File (pathName); 
 					
 					// Checks if file exists 
@@ -102,6 +106,19 @@ public class WebWorker implements Runnable
 						fileExists = true; 
 					else 
 						fileExists = false; 
+				
+				
+					// Serve image files in the GIF, JPEG, and PNG formats
+					if (pathName.endsWith(".gif") )  
+						contentType = "image/gif"; 
+					else if (pathName.endsWith(".jpeg"))
+						contentType = "image/jpeg"; 
+					else if (pathName.endsWith(".png") )
+						contentType = "image/png"; 
+					else if (pathName.endsWith(".html")) 
+						contentType = "text/html"; 
+					else 
+						contentType = "image/x-icon"; 
 				
 				}
 
@@ -171,25 +188,36 @@ public class WebWorker implements Runnable
 
 		// Check first if file exists 
 		if( requestFile.exists() && !requestFile.isDirectory() ) {
-			os.write("<html><head></head><body>\n".getBytes());
-			Scanner scan = new Scanner(requestFile);
+			
+			
+			if (contentType.equals("text/html")) {
+				os.write("<html><head></head><body>\n".getBytes());
+				Scanner scan = new Scanner(requestFile);
+				while (scan.hasNextLine()) {
+					String line = scan.nextLine();
 
-			while (scan.hasNextLine()) {
-				String line = scan.nextLine();
+					if (line.contains("<cs371date>"))
+						line = line.replace("<cs371date>", dateFinal);
 
-				if (line.contains("<cs371date>"))
-					line = line.replace("<cs371date>", dateFinal);
+					if (line.contains("<cs371server>"))
+						line = line.replace("<cs371server>", "Bianka's Server"); 
 
-				if (line.contains("<cs371server>"))
-					line = line.replace("<cs371server>", "Bianka's Server"); 
-
-				os.write(line.getBytes());
-			} // end of while 
-			os.write("</body></html>\n".getBytes());
-			scan.close();		
+					os.write(line.getBytes());
+				} // end of while 
+				os.write("</body></html>\n".getBytes());
+				scan.close();
 				
-		} // end of if 
-
+			}
+			// proccess image 
+			else {
+			// convert image/gif to byte array for output stream
+			byte[] imageToBytes = Files.readAllBytes(requestFile.toPath());
+			os.write(imageToBytes);	
+		}
+			
+				
+		} // end of if file exists
+		
 		// if file is not found 
 		else { 
 			os.write("<html><head></head><body>\n".getBytes());

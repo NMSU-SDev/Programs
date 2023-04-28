@@ -36,25 +36,23 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
+		// score 1 is the smallest 
 		if (score1 < score2 && score1 < score3)
 		{
 			s1 = score2;
 			s2 = score3;
 		}
+		// score2 is the smallest 
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+			s2 = score3; // FIXED: score2 to score3
 		}
-		else if (score3 < score1 && score3 < score2)
+		// score3 is the smallest 
+		else
 		{
 			s1 = score1;
 			s2 = score2;
-		}
-		else
-		{
-			s1 = 99;
-			s2 = 99;
 		}
 		s = s1 + s2;
 		return s;
