@@ -35,14 +35,15 @@ public class Circle1Test
 		System.out.println("\nTest finished.");
 	}
 
+
 	//
 	// Test a simple positive move
 	//
 	@Test
-	public void simpleMove()
+	public void simpleMovePos()
 	{
 		Point p;
-		System.out.println("Running test simpleMove.");
+		System.out.println("Running test simpleMovePos.");
 		p = circle1.moveBy(1, 1);
 		Assert.assertTrue(p.x == 2 && p.y == 3);
 	}
@@ -60,16 +61,55 @@ public class Circle1Test
 	}
 
 	//
-	// Test scaling the size of a circle
+	// Test only changing x position
 	//
 	@Test
-	public void simpleScale()
+	public void simpleMoveX()
+	{
+		Point p;
+		System.out.println("Running test simpleMoveX.");
+		p = circle1.moveBy(5, 0);
+		Assert.assertEquals("x-value", 6, p.x,  0.00001);
+		Assert.assertEquals("y-value", 2, p.y,  0.00001);
+	}
+
+	//
+	// Test only changing y position
+	//
+	@Test
+	public void simpleMoveY()
+	{
+		Point p;
+		System.out.println("Running test simpleMoveY.");
+		p = circle1.moveBy(0, 17);
+		Assert.assertEquals("x-value", 1, p.x,  0.00001);
+		Assert.assertEquals("y-value", 19, p.y,  0.00001);
+	}
+
+
+	//
+	// Test scaling the size of a circle by positive factor
+	//
+	@Test
+	public void posScale()
 	{
 		double radius;
-		System.out.println("Running test simpleScale.");
+		System.out.println("Running test posScale.");
 		radius = circle1.scale(2.5);
-		//Assert.assertTrue(radius == 7.5);
 		Assert.assertEquals(7.5, radius,  0.00001);
+		
+	}
+
+	//
+	// Test scaling the size of a circle by 0
+	//
+	@Test
+	public void zeroScale()
+	{
+		double radius;
+		System.out.println("Running test zeroScale.");
+		radius = circle1.scale(0);
+		Assert.assertEquals(0, radius,  0.00001);
 		
 	}
 
@@ -125,7 +165,6 @@ public class Circle1Test
 		Assert.assertTrue(doesIntersect == false);
 		
 	}
-
 
 	//
 	//Test if one circle is contained within the other
