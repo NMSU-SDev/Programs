@@ -56,8 +56,9 @@
             <arg value="edu.nmsu.cs.circles.Circle2Test"/>
         </java>
     </target>
-     <!--  Runs CircleRun with default arguments -->
-    <target name="test" depends="testCircle2"/>
+
+     <!--  Runs testCircle1 and testCircle2 -->
+    <target name="test" depends="testCircle1, testCircle2"/>
 
     <!-- Deletes class files  -->
     <target name="clean">
