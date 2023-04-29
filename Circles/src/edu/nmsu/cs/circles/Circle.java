@@ -25,7 +25,7 @@ public abstract class Circle
 		center = new Point();
 		center.x = x;
 		center.y = y;
-		this.radius = radius;
+		this.radius = Math.abs(radius);
 	}
 
 	/**

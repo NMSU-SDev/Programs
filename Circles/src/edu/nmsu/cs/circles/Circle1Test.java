@@ -36,6 +36,17 @@ public class Circle1Test
 	}
 
 	//
+	// Test constructing a circle with a negative radius
+	//
+	@Test
+	public void negRadius()
+	{
+		System.out.println("Running test negRadius.");
+		Circle1 testCircle = new Circle1(1, 2, -3);
+		Assert.assertTrue(testCircle.radius == 3);
+	}
+
+	//
 	// Test a simple positive move to the first quadrent
 	//
 	@Test
@@ -80,7 +91,7 @@ public class Circle1Test
 	public void simpleMoveQuad4()
 	{
 		Point p;
-		System.out.println("Running test simpleQuad4.");
+		System.out.println("Running test simpleMoveQuad4.");
 		p = circle1.moveBy(5, -17);
 		Assert.assertEquals("x-value", 6, p.x,  0.00001);
 		Assert.assertEquals("y-value", -15, p.y,  0.00001);
