@@ -98,7 +98,7 @@ public class Circle1Test
 
 
 	//
-	// Test scaling the size of a circle by positive factor
+	// Test scaling the size of a circle by a positive factor
 	//
 	@Test
 	public void posScale()
@@ -124,7 +124,7 @@ public class Circle1Test
 	}
 
 	//
-	// Test scaling the size of a circle by 0
+	// Test scaling the size of a circle by a negative factor
 	//
 	@Test
 	public void negScale()

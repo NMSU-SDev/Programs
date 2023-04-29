@@ -98,7 +98,7 @@ public class Circle2Test
 
 
 	//
-	// Test scaling the size of a circle by positive factor
+	// Test scaling the size of a circle by a positive factor
 	//
 	@Test
 	public void posScale()
@@ -124,7 +124,7 @@ public class Circle2Test
 	}
 
 	//
-	// Test scaling the size of a circle by 0
+	// Test scaling the size of a circle by a negative factor
 	//
 	@Test
 	public void negScale()
@@ -163,7 +163,7 @@ public class Circle2Test
 	}
 
 	//
-	// Test if circles intersect at one point
+	// Test if two circles intersect at one point
 	//
 	@Test
 	public void onePointIntersect()
@@ -176,7 +176,7 @@ public class Circle2Test
 	}
 
 	//
-	// Test if circles do not intersect 
+	// Test if two circles do not intersect 
 	//
 	@Test
 	public void noIntersect()
@@ -189,7 +189,7 @@ public class Circle2Test
 	}
 
 	//
-	//Test if one circle is contained within the other
+	// Test if one circle is contained within the other
 	//
 	@Test
 	public void nestedIntersect()
