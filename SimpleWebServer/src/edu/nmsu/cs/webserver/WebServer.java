@@ -62,7 +62,7 @@ public class WebServer
 				break;
 			}
 			// have new client connection, so fire off a worker on it
-			System.out.println("Client connection established.\nStarting WebWorker...\n");
+			System.out.println("Client connection established.\nStarting WebWorker with new connection...\n");
 			worker = new WebWorker(workerSocket);
 			new Thread(worker).start();
 		}
