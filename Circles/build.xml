@@ -31,7 +31,7 @@
         </java>
     </target>
 
-     <!--  Runs TestCircle1 with default arguments -->
+    <!--  Runs the JUnit tests in TestCircle1  -->
     <target name="testCircle1" depends="clean,compile">
         <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
             <classpath>
@@ -44,18 +44,20 @@
         </java>
     </target>
 
-     <!--  Runs TestCircle2 with default arguments -->
-     <!--
+    <!--  Runs the JUnit tests in TestCircle2  -->
     <target name="testCircle2" depends="clean,compile">
-        <java classname="org.junit.runner.JUnitCore" classpath="${build-dir}" fork="true" dir="${basedir}">
-        
+        <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build-dir}"/>
+            </classpath>
+            <arg value="edu.nmsu.cs.circles.Circle2Test"/>
         </java>
     </target>
-    -->
-
      <!--  Runs CircleRun with default arguments -->
-    <target name="test" depends="testCircle1"/>
-
+    <target name="test" depends="testCircle2"/>
 
     <!-- Deletes class files  -->
     <target name="clean">
