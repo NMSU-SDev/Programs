@@ -1,20 +1,17 @@
 ### Student: Brock Middleton
 #### GitHub ID: brockmiddleton 
 
-# Programs
-Base code for program assignments in Software Development (C S 371). 
+## Programs 
 
-## Program 1 and Program 2
-These assignments rely on the SimpleWebServer program. Each gets graded using tags in a cloned repository. 
+This project corresponds with the NMSU course CS-371, Software Development. 
 
-## Program 3
-This assignment relies on the Coverage programs. 
+# Program 2 (Release v2.0) (4/28/23)
+In this release, all changes were made in SimpleWebServer
+    - Added functionality to serve image types. Supported types include .gif, .jpeg, and .png
+    - Resources moved into '/www' subdirectory
 
-## Program 4
-This assignment relies on the Circles programs. 
-
-# Program 1 (2/17/23)
-In this program, all changes were made in SimpleWebServer
+# Program 1 (Release v1.0) (2/17/23)
+In this release, all changes were made in SimpleWebServer
     - Added functionality to 'build.xml'. Now compiles, builds, and runs Java project.
     - Added ability to serve html files to web server given a directory.
     - Filled in questions for Program 1. (Worktime estimation)
