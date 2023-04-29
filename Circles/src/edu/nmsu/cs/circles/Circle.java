@@ -37,6 +37,10 @@ public abstract class Circle
 	 **/
 	public double scale(double factor)
 	{
+		if(factor <= 0){
+			System.out.println("Invalid input. The scaling factor should be greater than 0.");
+			return Double.NaN;
+		}
 		radius = radius * factor;
 		return radius;
 	}

@@ -35,55 +35,55 @@ public class Circle1Test
 		System.out.println("\nTest finished.");
 	}
 
-
 	//
-	// Test a simple positive move
+	// Test a simple positive move to the first quadrent
 	//
 	@Test
-	public void simpleMovePos()
+	public void simpleMoveQuad1()
 	{
 		Point p;
-		System.out.println("Running test simpleMovePos.");
+		System.out.println("Running test simpleMoveQuad1.");
 		p = circle1.moveBy(1, 1);
 		Assert.assertTrue(p.x == 2 && p.y == 3);
 	}
 
 	//
-	// Test a simple negative move
+	// Test a simple move to the second quadrant
 	//
 	@Test
-	public void simpleMoveNeg()
+	public void simpleMoveQuad2()
 	{
 		Point p;
-		System.out.println("Running test simpleMoveNeg.");
-		p = circle1.moveBy(-1, -1);
-		Assert.assertTrue(p.x == 0 && p.y == 1);
+		System.out.println("Running test simpleMoveQuad2.");
+		p = circle1.moveBy(-5, 3);
+		Assert.assertEquals("x-value", -4, p.x,  0.00001);
+		Assert.assertEquals("y-value", 5, p.y,  0.00001);
 	}
 
 	//
-	// Test only changing x position
+	// Test a simple negative move to the third quadrant
 	//
 	@Test
-	public void simpleMoveX()
+	public void simpleMoveQuad3()
 	{
 		Point p;
-		System.out.println("Running test simpleMoveX.");
-		p = circle1.moveBy(5, 0);
+		System.out.println("Running test simpleMoveQuad3.");
+		p = circle1.moveBy(-2, -1);
+		Assert.assertTrue(p.x == -1 && p.y == 1);
+	}
+
+	
+	//
+	// Test a simple move to the fourth quadrant
+	//
+	@Test
+	public void simpleMoveQuad4()
+	{
+		Point p;
+		System.out.println("Running test simpleQuad4.");
+		p = circle1.moveBy(5, -17);
 		Assert.assertEquals("x-value", 6, p.x,  0.00001);
-		Assert.assertEquals("y-value", 2, p.y,  0.00001);
-	}
-
-	//
-	// Test only changing y position
-	//
-	@Test
-	public void simpleMoveY()
-	{
-		Point p;
-		System.out.println("Running test simpleMoveY.");
-		p = circle1.moveBy(0, 17);
-		Assert.assertEquals("x-value", 1, p.x,  0.00001);
-		Assert.assertEquals("y-value", 19, p.y,  0.00001);
+		Assert.assertEquals("y-value", -15, p.y,  0.00001);
 	}
 
 
@@ -109,7 +109,20 @@ public class Circle1Test
 		double radius;
 		System.out.println("Running test zeroScale.");
 		radius = circle1.scale(0);
-		Assert.assertEquals(0, radius,  0.00001);
+		Assert.assertEquals(Double.NaN, radius,  0.00001);
+		
+	}
+
+	//
+	// Test scaling the size of a circle by 0
+	//
+	@Test
+	public void negScale()
+	{
+		double radius;
+		System.out.println("Running test negScale.");
+		radius = circle1.scale(-1);
+		Assert.assertEquals(Double.NaN, radius,  0.00001);
 		
 	}
 
@@ -125,7 +138,6 @@ public class Circle1Test
 		Assert.assertTrue(doesIntersect == true);
 		
 	}
-
 
 	//
 	// Test if the circles intersect at two points
@@ -178,7 +190,6 @@ public class Circle1Test
 		Assert.assertTrue(doesIntersect == true);
 		
 	}
-
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
