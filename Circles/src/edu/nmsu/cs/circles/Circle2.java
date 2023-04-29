@@ -13,10 +13,11 @@ public class Circle2 extends Circle
 		double d;
 		d = Math.sqrt(Math.pow(center.x - other.center.x, 2) +
 				Math.pow(center.y - other.center.y, 2));
-		if (d < radius)
+		if (d < this.radius + other.radius)
 			return true;
 		else
 			return false;
+
 	}
 
 }
