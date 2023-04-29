@@ -1,33 +1,30 @@
-<project name="WebServer">
+<!-- Brock Middleton -->
 
+<project name="WebServer" default="run">
 
-    <!-- Compile -->
+    <property name="src" location="src/"/>
+    <property name="build" location="bin/"/>
+
+<!-- Compile -->
     <target name="compile" description="compile the source">
-        <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
+        <mkdir dir="${build}"/>
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
     </target>
 
-    <!-- Jar -->
-    <target name="jar"  depends="compile">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/WebServer.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="edu.nmsu.cs.webserver.WebServer"/>
-            </manifest>
-        </jar>
-    </target>
-
-    <!-- Clean -->
+<!-- Clean -->
     <target name="clean">
-        <delete dir="build/jar"/>
+        <delete dir="${build}"/>
     </target>
 
-    <!-- Run -->
-    <target name="run" depends="compile,jar">
-        <java jar="build/jar/WebServer.jar" fork="true"/>
+<!-- Clean build -->
+    <target name="clean-build" depends="clean,compile"/>
+
+<!-- Run -->
+    <target name="run" depends="clean-build">
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}/www">
+            <arg value="8080"/>
+        </java>
     </target>
 
-    <!-- Clean build -->
-    <target name="clean-build" depends="clean,jar"/>
 
 </project>
