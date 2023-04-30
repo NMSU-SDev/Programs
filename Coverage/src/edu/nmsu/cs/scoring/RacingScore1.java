@@ -10,6 +10,17 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+
+ /***
+ * Program 3 Changes and Notes
+ *
+ * Fixed Functional error when giving inputs such that score3 > score2 > score1 by ensuring
+ * int s would store the smallest value to subtract from the total score of all three inputs.
+ * 
+ * Note: Invalid inputs such as an input > 50 and/or input < 0 do not prompt the user 
+ * that these are invalid inputs and instead continues the program like normal.
+ ***/
+
 public class RacingScore1
 {
 
@@ -35,14 +46,14 @@ public class RacingScore1
 
 	public int overallScore()
 	{
-		int s;
+		int s; //stores the lowest score 
 		if (score1 < score2)
-			s = score2;
+			s = score1; // changed from s = score2
 		else
-			s = score1;
+			s = score2; // changed from s = score1
 		if (s > score3)
 			s = score3;
-		s = (score1 + score2 + score3) - s;
+		s = (score1 + score2 + score3) - s; //subtract lowest score from the total
 		return s;
 	}
 

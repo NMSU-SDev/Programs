@@ -10,6 +10,17 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+ /***
+ * Program 3 Changes and Notes
+ *
+ * Removed args.length == null because in Java, args.length can never be null just can be length 0, which
+ * is covered by the existing conditional "args.length != 3". Changed the overallScore() function to check three
+ * different conditionals and assign integers s1 and s2 appropriately: score1 <= score2 && score1 <= score3, 
+ * score2 <= score1 && score2 <= score3, and score3 < score1 && score3 < score2. This fixed a functional error for valid input 
+ * such that score2 = score3 and score1 = score2 = score3. Invalid inputs have messages stating invalid input was passed into the program.
+ * 
+ ***/
+
 public class RacingScore2
 {
 
@@ -35,26 +46,23 @@ public class RacingScore2
 
 	public int overallScore()
 	{
+		// s1 and s2 hold the two highest scores
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		if (score1 <= score2 && score1 <= score3)
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
+		else if (score2 <= score1 && score2 <= score3)
+		{
+			s1 = score1;
+			s2 = score3; 
+		}
+		//score3 < score1 && score3 < score2
+		else 
 		{
 			s1 = score1;
 			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
-		else
-		{
-			s1 = 99;
-			s2 = 99;
 		}
 		s = s1 + s2;
 		return s;
@@ -63,7 +71,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
