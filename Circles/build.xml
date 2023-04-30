@@ -1,0 +1,51 @@
+<project name = "Circles" default="run" basedir=".">
+    <path id="jars">
+    <fileset dir="lib">
+        <include name="**/*.jar" />
+    </fileset>
+    </path>
+
+    <target name="compile" depends = "clean" description="compile Circles">
+        <mkdir dir= "bin/edu/nmsu/cs/circles"/>
+        <javac srcdir="src" destdir="bin" includeantruntime="true">
+            <classpath refid="jars"/>
+        </javac>
+    </target>
+
+    <target name = "clean" description = "clean SimpleWebServer">
+	    <delete file="bin/edu/nmsu/cs/circles/Circle.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/circles/Circle1.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/circles/Circle1Test.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/circles/Circle2.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/circles/CircleRun.class" verbose="true"/>
+        <delete file="bin/edu/nmsu/cs/circles/Point.class" verbose="true"/>
+    </target>
+
+    <target name = "run" depends= "compile" description = "run SimpleWebServer">
+	    <java className="edu.nmsu.cs.circles.CircleRun"  classpath="bin">
+            <arg value="8" />
+			<arg value="8" />
+            <arg value="15" />
+			<arg value="15" />
+			<arg value="4" />
+            <arg value="6" />
+        </java>
+    </target>
+
+    <target name="test" depends = "testCircle1, testCircle2" description="tests Circles">
+    </target>
+
+    <target name="testCircle1" depends = "compile" description="tests Circle1">
+	    <java className="org.junit.runner.JUnitCore" classPath = "bin">
+            <classpath refid="jars"/>
+            <arg value="edu.nmsu.cs.circles.Circle1Test" />
+        </java>
+    </target>
+
+    <target name="testCircle2" depends = "compile" description="tests Circle2">
+	    <java className="org.junit.runner.JUnitCore" classPath = "bin">
+            <classpath refid="jars"/>
+            <arg value="edu.nmsu.cs.circles.Circle2Test" />
+        </java>
+    </target>
+</project>
