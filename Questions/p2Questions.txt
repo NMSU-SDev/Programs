@@ -1,0 +1,19 @@
+## Brock Middleton
+## SWD-CS-371
+## May,1,2023
+## Program2
+
+1. Estimate the time it will take you to do the assignment:
+	
+	4 hours
+
+2. Estimate the time it took you to complete the assignment:
+
+	a. Thought/Design: 45 minutes
+	b. Programming:	 45 minutes
+	c. Debugging:	 1 hour
+	e. ADDITIONAL:  45 minutes to set up ant file correctly. 
+
+	d. TOTAL: 3 hours 15 minutes
+
+3. I overestimated how long this assingment would take by about 20 percent. 
