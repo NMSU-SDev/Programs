@@ -46,31 +46,38 @@ public class WebWorker implements Runnable {
    }
 
    public void run() {
-       System.err.println("Handling connection...");
-       try {
-           InputStream is = socket.getInputStream();
-           OutputStream os = socket.getOutputStream();
+    System.err.println("Handling connection...");
+    try {
+        InputStream is = socket.getInputStream();
+        OutputStream os = socket.getOutputStream();
 
-            // Get file path from HTTP request
-           String filePath = readHTTPRequest(is);
+        // Get file path from HTTP request
+        String filePath = readHTTPRequest(is);
 
-            // Check if file exists, and write content or a 404 error accordingly
-           File file = new File("." + filePath);
-           if (file.exists() && !file.isDirectory()) {
-               String contentType = getContentType(filePath);
-               writeHTTPHeader(os, contentType);
-               writeContent(os, file);
-           } else {
-               writeHTTPHeader(os, "text/html");
-               os.write("<h1>404 NOT FOUND</h1>\n\n".getBytes());
-           }
-           os.flush();
-           socket.close();
-       } catch (Exception e) {
-           System.err.println("Output error: " + e);
-       }
-       System.err.println("Done handling connection.");
-   }
+        // Check if file exists, and write content or a 404 error accordingly
+        File file = new File("." + filePath);
+        if (file.exists() && !file.isDirectory()) {
+            String contentType = getContentType(filePath);
+            writeHTTPHeader(os, contentType);
+
+            if (contentType.startsWith("image/")) {
+                writeBinaryContent(os, file);
+            } else {
+                writeContent(os, file);
+            }
+        } else {
+            writeHTTPHeader(os, "text/html");
+            os.write("<h1>404 NOT FOUND</h1>\n\n".getBytes());
+        }
+        os.flush();
+        socket.close();
+    } catch (Exception e) {
+        System.err.println("Output error: " + e);
+    }
+    System.err.println("Done handling connection.");
+}
+
+
 
    private String readHTTPRequest(InputStream is) {
        String line;
@@ -111,7 +118,9 @@ public class WebWorker implements Runnable {
            contentType = "image/jpeg";
        } else if (filePath.endsWith(".png")) {
            contentType = "image/png";
-       }
+       } else if (filePath.endsWith(".ico")) { // line to handle favicon.ico files
+        contentType = "image/x-icon";
+    }
        return contentType;
    }
 
@@ -169,5 +178,22 @@ public class WebWorker implements Runnable {
           System.err.println("Error reading file: " + e);
       }
   }
+
+  private void writeBinaryContent(OutputStream os, File file) throws Exception {
+    try {
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            os.write(buffer, 0, bytesRead);
+        }
+
+        fis.close();
+    } catch (IOException e) {
+        System.err.println("Error reading file: " + e);
+    }
+}
+
   
 }//end class
