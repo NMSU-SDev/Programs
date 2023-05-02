@@ -10,6 +10,19 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+/**
+ * Brock Middleton - 5/1/23
+ * 
+ * 	Found Issue: in case - (score3 > score1) - the lowest score is added to overall.
+ * 		Fixed by setting var 's' to s1 rather than s2 (line 51) after comparing.
+ * 
+ * 	Found Issue: in case - (score > 50) - cutoff value of '50' is not enforced. 
+ * 		Functional error - invalid input - NOT FIXEDout
+ * 
+ * 	Found Issue: in case - (score < 0) - scores with negative value are still considered. 	
+ * 		Functional error - invalid input - NOT FIXED
+ */
+
 public class RacingScore1
 {
 
@@ -35,11 +48,13 @@ public class RacingScore1
 
 	public int overallScore()
 	{
+		// Store lowest score 
 		int s;
 		if (score1 < score2)
-			s = score2;
-		else
+			// s1 < s2, store s1 rather than s2
 			s = score1;
+		else
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;
