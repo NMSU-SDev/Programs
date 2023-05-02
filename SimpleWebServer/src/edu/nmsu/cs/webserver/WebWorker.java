@@ -174,6 +174,7 @@ public class WebWorker implements Runnable {
                 }
             }
         }
+        
         catch (IOException e) {
             System.err.println("Error reading file: " + e);
         }
