@@ -1,0 +1,52 @@
+<project name="Circles" default="run" basedir=".">
+    <!--  Setting the global properties -->
+    <property name="src.dir" location="src/"/>
+    <property name="build.dir" location="bin/"/>
+    <property name="junit.dir" location="lib/"/>
+
+    <!-- Creates build directory and compiles Java program -->
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" includeantruntime="false" debug="true" destdir="${build.dir}">
+            <classpath>
+                <fileset dir="${junit.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Runs CircleRun with default arguments -->
+    <target name="run" depends="clean,compile">
+        <java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build.dir}" fork="true" dir="${basedir}">
+            <arg line="1 1 12 5 7 30"/>
+        </java>
+    </target>
+
+    <!-- Runs JUnit tests -->
+    <macrodef name="run-junit">
+        <attribute name="testclass"/>
+        <sequential>
+            <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
+                <classpath>
+                    <fileset dir="${junit.dir}">
+                        <include name="**/*.jar"/>
+                    </fileset>
+                    <pathelement path="${build.dir}"/>
+                </classpath>
+                <arg value="@{testclass}"/>
+            </java>
+        </sequential>
+    </macrodef>
+
+    <!-- Runs JUnit tests in TestCircle1 and TestCircle2 -->
+    <target name="test" depends="clean,compile">
+        <run-junit testclass="edu.nmsu.cs.circles.Circle1Test"/>
+        <run-junit testclass="edu.nmsu.cs.circles.Circle2Test"/>
+    </target>
+
+    <!-- Deletes class files  -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+</project>
