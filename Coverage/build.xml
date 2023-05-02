@@ -1,9 +1,9 @@
 <!-- Sample Ant build file for running IglooScore under JaCoCo -->
-<!-- Jonathan Cook, 17 Sep 2015 -->
-<project name="iglooscore" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
+<!-- Jared Kaiser, Spring 2023 -->
+<project name="racingscore" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
 
    <!-- property to allow ant to find jacoco: CHANGE THE PATH to point to yours -->
-   <property name="jacocodir" location="/home/jcook/tools/jacoco/lib"/>
+   <property name="jacocodir" location="./lib"/>
 
    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
       <classpath path="${jacocodir}/jacocoant.jar"/>
@@ -29,16 +29,158 @@
          <!-- must delete coverage data file to start afresh (otherwise coverage accumulates) -->
          <fileset dir="." includes="jacoco.exec"/>
       </delete>
-      <echo message="TEST IglooScore1: 8 9 6"/>
-      <java classname="IglooScore1" fork="true">
-         <arg value="8"/><arg value="9"/><arg value="6"/>
-         <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
-      </java>
-      <echo message="TEST IglooScore2: 8 9 6"/>
-      <java classname="IglooScore2" fork="true">
-         <arg value="8"/><arg value="9"/><arg value="6"/>
-         <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
-      </java>
+
+    <!-- If (score1 < score2) and if (s > score3) -->
+    <echo message="TEST RacingScore1: 8 9 49.9"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+       <classpath path="src"/>
+       <arg value="8"/><arg value="9"/><arg value="49.9"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+   </java>
+
+   <!-- Else statement of if (score1 < score2) -->
+    <echo message="TEST RacingScore1: 3 2 4"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+       <classpath path="src"/>
+       <arg value="3"/><arg value="2"/><arg value="4"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+   </java>
+
+   <!-- Error for too few arguments -->
+    <echo message="TEST RacingScore1: 3 2"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+       <classpath path="src"/>
+       <arg value="3"/><arg value="2"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+   </java>
+
+   <!-- Exception for invalid arguments -->
+    <echo message="TEST RacingScore1: 3 2 b"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+       <classpath path="src"/>
+       <arg value="3"/><arg value="2"/><arg value="b"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+   </java>
+
+   <!-- (score1 < score2 && score1 < score3) -->
+    <echo message="TEST RacingScore2: 1 2 2"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/><arg value="2"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- (score2 < score1 && score2 < score3) -->
+    <echo message="TEST RacingScore2: 2 1 2"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="2"/><arg value="1"/><arg value="2"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- (score3 < score1 && score3 < score2) -->
+    <echo message="TEST RacingScore2: 2 2 1"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="2"/><arg value="2"/><arg value="1"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- (score1 < score2 && score1 > score3) -->
+    <echo message="TEST RacingScore2: 3 2 1"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="3"/><arg value="2"/><arg value="1"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- (score3 < score1 && score3 > score2) -->
+    <echo message="TEST RacingScore2: 1 2 3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/><arg value="3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- (score2 < score1 && score2 > score3) -->
+    <echo message="TEST RacingScore2: 2 3 1"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="2"/><arg value="3"/><arg value="1"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- Else -->
+    <echo message="TEST RacingScore2: 1 1 1"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="1"/><arg value="1"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- Exception test for invalid arguments -->
+    <echo message="TEST RacingScore2: 1 2 a"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/><arg value="a"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- Error if s1 < 0. -->
+    <echo message="TEST RacingScore2: -1 50 3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="-1"/><arg value="50"/><arg value="3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- Error if s1 > 50. -->
+    <echo message="TEST RacingScore2: 3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+    <!-- Error if s2 < 0. -->
+    <echo message="TEST RacingScore2: 1 -2 3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="-2"/><arg value="3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+    <!-- Error if s2 > 50. -->
+    <echo message="TEST RacingScore2: 1 51 3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="51"/><arg value="3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+    <!-- Error if s3 < 0. -->
+    <echo message="TEST RacingScore2: 1 2 -3"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/><arg value="-3"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+    <!-- Error if s3 > 0. -->
+    <echo message="TEST RacingScore2: 1 2 51"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/><arg value="51"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
+
+   <!-- Error message for too few arguments. -->
+    <echo message="TEST RacingScore2: 1 2"/>
+    <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+       <classpath path="src"/>
+       <arg value="1"/><arg value="2"/>
+       <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
+    </java>
    </target>
 
    <!-- tests if new jacoco report needs generated by checking if top report file
@@ -47,31 +189,30 @@
       <uptodate property="report.notneeded" targetfile="report/index.html" srcfile="jacoco.exec" />
    </target>
 
-   <!-- generate a new jacoco report from a new data file; only runs if needed -->
-   <target name="jacocoreport" depends="jacocorun,checkReport" unless="report.notneeded">
-      <jacoco:report>
-         <executiondata>
-            <file file="jacoco.exec"/>
-         </executiondata>
-         <structure name="iglooscore">
-            <classfiles>
-               <fileset dir="."/>
-            </classfiles>
-            <sourcefiles encoding="UTF-8">
-               <fileset dir="."/>
-            </sourcefiles>
-         </structure>
-         <html destdir="report"/>
-      </jacoco:report>
-   </target>
+  	  <!-- generate a new jacoco report from a new data file; only runs if needed -->
+	   <target name="jacocoreport" depends="jacocorun,checkReport" unless="report.notneeded">
+	      <jacoco:report>
+	         <executiondata>
+	            <file file="jacoco.exec"/>
+	         </executiondata>
+	         <structure name="racingscore">
+	            <classfiles>
+	                <fileset dir="src/edu/nmsu/cs/scoring"/>
+	            </classfiles>
+	            <sourcefiles encoding="UTF-8">
+	               <fileset dir="src/edu/nmsu/cs/scoring"/>
+	            </sourcefiles>
+	         </structure>
+	         <html destdir="report"/>
+	      </jacoco:report>
+	   </target>
 
-   <!-- clean up by removing all generated files; do "ant clean" to start afresh -->
-   <target name="clean">
-      <delete>
-         <fileset dir="." includes="*.class jacoco.exec"/>
-      </delete>
-      <delete dir="report" />
-   </target>
+	   <!-- clean up by removing all generated files; do "ant clean" to start afresh -->
+	   <target name="clean">
+	      <delete>
+	          <fileset dir="." includes="*.class src/edu/nmsu/cs/scoring/*.class jacoco.exec"/>
+	      </delete>
+	      <delete dir="report" />
+	   </target>
 
-</project>
-
+	</project>
