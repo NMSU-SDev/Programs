@@ -5,6 +5,12 @@
 
 This project corresponds with the NMSU course CS-371, Software Development. 
 
+# Program 3 (Release v3.0) (5/2/23)
+In this release, all changes were made in Coverage
+    - Implemented 'JaCoCo' for testing coverage
+    - Modified 'build.xml' to achieve full coverage for all test cases
+    - Fixed several bug in 'RacingScore' java classes.
+
 # Program 2 (Release v2.0) (4/28/23)
 In this release, all changes were made in SimpleWebServer
     - Added functionality to serve image types. Supported types include .gif, .jpeg, and .png
