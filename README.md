@@ -1,3 +1,6 @@
+# RifRaf32 Lab1
+This assignment relies on the HelloWorld program. 
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
