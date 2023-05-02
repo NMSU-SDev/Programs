@@ -88,33 +88,33 @@ public class WebWorker implements Runnable {
 	/**
 	 * Read the HTTP request header.
 	 **/
-    private void readHTTPRequest(InputStream is) {
+    private void readHTTPRequest(InputStream is) { // Begin method to read HTTP request
         String line;
-        BufferedReader br = new BufferedReader(new InputStreamReader(is)); // Create BufferedReader to read input stream
-        while (true) {
-            try { // Wait for BufferedReader to be ready
-                while (!br.ready()) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(is)); // Create BufferedReader to read input stream (HTTP request)
+        while (true) { // Read all lines of request
+            try {
+                while (!br.ready()) { // Wait for BufferedReader
                     Thread.sleep(1);
                 }
-                line = br.readLine(); // Read a line from input stream
+                line = br.readLine(); // Read line from input
                 System.err.println("Request line: (" + line + ")");
-                if (line.startsWith("GET")) { // Check if line starts with a GET request
-                    String[] pieces = line.split(" "); // Split line into pieces
-                    if (pieces.length >= 2) {  // Check if there are at least two pieces (GET and requested file path)
-                        requestedFile = pieces[1].substring(1);
+                if (line.startsWith("GET")) { // Check if line starts with GET request
+                    String[] pieces = line.split(" ");
+                    if (pieces.length >= 2) { // Check if there are at least two pieces (GET request and requested file path)
+                        requestedFile = "www/" + pieces[1].substring(1); // Updated requested file path to include "www/" prefix
                     }
-                }
-                if (line.length() == 0) { // Break loop when an empty string is parsed
+                } 
+                if (line.length() == 0) { // If an empty line is encountered, exit loop
                     break;
                 }
-            } 
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.err.println("Request error: " + e);
                 break;
             }
         }
         return;
     }
+
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -149,24 +149,31 @@ public class WebWorker implements Runnable {
 	 *          is the OutputStream object to write to
 	 **/
     private void writeContent(OutputStream os, File file, String contentType) throws Exception {
-        try (FileInputStream fis = new FileInputStream(file)) { // Open requested file using a FileInputStream
-            if (contentType.equals("text/html")) { // Check if content type is "text/html"
-                BufferedReader br = new BufferedReader(new InputStreamReader(fis)); // Use BufferedReader to read file line by line
+        try (FileInputStream fis = new FileInputStream(file)) {
+            if (contentType.startsWith("text/")) { // Check if content type starts with "text/"
+                BufferedReader br = new BufferedReader(new InputStreamReader(fis)); // Create BufferedReader to read file
                 String line;
-                while ((line = br.readLine()) != null) { // Read and process each line of file
-                    if (line.contains("<cs371date>")) { // Replace <cs371date> tag with current date in MST
+                while ((line = br.readLine()) != null) { // Read each line of file
+                    if (line.contains("<cs371date>")) {
                         SimpleDateFormat date = new SimpleDateFormat("MMMM dd, yyyy");
                         date.setTimeZone(TimeZone.getTimeZone("MST"));
                         String todaysDate = date.format(new Date());
                         line = line.replace("<cs371date>", todaysDate);
                     }
-                    if (line.contains("<cs371server>")) { // Replace <cs371server> tag with "Jonas' server"
+                    if (line.contains("<cs371server>")) {
                         line = line.replace("<cs371server>", "Jonas' server");
                     }
                     os.write(line.getBytes()); // Write modified line to output stream
                 }
-            } 
-        } 
+            }
+            else if (contentType.startsWith("image/")) { // Check if content type starts with "image/"
+                byte[] buffer = new byte[4096]; // Create buffer to read binary data from image file
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) { // Read binary data and write it to output
+                    os.write(buffer, 0, bytesRead);
+                }
+            }
+        }
         catch (IOException e) {
             System.err.println("Error reading file: " + e);
         }

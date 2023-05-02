@@ -13,11 +13,15 @@
 
     <target name="build" depends="clean, compile"/>
 
-    <target name="run" depends="build">
-        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin.dir}" fork="true">
-            <arg value="8080"/>
-        </java>
-    </target>
+	<target name="run" depends="build" description="Run WebServer">
+	    <java classname="edu.nmsu.cs.webserver.WebServer" fork="true">
+	        <arg value="8080" />
+	        <classpath>
+	            <pathelement location="bin" />
+	        </classpath>
+	        <jvmarg value="-Duser.dir=${basedir}/www" />
+	    </java>
+	</target>
 
     <target name="default" depends="build, run"/>
 </project>
