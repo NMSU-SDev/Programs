@@ -11,7 +11,7 @@ public class Circle1 extends Circle
 	public boolean intersects(Circle other)
 	{
 		if (Math.abs(center.x - other.center.x) < radius &&
-				Math.abs(center.y - other.center.y) < radius)
+				Math.abs(center.y - other.center.y) < radius + other.radius)//BUG #3 ADDED oher.radius
 			return true;
 		return false;
 	}
