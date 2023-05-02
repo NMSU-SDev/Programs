@@ -15,6 +15,9 @@ public class Circle1Test
 {
 	// Data you need for each test case
 	private Circle1 circle1;
+	private Circle1 circle2;
+    private Circle1 circle3;
+    private final double delta = 1e-15;
 
 	//
 	// Stuff you want to do before each test case
@@ -24,6 +27,8 @@ public class Circle1Test
 	{
 		System.out.println("\nTest starting...");
 		circle1 = new Circle1(1, 2, 3);
+		circle2 = new Circle1(1, 2, 4);
+        circle3 = new Circle1(10, 11, 12);
 	}
 
 	//
@@ -59,10 +64,26 @@ public class Circle1Test
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
 
-	/***
-	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
-	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
-	 * " + e); } }
-	 ***/
+	// Test scaling method.
+    @Test
+    public void simpleScale() {
+        System.out.println("Running test: simpleScale.");
+        double x = circle1.scale(3.0f);
+        Assert.assertEquals(9.0f, x, delta);
+    }
+
+    // Test intersection method with two intersecting circles
+    @Test
+    public void simpleIntersect() {
+        System.out.println("Running test: simpleIntersect.");
+        Assert.assertTrue(circle1.intersects(circle2));
+    }
+
+    // Test intersection method with two non-intersecting circles
+    @Test
+    public void simpleNonIntersect() {
+        System.out.println("Running test: simpleNonIntersect");
+        Assert.assertFalse(circle1.intersects(circle3));
+    }
 
 }
