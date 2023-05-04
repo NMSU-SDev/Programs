@@ -1,0 +1,26 @@
+------------------ P3 Bug Report ---------------------------------
+------------------------------------------------------------------
+    RacingScore1.java:
+
+Error Fixes:
+Fixed Functional error when giving inputs such that score3 > score2 > score1 by ensuring
+int s would store the smallest value to subtract from the total score of all three inputs.
+Originally, s stored the greatest value.
+
+Notes: 
+Invalid inputs such as an input > 50 and/or input < 0 do not prompt the user 
+that these are invalid inputs and instead continues the program like normal.
+
+------------------------------------------------------------------
+    RacingScore2.java:
+
+Error Fixes:
+Changed the overallScore() function to check three
+different conditionals and assign integers s1 and s2 appropriately: score1 <= score2 && score1 <= score3, 
+score2 <= score1 && score2 <= score3, and score3 < score1 && score3 < score2. This fixed a functional error for valid input 
+such that score2 = score3 and score1 = score2 = score3. 
+
+Notes:
+Invalid inputs have messages stating invalid input was passed into the program.Removed args.length == null because in Java, 
+args.length can never be null but can be length = 0, which is covered by the existing conditional "args.length != 3". 
+ 

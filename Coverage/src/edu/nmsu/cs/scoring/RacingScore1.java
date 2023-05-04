@@ -16,6 +16,7 @@ package edu.nmsu.cs.scoring;
  *
  * Fixed Functional error when giving inputs such that score3 > score2 > score1 by ensuring
  * int s would store the smallest value to subtract from the total score of all three inputs.
+ * Originally, s stored the greatest value.
  * 
  * Note: Invalid inputs such as an input > 50 and/or input < 0 do not prompt the user 
  * that these are invalid inputs and instead continues the program like normal.
