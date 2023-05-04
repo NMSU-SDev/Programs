@@ -1,7 +1,7 @@
-<!-- Ant Build reconfigured from Jonathan Cook to be used with RacingScore --> 
+<!-- Ant Build --> 
 <project name="racingscore" default="report" xmlns:jacoco="antlib:org.jacoco.ant">
 
-	<!-- directory configuration -->
+	<!-- Setting Directory -->
 	<property name = "jacoco.dir" location = "lib/"/>
 	<property name="src.dir" location="src/" />
 	<property name="build.dir" location="bin/" />
@@ -13,13 +13,13 @@
 		<classpath path="${jacoco.dir}/jacocoant.jar" />
 	</taskdef>
 
-	<!-- standard compile task, but turn debugging on for source viewing -->
+	<!-- Set Compile Task, Turn Debug On -->
 	<target name="compile" description="compile the source">
 		<mkdir dir="${build.dir}" />
 		<javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" debug="true" />
 	</target>
 
-	<!-- tests if new jacoco run is needed -->
+	<!-- Tests if new jacoco run is needed -->
 	<target name="checkRun">
 		<uptodate property="run.notneeded" targetfile="${result.exec.file}">
 			<srcfiles dir="${src.dir}" includes="**/*.java build.xml" />
