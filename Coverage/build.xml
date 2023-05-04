@@ -46,7 +46,7 @@
         modify them, and then add more; this only runs if needed
 	-->
 
-	  <!--TEST CASES RacingScore1-->
+	  <!--TEST CASES RacingScore1up-->
       <echo message="TEST RacingScore1: 8 9 6"/>
       <jacoco:coverage destfile="${result.exec.file}">
          <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
