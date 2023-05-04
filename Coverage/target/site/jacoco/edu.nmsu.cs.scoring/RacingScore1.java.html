@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RacingScore1.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Ant Example</a> &gt; <a href="index.source.html" class="el_package">edu.nmsu.cs.scoring</a> &gt; <span class="el_source">RacingScore1.java</span></div><h1>RacingScore1.java</h1><pre class="source lang-java linenums">package edu.nmsu.cs.scoring;
+
+/***
+ * Olympic Dragon Racing Scoring Class
+ *
+ * For the Summer Olympics dragon racing event there are three judges, each of which gives a score
+ * from 0 to 50 (inclusive), but the lowest score is thrown out and the competitor's overall score
+ * is just the sum of the two highest scores. This class supports the recording of the three judge's
+ * scores, and the computing of the competitor's overall score.
+ *
+ ***/
+
+public class RacingScore1
+{
+
+	int	score1;
+
+	int	score2;
+
+	int	score3;
+
+<span class="fc" id="L22">	public RacingScore1()</span>
+	{
+<span class="fc" id="L24">		score1 = 0;</span>
+<span class="fc" id="L25">		score2 = 0;</span>
+<span class="fc" id="L26">		score3 = 0;</span>
+<span class="fc" id="L27">	}</span>
+
+	public void recordScores(int s1, int s2, int s3)
+	{
+<span class="fc" id="L31">		score1 = s1;</span>
+<span class="fc" id="L32">		score2 = s2;</span>
+<span class="fc" id="L33">		score3 = s3;</span>
+<span class="fc" id="L34">	}</span>
+
+	public int overallScore()
+	{
+		int s;
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">		if (score1 &lt; score2)</span>
+<span class="fc" id="L40">			s = score2;		</span>
+		else
+<span class="nc" id="L42">			s = score1;</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">		if (s &gt; score3)</span>
+<span class="fc" id="L44">			s = score3;</span>
+<span class="fc" id="L45">		s = (score1 + score2 + score3) - s;</span>
+<span class="fc" id="L46">		return s;</span>
+		
+//		int s;
+//		if (score1 &lt; score2 &amp;&amp; score3 &lt; score2)
+//			s = score2;	
+//		else if(score1 &lt; score3 &amp;&amp; score2 &lt; score3)
+//			s = score3;
+//		else
+//			s = score1;
+//		s = (score1 + score2 + score3) - s;
+//		return s;
+		
+	}
+
+	public static void main(String args[])
+	{
+		int s1, s2, s3;
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		if (args.length != 3)</span>
+		{
+<span class="fc" id="L65">			System.err.println(&quot;Error: must supply three arguments!&quot;);</span>
+<span class="fc" id="L66">			return;</span>
+		}
+		try
+		{
+<span class="fc" id="L70">			s1 = Integer.parseInt(args[0]);</span>
+<span class="fc" id="L71">			s2 = Integer.parseInt(args[1]);</span>
+<span class="fc" id="L72">			s3 = Integer.parseInt(args[2]);</span>
+<span class="fc" id="L73">		}</span>
+<span class="fc" id="L74">		catch (Exception e)</span>
+		{
+<span class="fc" id="L76">			System.err.println(&quot;Error: arguments must be integers!&quot;);</span>
+<span class="fc" id="L77">			return;</span>
+		}
+<span class="fc" id="L79">		RacingScore1 score = new RacingScore1();</span>
+<span class="fc" id="L80">		score.recordScores(s1, s2, s3);</span>
+<span class="fc" id="L81">		System.out.println(&quot;Overall score: &quot; + score.overallScore());</span>
+<span class="fc" id="L82">		return;</span>
+	}
+
+} // end class
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

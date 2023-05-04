@@ -37,13 +37,24 @@ public class RacingScore1
 	{
 		int s;
 		if (score1 < score2)
-			s = score2;
+			s = score2;		
 		else
 			s = score1;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;
 		return s;
+		
+//		int s;
+//		if (score1 < score2 && score3 < score2)
+//			s = score2;	
+//		else if(score1 < score3 && score2 < score3)
+//			s = score3;
+//		else
+//			s = score1;
+//		s = (score1 + score2 + score3) - s;
+//		return s;
+		
 	}
 
 	public static void main(String args[])
