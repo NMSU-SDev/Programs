@@ -15,6 +15,9 @@ public class Circle1Test
 {
 	// Data you need for each test case
 	private Circle1 circle1;
+	private Circle1 circle2;
+	private Circle1 circle3;
+	private Circle1 circle4;
 
 	//
 	// Stuff you want to do before each test case
@@ -24,6 +27,12 @@ public class Circle1Test
 	{
 		System.out.println("\nTest starting...");
 		circle1 = new Circle1(1, 2, 3);
+
+		circle2 = new Circle1(1, 3, 1); // should overlap
+
+		circle3 = new Circle1(30, 2, 30); // should overlap
+
+		circle4 = new Circle1(20, 30, 2); // shouldn't overlap
 	}
 
 	//
@@ -57,6 +66,39 @@ public class Circle1Test
 		System.out.println("Running test simpleMoveNeg.");
 		p = circle1.moveBy(-1, -1);
 		Assert.assertTrue(p.x == 0 && p.y == 1);
+	}
+
+	//
+	// Test a simple intersection, radius > distance
+	//
+	@Test
+	public void simpleIntersectTest()
+	{
+		Point p;
+		System.out.println("Running test simpleIntersectTest, radius > distance.");
+		System.out.println(circle1.intersects(circle2));
+	}
+
+	//
+	// Test a complex intersection, other.radius > distance
+	//
+	@Test
+	public void complexIntersectTest()
+	{
+		Point p;
+		System.out.println("Running test complexIntersectTest, other.radius > distance.");
+		System.out.println(circle1.intersects(circle3));
+	}
+
+	//
+	// Test a non-intersection, radius < distance
+	//
+	@Test
+	public void nonIntersectTest()
+	{
+		Point p;
+		System.out.println("Running test nonIntersectTest, radius < distance.");
+		System.out.println(circle1.intersects(circle4));
 	}
 
 	/***
