@@ -20,16 +20,14 @@ package edu.nmsu.cs.webserver;
  **/
 
  //imported file readers
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.File;
-import java.io.FileReader;
+
+import java.io.*;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+//import javax.imageio.ImageIO;
 
 public class WebWorker implements Runnable
 {
@@ -60,8 +58,9 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String contentType = readType(path);
+			writeHTTPHeader(os, contentType);
+			writeContent(os,contentType);
 			os.flush();
 			socket.close();
 		}
@@ -91,10 +90,12 @@ public class WebWorker implements Runnable
 					Thread.sleep(1);
 				line = r.readLine();
 				//if i get the path, i check if it exist, if exist, set valid to true
+				//updated <project root>/www/res/acc/test.html
 				if(url == null){
 					url = line;
 					path = url.split("\s")[1];
 					path = path.substring(1);
+					path = "www\\res\\acc\\" + path;
 					doc = new File(path);
 					valid = doc.exists();
 				}
@@ -109,6 +110,15 @@ public class WebWorker implements Runnable
 			}
 		}
 		return;
+	}
+
+	//returns the content type, so we can serve image files in the GIF, JPEG, jpg and PNG formats
+	private String readType(String path){
+		if (path.contains("gif")) return "image/gif";
+		if (path.contains("jpeg")) return "image/jpeg";
+		if (path.contains("png")) return "image/png";
+		if (path.contains("jpg")) return "image/jpg";
+		return "text/html";
 	}
 
 	/**
@@ -152,35 +162,49 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception{
+	private void writeContent(OutputStream os, String contentType) throws Exception{
 		//check existing file again
+		
 		if(valid){
-			BufferedReader read = new BufferedReader(new FileReader(path));
-			//creating substitution for tags
-			String webServer = "Xindi's Server";
-			Date date = new Date();
-			String sub;
-			String datesub = "date";
-			String websub = "web";
+			if(contentType.contains("html")){
 
-			//replace <cs371date> and <cs371server> with something else
-			while((sub = read.readLine()) != null){
+				FileReader fr = new FileReader(path);
+				BufferedReader read = new BufferedReader(new FileReader(path));
 
-				if(sub.contains("<cs371date>")){
-					datesub = sub.replace("<cs371date>",date.toString());
+				//creating substitution for tags
+				String webServer = "Xindi's Server";
+				Date date = new Date();
+				String sub;
+				String lines = "";
+
+				//replace <cs371date> and <cs371server> with something else
+				//replace img with img link
+				while((sub = read.readLine()) != null){
+					lines += sub;
 				}
+				lines = lines.replaceAll("<cs371date>",date.toString());
 
-				if(sub.contains("<cs371server>")){
-					websub = sub.replace("<cs371server>",webServer);
-				}
+				lines = lines.replaceAll("<cs371server>",webServer);
+
+				lines = lines.replaceAll("\"img\"", "pix.jpg");
+
+				//contents that is printing to the screen
+				os.write("<html><head></head><body>\n".getBytes());
+				os.write(lines.getBytes());
+				os.write("</body></html>\n".getBytes());
+				read.close();
+				fr.close();
 			}
-			//contents that is printing to the screen
-			os.write("<html><head></head><body>\n".getBytes());
-			os.write(("<h3>" + datesub + "</h3>\n").getBytes());
-			os.write(("<h3>" + websub + "</h3>\n").getBytes());
-			os.write(("<h3>demo.0.0</h3>\n").getBytes());
-			os.write("</body></html>\n".getBytes());
-			read.close();
+			else if(contentType.contains("image")){
+				FileInputStream img = new FileInputStream(doc);
+				int cursor;
+
+				while((cursor = img.read()) != -1) {
+					os.write(cursor);
+				}
+
+				img.close();
+			}
 		}
 		//print 404 to screen if link not found
 		else{
