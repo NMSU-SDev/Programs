@@ -166,6 +166,7 @@ public class WebWorker implements Runnable
 		//check existing file again
 		
 		if(valid){
+			//if contentType has html, read html page
 			if(contentType.contains("html")){
 
 				FileReader fr = new FileReader(path);
@@ -195,6 +196,7 @@ public class WebWorker implements Runnable
 				read.close();
 				fr.close();
 			}
+			//if contentType has img, read img
 			else if(contentType.contains("image")){
 				FileInputStream img = new FileInputStream(doc);
 				int cursor;
