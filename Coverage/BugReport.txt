@@ -1,0 +1,26 @@
+------------------ BUG REPORT / CHANGES FOR P3 -------------------
+------------------------------------------------------------------
+    RacingScore1.java:
+
+Fixed errors:
+- overallScore method was changed to set s to the correct smallest
+value. Previously, the if statements set s to a larger value.
+
+
+Functional errors for invalid inputs:
+
+Code is not supposed to accept values at/above 50 or below 0, but
+still runs with no warning if these are given.
+
+------------------------------------------------------------------
+    RacingScore2.java:
+
+Fixed errors:
+- Fixed overallScore to give the correct largest values for score1
+and score3
+
+- Fixed scores being wrongly set to 99 in the case where two or more
+scores are equal; highest scores will now always be 2 out of 3 of the
+scores given.
+
+- Removed unnecessary if(args == null) case from main method
