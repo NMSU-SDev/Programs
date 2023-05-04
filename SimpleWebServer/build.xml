@@ -1,0 +1,16 @@
+<project>
+	<target name="clean">
+        <delete dir="bin"/>
+    </target>
+	<target name="compile">
+		<mkdir dir="bin" />
+		<javac srcdir="src" destdir="bin" fork="true" includeantruntime="false"/>
+        <copy todir="bin">
+           <fileset dir="resources"/>
+        </copy>
+	</target>
+	<target name="run" depends="compile" description="run the project">
+		<mkdir dir="bin" />
+        <java classname="edu.nmsu.cs.webserver.WebServer" dir="bin" fork="true"/>
+    </target>
+</project>
