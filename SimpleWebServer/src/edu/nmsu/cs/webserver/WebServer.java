@@ -48,6 +48,7 @@ public class WebServer
 		try
 		
 		{
+<<<<<<< HEAD
 			//memeber variable server socket object
 			
 			/*
@@ -56,6 +57,9 @@ public class WebServer
 				starts listening for incoming connections to that particular port
 				when incoming connection comes in java passes it off to something else to do work with it
 			 */
+=======
+			System.out.println("Server is working connected to port " + port + ".");
+>>>>>>> origin/main
 			socket = new ServerSocket(port);
 			System.out.println("Web server started! Listening on port: " + port + ".");
 		}
