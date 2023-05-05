@@ -1,110 +1,69 @@
 package edu.nmsu.cs.webserver;
 
-/**
- * A simple web server: it creates a new WebWorker for each new client connection, so all the
- * WebServer object does is listen on the port for incoming client connection requests.
- *
- * This class contains the application "main()" (see below). At startup, main() creates an object of
- * this class (WebServer) and invokes its start() method. Since servers run continually, the start()
- * method never returns. It uses socket programming to listen for client network connection
- * requests. When one happens, it creates a new object of the WebWorker class and hands that client
- * connection off to the WebWorker object. The WebServer object then just keeps listening for new
- * client connections. See the WebWorker source for more information about it.
- * 
- **/
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class WebServer
-{
-	private ServerSocket	socket;
+public class WebServer {
 
-	private boolean				running;
+	private ServerSocket serverSocket;
 
-	/**
-	 * Constructor
-	 **/
-	private WebServer()
-	{
-		running = false;
+	public void start(int port) throws IOException {
+		serverSocket = new ServerSocket(port);
+		System.out.println("Listening on port " + port + "...");
+		while (true) {
+			Socket clientSocket = serverSocket.accept();
+			System.out.println("Accepted connection from " + clientSocket.getInetAddress());
+			Thread t = new Thread(() -> {
+				try {
+					handleRequest(clientSocket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			t.start();
+		}
 	}
 
-	/**
-	 * Web server starting point. This method does not return until the server is finished, so perhaps
-	 * it should be named "runServer" or something like that.
-	 * 
-	 * @param port
-	 *          is the TCP port number to accept connections on
-	 **/
-	private boolean start(int port)
-	{
-		Socket workerSocket;
-		WebWorker worker;
-		try
-		{
-			socket = new ServerSocket(port);
-		}
-		catch (Exception e)
-		{
-			System.err.println("Error binding to port " + port + ": " + e);
-			return false;
-		}
-		while (true)
-		{
-			try
-			{
-				// wait and listen for new client connection
-				workerSocket = socket.accept();
-			}
-			catch (Exception e)
-			{
-				System.err.println("No longer accepting: " + e);
-				break;
-			}
-			// have new client connection, so fire off a worker on it
-			worker = new WebWorker(workerSocket);
-			new Thread(worker).start();
-		}
-		return true;
-	} // end start
-
-	/**
-	 * Does not do anything, since start() never returns.
-	 **/
-	private boolean stop()
-	{
-		return true;
+	public void stop() throws IOException {
+		serverSocket.close();
 	}
 
-	/**
-	 * Application main: process command line and start web server; default port number is 8080 if not
-	 * given on command line.
-	 **/
-	public static void main(String args[])
-	{
-		int port = 8080;
-		if (args.length > 1)
-		{
-			System.err.println("Usage: java Webserver <portNumber>");
-			return;
-		}
-		else if (args.length == 1)
-		{
-			try
-			{
-				port = Integer.parseInt(args[0]);
+	private void handleRequest(Socket clientSocket) throws IOException {
+		try (BufferedReader reader = new BufferedReader(new FileReader("index.html"))) {
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
 			}
-			catch (Exception e)
-			{
-				System.err.println("Argument must be an int (" + e + ")");
-				return;
-			}
+			String response = sb.toString();
+			response = response.replace("{{serverName}}", "My Web Server");
+
+			OutputStream out = clientSocket.getOutputStream();
+			out.write("HTTP/1.1 200 OK\n".getBytes());
+			out.write("Content-Type: text/html\n".getBytes());
+			out.write(("Content-Length: " + response.length() + "\n").getBytes());
+			out.write("\n".getBytes());
+			out.write(response.getBytes());
+			out.flush();
+		} catch (IOException e) {
+			OutputStream out = clientSocket.getOutputStream();
+			out.write("HTTP/1.1 404 Not Found\n".getBytes());
+			out.write("Content-Type: text/plain\n".getBytes());
+			out.write("\n".getBytes());
+			out.write("404 Not Found".getBytes());
+			out.flush();
+		} finally {
+			clientSocket.close();
 		}
+	}
+
+	public static void main(String[] args) throws IOException {
 		WebServer server = new WebServer();
-		if (!server.start(port))
-		{
-			System.err.println("Execution failed!");
-		}
-	} // end main
-
-} // end class
+		server.start(8080);
+	}
+}
