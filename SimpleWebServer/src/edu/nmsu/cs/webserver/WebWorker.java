@@ -25,8 +25,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.Date;
@@ -38,7 +40,6 @@ public class WebWorker implements Runnable
 	public String address;
 	public File file;
 	private Socket socket;
-
 	/**
 	 * Constructor: must have a valid open socket
 	 **/
@@ -60,8 +61,9 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			String content = readType(address);
+			writeHTTPHeader(os, content);
+			writeContent(os, content);
 			os.flush();
 			socket.close();
 		}
@@ -92,7 +94,7 @@ public class WebWorker implements Runnable
 				
 				if(line.contains("GET")){
 					
-					
+					//Gets the filename
 					address = line.substring(5,line.indexOf(" ", 4));
 					file = new File(address);
 					exist = file.exists();
@@ -108,6 +110,15 @@ public class WebWorker implements Runnable
 			}
 		}
 		return;
+	}
+
+	// checks the file type
+	private String readType(String path){
+		if(path.contains(".jpg")) return "image/jpg";
+		if(path.contains(".gif")) return "image/gif";
+		if(path.contains(".png")) return "image/png";
+		if(path.contains(".jpeg")) return "image/jpeg";
+		return "text/html";
 	}
 
 	/**
@@ -126,8 +137,8 @@ public class WebWorker implements Runnable
 		if(exist == true){
 		os.write("HTTP/1.1 200 OK\n".getBytes());
 		}
-		else{os.write("HTTP/1.1 404 Page Not Found\n".getBytes());}
-
+		else if(exist == false){os.write("HTTP/1.1 404 Page Not Found\n".getBytes());}
+		else if((exist == true) && !contentType.contains("html")){os.write("HTTP/1.1 400 BAD REQUEST\n".getBytes());}
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
@@ -148,15 +159,17 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, String content) throws Exception
 	{	 
+	
 		if(exist == true){
-			String webServer = "Mason's Server";
-			BufferedReader in = new BufferedReader(new FileReader(address)); 
+			if(content.contains("html")){			
+				String webServer = "Mason's Server";
+				BufferedReader in = new BufferedReader(new FileReader(address)); 
 			
 				Date date = new Date();
 				String substring;
-				 
+				
 				while((substring = in.readLine()) != null){
 				
 
@@ -166,6 +179,9 @@ public class WebWorker implements Runnable
 					if(substring.contains("<cs371server>")){
 						substring = substring.replace("<cs371server>", webServer);
 					}
+					if(substring.contains("<img>")){
+						substring = substring.replace("\"img\"", "kayden_10.jpg");
+					}
 					
 					os.write("<html><head></head><body>\n".getBytes());
 					os.write(("<h3>"+ substring +"\n</h3>\n").getBytes());
@@ -173,6 +189,12 @@ public class WebWorker implements Runnable
 
 				}
 				in.close();
+			}
+				else if(content.contains("image/jpg") || content.contains("image/gif") || content.contains("image/jpeg") || content.contains("image/png")){
+					byte[] toBytes = Files.readAllBytes(new File(address.substring(0)).toPath());
+					os.write(toBytes); 
+				}
+
 
 		}
 		
