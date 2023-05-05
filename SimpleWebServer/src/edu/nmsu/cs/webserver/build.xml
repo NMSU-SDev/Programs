@@ -1,15 +1,22 @@
-<project name="WebServer" default="jar">
+<project name="WebServer" default="run">
+
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac includeantruntime="false" srcdir="src" destdir="bin"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="WebServer" fork="true">
+            <classpath>
+                <pathelement location="bin"/>
+            </classpath>
+            <arg value="8080"/>
+            <arg value="."/>
+        </java>
+    </target>
+
     <target name="clean">
-        <delete dir="build"/>
+        <delete dir="bin"/>
     </target>
 
-    <target name="compile" depends="clean">
-        <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes"/>
-    </target>
-
-    <target name="jar" depends="compile">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/WebServer.jar" basedir="build/classes"/>
-    </target>
 </project>
