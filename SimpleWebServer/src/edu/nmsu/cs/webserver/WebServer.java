@@ -26,7 +26,7 @@ public class WebServer
 	 **/
 	private WebServer()
 	{
-	
+			running = false;
 	}
 
 	/**

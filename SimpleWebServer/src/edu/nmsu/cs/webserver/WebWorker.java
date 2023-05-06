@@ -1,5 +1,6 @@
 package edu.nmsu.cs.webserver;
-
+import java.lang.Object;
+import java.nio.file.Files;
 /**
  * Web worker: an object of this class executes in its own new thread to receive and respond to a
  * single HTTP request. After the constructor the object executes on its "run" method, and leaves
@@ -33,9 +34,18 @@ import java.text.SimpleDateFormat;
 
 public class WebWorker implements Runnable
 {
-	private String pathName; 
-	private Boolean fileExists; 	
+
 	private Socket socket;
+	private File currFile = null;
+	private boolean fileExists = false;
+	private boolean fileRequested = false;
+	private boolean fileError = false;
+	public String dir = System.getProperty("user.dir");
+	public String filePath;
+
+	public boolean isHTML = false, isGIF = false, isPNG = false, isJPEG = false;
+
+	// TODO: add boolean in case no filepath is given
 
 	/**
 	 * Constructor: must have a valid open socket
@@ -50,21 +60,50 @@ public class WebWorker implements Runnable
 	 * destroys the thread. This method assumes that whoever created the worker created it with a
 	 * valid open socket object.
 	 **/
-	public void run()
+	public void run() // TODO: reconficure and organize this
 	{
 		System.err.println("Handling connection...");
 		try
 		{
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
-			readHTTPRequest(is);
-			writeHTTPHeader(os, "text/html");
-			writeContent(os);
+			
+			// This is where all to work for the assignment happens.
+			
+			System.out.println(dir);
+			filePath = readHTTPRequest(is, os);
+			
+			// access file
+			if (filePath != null) {
+				boolean fileExists = true;
+				String [] pathName = filePath.split(" ");
+				filePath = pathName[1];
+				System.out.println(filePath);
+				currFile = new File(filePath);
+			}	
+
+			try {
+				BufferedReader r = new BufferedReader(new FileReader(dir + currFile)); // ERROR HERE
+				String line = null;
+				fileExists = true;	
+			}
+			catch (Exception e)
+			{
+				System.out.println("Request error 1: " + e);
+				fileExists = false;
+				fileError = true;
+			}
+				// dynamically call this. Only do one.
+			//writeHTTPHeader(os, "text/html");
+			writeHTTPHeader(os, getContentType(filePath));
+			//writeImage(os, filePath);
+			writeContent(os, currFile);
 			os.flush();
 			socket.close();
-		}
+
+		}	
 		catch (Exception e)
-		{System.err.println("WRONG CODE");
+		{
 			System.err.println("Output error: " + e);
 		}
 		System.err.println("Done handling connection.");
@@ -74,9 +113,10 @@ public class WebWorker implements Runnable
 	/**
 	 * Read the HTTP request header.
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is, OutputStream os)
 	{
-		String line;
+		String line; 
+		String answer = null; // answer is what needs to be returned. 
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
 		{
@@ -84,37 +124,25 @@ public class WebWorker implements Runnable
 			{
 				while (!r.ready())
 					Thread.sleep(1);
-				
 				line = r.readLine();
-
-
-				// Finds request that starts with GET and find files that are requested if available or not
-				// GET /favicon.ico HTTP/1.1)
-
-				if( line.startsWith("GET")) { 
-					String[] request = line.split(" "); 
-					pathName = request[1].substring(1); // char '/' 
-					File requestFile = new File (pathName); 
-					
-					// Checks if file exists 
-					if( requestFile.exists() && !requestFile.isDirectory() ) 
-						fileExists = true; 
-					else 
-						fileExists = false; 
-				
-				}
-
 				System.err.println("Request line: (" + line + ")");
+				String [] lineSegs = line.split(" ");
+
+				if (lineSegs[0].equals("GET") && !lineSegs[1].equals("/")) {
+					answer = line;	
+					fileRequested = true;
+				}
+				
 				if (line.length() == 0)
 					break;
 			}
 			catch (Exception e)
 			{
-				System.err.println("Request error: " + e);
+				System.err.println("Request error: " + e);	
 				break;
 			}
 		}
-		return;
+		return answer;
 	}
 
 	/**
@@ -128,21 +156,21 @@ public class WebWorker implements Runnable
 	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
 	{
 		Date d = new Date();
+		System.out.println(d);
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-		if(fileExists == true){
-			os.write("HTTP/1.1 200 OK\n".getBytes());
-		}
-		else
-			os.write("HTTP/1.1 404 Not Found\n".getBytes());
-
-
+		// if state to check if file was found
+		
+		if (fileExists && fileRequested) os.write("HTTP/1.1 200 OK\n".getBytes());
+		
+		else if (fileRequested && !fileExists) os.write("HTTP/1.1 404 Not Found\n".getBytes());
+		else os.write("HTTP/1.1 200 OK\n".getBytes());
+		
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-
-		os.write("Server: Rey's very own server\n".getBytes());
+		os.write("Server: Jon's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -159,39 +187,72 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private void writeContent(OutputStream os) throws Exception
+	private void writeContent(OutputStream os, File f) throws Exception
 	{
-		File requestFile = new File (pathName);
+			
+		if (isHTML) {
 
-		SimpleDateFormat date = new SimpleDateFormat("DD-MM-YYYY"); 
-		String dateFinal = date.format(new Date());
-
-		// Check first if file exists 
-		if( requestFile.exists() && !requestFile.isDirectory() ) {
-			os.write("<html><head></head><body>\n".getBytes());
-			Scanner scan = new Scanner(requestFile);
-
-			while (scan.hasNextLine()) {
-				String line = scan.nextLine();
-
-				if (line.contains("<Cs371date>"))
-					line = line.replace("<Cs371date>", dateFinal);
-
-				if (line.contains("<Cs371server>"))
-					line = line.replace("<Cs371server>", "Bianka's Server"); 
-
-				os.write(line.getBytes());
-			} // end of while 
+			os.write("<html><head>".getBytes());
+			os.write("<link rel=\"icon\" type=\"image/x-icon\" href=\"/www/favicon.ico\">".getBytes());
+			os.write("</head><body>\n".getBytes());
+			os.write("<h3>My web server works!</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
-			scan.close();		
-				
-		} // end of if 
 
-		// if file is not found 
-		else { 
-			os.write("<html><head></head><body>\n".getBytes());
-			os.write("<h1>404 Error: File Not Found</h1>\n".getBytes());
-			os.write("</body></html>\n".getBytes());	
+			if (fileExists) {
+				try {
+				BufferedReader r = new BufferedReader(new FileReader(dir + f));
+				String line = null;
+				while((line = r.readLine()) != null) {
+					// scan line with special command (1:27)
+					if (line.contains("<cs371date>")) {
+						String [] segs = line.split("<cs371date>");
+						Date now = new Date();
+						line = segs[0] + now + segs[1];
+						
+					}
+					if (line.contains("<cs371server>")) {
+						String [] segs = line.split("<cs371server>");
+						Date now = new Date();
+						line = segs[0] + "Z's Server" + segs[1];
+
+					}
+					os.write(line.getBytes());
+					}
+				}
+				catch (Exception e) {
+					fileError = true;
+					//os.write("404 Not Found".getBytes());
+				}
+			}
+		}
+		if (isGIF || isJPEG || isPNG) {
+			FileInputStream is = new FileInputStream(dir +filePath);
+			try {
+				int arraysize = is.available();
+				byte bytes[] = new byte[arraysize];
+				is.read(bytes);
+				os.write(bytes);
+				is.close();
+			}
+			catch (Exception e){
+				System.out.println("Error accessing Image: " + e.getMessage());
+			}
+		}
+
+		else {System.err.println("SOMETHING WRONG HERE");}
+
+		if (fileError && fileRequested) { os.write("404 Not Found".getBytes()); }
 	}
 
+	private String getContentType(String path){
+		if (path.contains("html")) { isHTML=true; return "text/html";}
+		if (path.contains("gif")) { isGIF = true; return "image/gif";}
+		if (path.contains("png")) { isPNG = true; return "image/png";}
+		if (path.contains("jpeg") || path.contains("jpg")) { isJPEG = true; return "image/jpeg";}
+		else return null;
+	}
+
+	private static void addFavicon(){
+
+	}
 } // end class
