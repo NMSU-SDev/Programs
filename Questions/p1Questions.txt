@@ -1,0 +1,9 @@
+Time to complete Assignment: 6 hours
+
+Time it actually took:
+Thought/Design:  2 hours
+Programming:  4 hours
+Debugging:  4 hours
+Total:  8 hours
+
+Accuracy of original estimate: 65%
