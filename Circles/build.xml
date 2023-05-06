@@ -1,1 +1,60 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<project name="Circles" default="run" basedir=".">
+    
+    <property name="src-dir" location="src/"/>
+    <property name="build-dir" location="bin/"/>
+    <property name="junit-dir" location="lib/"/>
+    
+    <target name="compile">
+        <mkdir dir="${build-dir}"/>
+         <javac srcdir="${src-dir}" includeantruntime="false" debug="true" destdir="${build-dir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    
+    
+    </target>
+   
+    <target name="run" depends="clean,compile">
+        <java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build-dir}" fork="true" dir="${basedir}">
+        <arg value="2"/>
+        <arg value="4"/>
+        <arg value="6"/>
+        <arg value="8"/>
+        <arg value="10"/>
+        <arg value="12"/>
+        </java>
+    </target>
+
+    <target name="testCircle1" depends="clean,compile">
+        <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build-dir}"/>
+            </classpath>
+            <arg value="edu.nmsu.cs.circles.Circle1Test"/>
+        </java>
+    </target>
+
+    <target name="testCircle2" depends="clean,compile">
+        <java classname="org.junit.runner.JUnitCore" fork="true" dir="${basedir}">
+            <classpath>
+                <fileset dir="${junit-dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement path="${build-dir}"/>
+            </classpath>
+            <arg value="edu.nmsu.cs.circles.Circle2Test"/>
+        </java>
+    </target>
+
+    <target name="test" depends="testCircle1, testCircle2"/>
+
+    <target name="clean">
+        <delete dir="${build-dir}"/>
+    </target>
+</project> 

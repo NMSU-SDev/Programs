@@ -10,10 +10,9 @@ public class Circle2 extends Circle
 
 	public boolean intersects(Circle other)
 	{
-		double d;
-		d = Math.sqrt(Math.pow(center.x - other.center.x, 2) +
-				Math.pow(center.y - other.center.y, 2));
-		if (d < radius)
+		double dist;
+		dist = Math.sqrt(Math.pow(center.x - other.center.x, 2) + Math.pow(center.y - other.center.y, 2));
+		if (dist < this.radius + other.radius)
 			return true;
 		else
 			return false;
