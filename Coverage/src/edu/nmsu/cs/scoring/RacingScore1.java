@@ -36,30 +36,22 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
+		// s has to be the smallest number
 		if (score1 < score2)
-			s = score2;		
+			s = score1;	
 		else
-			s = score1;
+			s = score2;
 		if (s > score3)
 			s = score3;
-		s = (score1 + score2 + score3) - s;
+		s = (score1 + score2 + score3) - s; // subtracting the smallest value
 		return s;
-		
-//		int s;
-//		if (score1 < score2 && score3 < score2)
-//			s = score2;	
-//		else if(score1 < score3 && score2 < score3)
-//			s = score3;
-//		else
-//			s = score1;
-//		s = (score1 + score2 + score3) - s;
-//		return s;
 		
 	}
 
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
+		// only check for when length of arguments is not 3
 		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
