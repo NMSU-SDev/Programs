@@ -36,10 +36,13 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
+      // this logic takes the smallest score and subs it from the sum of all 3 scores
 		if (score1 < score2)
-			s = score2;
+		   // this was score2, which should be score1 since it was less than score2
+         s = score1;
 		else
-			s = score1;
+         // score1 and score2 were flipped, so we weren't getting the smallest score in s
+			s = score2;
 		if (s > score3)
 			s = score3;
 		s = (score1 + score2 + score3) - s;

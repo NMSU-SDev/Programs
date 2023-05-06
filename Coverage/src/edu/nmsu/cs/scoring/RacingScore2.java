@@ -36,6 +36,7 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
+      // this logic adds up s1 and s2 which are the two numbers that are not the smallest
 		if (score1 < score2 && score1 < score3)
 		{
 			s1 = score2;
@@ -44,7 +45,8 @@ public class RacingScore2
 		else if (score2 < score1 && score2 < score3)
 		{
 			s1 = score1;
-			s2 = score2;
+         // this cannot be score2 since this block of code happens if score2 is the smallest
+			s2 = score3;
 		}
 		else if (score3 < score1 && score3 < score2)
 		{
