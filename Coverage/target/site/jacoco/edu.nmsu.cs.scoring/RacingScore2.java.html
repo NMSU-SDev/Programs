@@ -36,16 +36,17 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
-<span class="fc bfc" id="L39" title="All 4 branches covered.">		if (score1 &lt; score2 &amp;&amp; score1 &lt; score3)</span>
+		// s1 and s2 have to be the highest scores
+<span class="fc bfc" id="L40" title="All 4 branches covered.">		if (score1 &lt; score2 &amp;&amp; score1 &lt; score3)</span>
 		{
-<span class="fc" id="L41">			s1 = score2;</span>
-<span class="fc" id="L42">			s2 = score3;</span>
-<span class="fc" id="L43">		}</span>
-<span class="fc bfc" id="L44" title="All 4 branches covered.">		else if (score2 &lt; score1 &amp;&amp; score2 &lt; score3)</span>
+<span class="fc" id="L42">			s1 = score2;</span>
+<span class="fc" id="L43">			s2 = score3;</span>
+<span class="fc" id="L44">		}</span>
+<span class="fc bfc" id="L45" title="All 4 branches covered.">		else if (score2 &lt; score1 &amp;&amp; score2 &lt; score3)</span>
 		{
-<span class="fc" id="L46">			s1 = score1;</span>
-<span class="fc" id="L47">			s2 = score2;</span>
-<span class="fc" id="L48">		}</span>
+<span class="fc" id="L47">			s1 = score1;</span>
+<span class="fc" id="L48">			s2 = score3;</span>
+<span class="fc" id="L49">		}</span>
 //		else if (score3 &lt; score1 &amp;&amp; score3 &lt; score2)
 //		{
 //			s1 = score1;
@@ -53,41 +54,42 @@ public class RacingScore2
 //		}
 		else
 		{
-<span class="fc" id="L56">			s1 = 99;</span>
-<span class="fc" id="L57">			s2 = 99;</span>
+<span class="fc" id="L57">			s1 = score1;</span>
+<span class="fc" id="L58">			s2 = score2;</span>
 		}
-<span class="fc" id="L59">		s = s1 + s2;</span>
-<span class="fc" id="L60">		return s;</span>
+<span class="fc" id="L60">		s = s1 + s2; // two highest scores are added</span>
+<span class="fc" id="L61">		return s;</span>
 	}
 
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-//		if (args == null || args.length != 3)
-//		{
-//			System.err.println(&quot;Error: must supply three arguments!&quot;);
-//			return;
-//		}
+		// only check for when length of arguments is not 3
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if (args.length != 3)</span>
+		{
+<span class="fc" id="L70">			System.err.println(&quot;Error: must supply three arguments!&quot;);</span>
+<span class="fc" id="L71">			return;</span>
+		}
 		try
 		{
-<span class="fc" id="L73">			s1 = Integer.parseInt(args[0]);</span>
-<span class="fc" id="L74">			s2 = Integer.parseInt(args[1]);</span>
-<span class="fc" id="L75">			s3 = Integer.parseInt(args[2]);</span>
-<span class="fc" id="L76">		}</span>
-<span class="fc" id="L77">		catch (Exception e)</span>
+<span class="fc" id="L75">			s1 = Integer.parseInt(args[0]);</span>
+<span class="fc" id="L76">			s2 = Integer.parseInt(args[1]);</span>
+<span class="fc" id="L77">			s3 = Integer.parseInt(args[2]);</span>
+<span class="fc" id="L78">		}</span>
+<span class="fc" id="L79">		catch (Exception e)</span>
 		{
-<span class="fc" id="L79">			System.err.println(&quot;Error: arguments must be integers!&quot;);</span>
-<span class="fc" id="L80">			return;</span>
+<span class="fc" id="L81">			System.err.println(&quot;Error: arguments must be integers!&quot;);</span>
+<span class="fc" id="L82">			return;</span>
 		}
-<span class="fc bfc" id="L82" title="All 12 branches covered.">		if (s1 &lt; 0 || s1 &gt; 50 || s2 &lt; 0 || s2 &gt; 50 || s3 &lt; 0 || s3 &gt; 50)</span>
+<span class="fc bfc" id="L84" title="All 12 branches covered.">		if (s1 &lt; 0 || s1 &gt; 50 || s2 &lt; 0 || s2 &gt; 50 || s3 &lt; 0 || s3 &gt; 50)</span>
 		{
-<span class="fc" id="L84">			System.err.println(&quot;Error: scores must be between 0 and 50!&quot;);</span>
-<span class="fc" id="L85">			return;</span>
+<span class="fc" id="L86">			System.err.println(&quot;Error: scores must be between 0 and 50!&quot;);</span>
+<span class="fc" id="L87">			return;</span>
 		}
-<span class="fc" id="L87">		RacingScore2 score = new RacingScore2();</span>
-<span class="fc" id="L88">		score.recordScores(s1, s2, s3);</span>
-<span class="fc" id="L89">		System.out.println(&quot;Overall score: &quot; + score.overallScore());</span>
-<span class="fc" id="L90">		return;</span>
+<span class="fc" id="L89">		RacingScore2 score = new RacingScore2();</span>
+<span class="fc" id="L90">		score.recordScores(s1, s2, s3);</span>
+<span class="fc" id="L91">		System.out.println(&quot;Overall score: &quot; + score.overallScore());</span>
+<span class="fc" id="L92">		return;</span>
 	}
 
 } // end class
