@@ -3,7 +3,7 @@
 <project name="iglooscore" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
 
    <!-- property to allow ant to find jacoco: CHANGE THE PATH to point to yours -->
-   <property name="jacocodir" location="/home/jcook/tools/jacoco/lib"/>
+   <property name="jacocodir" location="lib"/>
 
    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
       <classpath path="${jacocodir}/jacocoant.jar"/>

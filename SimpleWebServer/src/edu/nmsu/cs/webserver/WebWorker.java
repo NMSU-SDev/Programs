@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 public class WebWorker implements Runnable
 {
 	//added global variables
-	public static String version;
-	public static String status;
-	public static final String INDEX = "hello.html";
+	//not found by default
+	private String status;
+	private final String INDEX = "hello.html";
 	
 	private Socket socket;
 
@@ -62,6 +62,7 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
+			//pass image/gif to writeHTTPHeader somehow
 			writeHTTPHeader(os, "text/html");
 			writeContent(os); //return webpage
 			os.flush();
@@ -94,12 +95,9 @@ public class WebWorker implements Runnable
 				
 				//check GET request
 				if(line.startsWith("GET")) {
-					version = line.trim().substring(4);
-					if(version.contains(INDEX) || version.contains("1.1")) {
-						status = "200 OK";
-					} else {
-						status = "404 File not Found";
-					}
+					//make this handle bad requests somehow
+					String[] get = line.split("/");
+					status = "200 OK";
 				}
 				
 				if (line.length() == 0)
@@ -156,18 +154,19 @@ public class WebWorker implements Runnable
 	{   
 		Date d = new Date();
 		DateFormat df = DateFormat.getDateTimeInstance();
-		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-		if(status.contains("404")) {
+		if(status.startsWith("404")) {
 			os.write("<html><head></head><body>\n".getBytes());
-			os.write("<h3>404 File not Found</h3>\n".getBytes());
-			os.write("<h2>oopsie whoopsie</h2>\n".getBytes());
+			os.write("<h2>404 File not Found</h2>\n".getBytes());
+			os.write("<h3>oopsie whoopsie</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
-		}
+		} else {
 		//read from html file
 		try {
 			File page = new File(INDEX);
 			Scanner in = new Scanner(page);
+			
+			//custom tags implementation
 			while(in.hasNextLine()) {
 				String line = in.nextLine();
 				if(line.contains("<cs371date>")) {
@@ -176,6 +175,7 @@ public class WebWorker implements Runnable
 				if(line.contains("<cs371server>")) {
 					line = line.replace("<cs371server>", "David's server");
 				}
+				//write lines to browser
 				os.write(line.getBytes());
 			}
 			in.close();
@@ -183,10 +183,11 @@ public class WebWorker implements Runnable
 	      System.out.println("An error occurred.");
 	      e.printStackTrace();
 	      os.write("<html><head></head><body>\n".getBytes());
-	      os.write("<h3>404 File not Found</h3>\n".getBytes());
-	      os.write("<h2>oopsie whoopsie</h2>\n".getBytes());
+	      os.write("<h2>404 File not Found</h2>\n".getBytes());
+	      os.write("<h3>oopsie whoopsie</h3>\n".getBytes());
 	      os.write("</body></html>\n".getBytes());
 	    }
+		}//else
 		
 		//os.write("<html><head></head><body>\n".getBytes());
 		//os.write("<h3>My web server works!</h3>\n".getBytes());

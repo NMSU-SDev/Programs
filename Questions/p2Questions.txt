@@ -1,0 +1,11 @@
+Kuntz
+
+Overall completion time estimate: 4 hours
+
+Thought design: 2hr
+Programming: 1hr
+Debugging: 1hr
+TOTAL: 4hr
+
+Actual time spent: 1hr
+Original Estimate Accuracy: 
