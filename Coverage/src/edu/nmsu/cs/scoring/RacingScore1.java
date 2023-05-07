@@ -10,6 +10,8 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+//Debugged by David Kuntz
+
 public class RacingScore1
 {
 
@@ -36,12 +38,14 @@ public class RacingScore1
 	public int overallScore()
 	{
 		int s;
-		if (score1 < score2)
+		if (score1 > score2) //logic reversed from "<" to ">"
 			s = score2;
 		else
 			s = score1;
 		if (s > score3)
 			s = score3;
+		//s at this point should be equal to the smallest score
+		//according to the logic of this algorithm.
 		s = (score1 + score2 + score3) - s;
 		return s;
 	}
