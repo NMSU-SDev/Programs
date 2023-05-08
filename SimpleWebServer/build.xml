@@ -1,29 +1,27 @@
-<!-- Define the name of the project and the default target -->
-<project name="SimpleWebServer" default="run" basedir=".">
-
-    <!-- Define properties to be used in the build process -->
-    <property name="src" location="src"/> <!-- location of source files -->
-    <property name="bin" location="bin"/> <!-- location of compiled classes -->
-
-    <!-- Define the "clean" target to delete the "bin" directory -->
+<?xml version="1.0"?>
+<project name="SimpleWebServer" basedir=".">
     <target name="clean">
-        <delete dir="bin"/>
+        <delete dir="build"/>
     </target>
 
-    <!-- Define the "build" target to compile the source files -->
-    <target name="build" depends="clean">
-        <mkdir dir="${bin}"/> <!-- create the "bin" directory if it does not exist -->
-        <javac srcdir="${src}" destdir="${bin}" includeantruntime="false" debug="true"/> <!-- compile the Java source files in "src" and place the compiled classes in "bin" -->
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="./src/edu/nmsu/cs/webserver" destdir="./build/classes"/>
+    </target> 
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/WebServer.jar" basedir="./build/classes">
+            <manifest> 
+                <attribute name="Main" value="edu.nmsu.cs.webserver.WebServer"/>
+            </manifest> 
+        </jar>
     </target>
 
-    <!-- Define the "compile" target to recompile the source files -->
-    <target name="compile" depends="build">
-        <javac srcdir="${src}" destdir="${bin}"/> <!-- recompile the Java source files in "src" and place the compiled classes in "bin" -->
-    </target>
+    <target name="run">
+        <java 
+            classname="edu.nmsu.cs.webserver.WebServer"
+            classpath="./build/classes"/>
+    </target> 
 
-    <!-- Define the "run" target to run the web server -->
-    <target name="run" depends="compile">
-        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" dir="./www/"/> <!-- run the main class of the web server from "bin", fork a new JVM, and set the current directory to "./www/" -->
-    </target>
-
-</project>
+</project> 
