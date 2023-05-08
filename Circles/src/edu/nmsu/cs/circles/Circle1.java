@@ -13,6 +13,9 @@ public class Circle1 extends Circle
 		if (Math.abs(center.x - other.center.x) < radius &&
 				Math.abs(center.y - other.center.y) < radius)
 			return true;
+		if (Math.abs(other.center.x - center.x) < other.radius &&
+			Math.abs(other.center.y - center.y) < other.radius)
+			return true;
 		return false;
 	}
 
