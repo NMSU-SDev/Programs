@@ -1,0 +1,22 @@
+<!DOCTYPE html> <!-- document type declaration for HTML5 -->
+<html lang="en"> <!-- start of the HTML doc -->
+    <head> <!-- the head section -->
+        <meta charset="utf-8"/> <!-- specifies the character encoding of the document as UTF-8 -->
+        <meta name="Micah Web Server page"/> <!-- provides metadata for the page, in this case, the author's name -->
+        <title> Micah Too Page </title> <!-- sets the title of the page that appears in the browser tab -->
+    </head>
+
+    <body> <!-- start of the visible content of the page -->
+        <h1> Hello world, </h1> <!-- displays a level 1 heading with the text "Hello World" -->
+            <div>Current date is 
+                <script> document.write(new Date().toLocaleDateString());</script> 
+                <!-- displays the current date using JavaScript and the toLocaleDateString() method -->
+            </div>
+            <div>The server is: 
+                <script>
+                    document.write(location.hostname);
+                </script>
+                <!-- displays the hostname of the server where the page is being accessed from using JavaScript and the location.hostname property -->
+             </div> 
+    </body> <!-- end of the visible content of the page -->
+</html> <!-- end of the HTML document --> 
