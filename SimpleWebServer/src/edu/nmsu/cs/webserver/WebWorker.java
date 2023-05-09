@@ -44,7 +44,7 @@ public class WebWorker implements Runnable {
 	 **/
 	public WebWorker(Socket s) {
 		socket = s;
-	}
+	} // WebWorker
 
 	/**
 	 * Worker thread starting point. Each worker handles just one HTTP request and
@@ -75,8 +75,8 @@ public class WebWorker implements Runnable {
 		}
 		System.err.println("Done handling connection.");
 		return;
-	}
- 
+	} // run
+
 	/**
 	 * Read the HTTP request header.
 	 **/
@@ -89,35 +89,35 @@ public class WebWorker implements Runnable {
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
-				if(line.startsWith("GET")) { // if request starts with GET
+				if (line.startsWith("GET")) { // if request starts with GET
 					String arr[] = line.split(" "); // split where there's a space
 					store = arr[1]; // set file path to second word found after space
 					store = store.substring(1);
 					System.out.println(store);
 				}
-				if(store.endsWith(".png")) {
+
+				// checks for image type
+				if (store.endsWith(".png")) {
 					contentType = "image/png";
-				}
-				else if(store.endsWith(".gif")) {
+				} else if (store.endsWith(".gif")) {
 					contentType = "image/gif";
-				}
-				else if(store.endsWith(".jpeg")) {
+				} else if (store.endsWith(".jpeg")) {
 					contentType = "image/jpeg";
-				}
-				else if(store.endsWith("html")) {
+				} else if (store.endsWith("html")) {
 					contentType = "text/html";
 				}
 
+				// request line 
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
-			} catch (Exception e) {
+			} catch (Exception e) { // error if not found
 				System.err.println("Request error: " + e);
 				break;
 			}
 		}
 		return;
-	}
+	} // readHTTPRequest
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
@@ -132,7 +132,8 @@ public class WebWorker implements Runnable {
 		DateFormat df = DateFormat.getDateTimeInstance();
 		df.setTimeZone(TimeZone.getTimeZone("GMT-7"));
 
-		if(Files.exists(Paths.get(store))) {  // check if file exists
+		// looks for file, if exits prints 200 OK
+		if (Files.exists(Paths.get(store))) {
 			os.write("HTTP/1.1 200 OK\n".getBytes());
 		}
 
@@ -146,7 +147,7 @@ public class WebWorker implements Runnable {
 		os.write("\n\n".getBytes()); // HTTP header ends with 2 newlines
 
 		return;
-	}
+	} // write HTTPHeader
 
 	/**
 	 * Write the data content to the client network connection. This MUST be done
@@ -158,21 +159,21 @@ public class WebWorker implements Runnable {
 	 **/
 	private void writeContent(OutputStream os) throws Exception {
 
-		// check for content type other than html
-		if(!store.endsWith("html")) {
-			// reading in as bytes, not line by line
+		// checks for the content type of files that are not html
+		if (!store.endsWith("html")) {
+			// Reading the file in byte format instead of reading it line by line.
 			byte[] arr = Files.readAllBytes(Paths.get(store));
 			os.write(arr);
 		}
-		// runs html files
+
+		// this will run html files
 		else {
 			List<String> list = Files.readAllLines(Paths.get(store)); // read all lines and store in a List
-			for(String line : list) {
-					//	line.replaceAll(line, line);
+			for (String line : list) {
 				os.write(line.getBytes());
 			}
 		}
 
-	}
+	} // writeContent
 
 } // end class
