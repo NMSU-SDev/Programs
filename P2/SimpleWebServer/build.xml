@@ -1,0 +1,22 @@
+<project name="SimpleWebServer" default="run" basedir=".">
+   <description>Builds SimpleWebServer and runs it in the "www" folder</description>
+   <property name="src" location="src" />
+   <property name="bin" location="bin" />
+   <target name="clean">
+      <!--Delete old bin directory (if it exists)-->
+   	  <delete dir="bin"/>
+   </target>
+   <target name="build" depends="clean">
+      <!--Build the directory structure-->
+      <mkdir dir="${bin}" />
+      <javac srcdir="${src}" destdir="${bin}" />
+   </target>
+   <target name="compile" depends="build">
+      <!--Compile the project-->
+      <javac srcdir="${src}" destdir="${bin}" />
+   </target>
+   <target name="run" depends="compile">
+      <!--fork the project into the "www" directory to run the server from there-->
+      <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin}" fork="true" dir="./www/" />
+   </target>
+</project>
