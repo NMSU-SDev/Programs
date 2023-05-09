@@ -17,9 +17,9 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
+	private ServerSocket socket;
 
-	private boolean				running;
+	private boolean	running;
 
 	/**
 	 * Constructor
