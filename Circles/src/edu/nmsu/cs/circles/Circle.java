@@ -36,7 +36,10 @@ public abstract class Circle
 	 * @return the new radius
 	 **/
 	public double scale(double factor)
-	{
+	{	
+		if(factor < 0)
+			// factor cannot be negative
+			return Double.NaN;
 		radius = radius * factor;
 		return radius;
 	}

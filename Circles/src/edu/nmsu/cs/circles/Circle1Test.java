@@ -78,6 +78,16 @@ public class Circle1Test
 		double radius = circle1.scale(2.0);
 		Assert.assertEquals(6, radius,  0.0);
 	}
+
+	// Testing scale using negative value. 
+	//Should return double NaN(not a number)
+	@Test
+	public void scaleNeg()
+	{
+		System.out.println("Test: scaleNeg.");
+		double radius = circle1.scale(-2.0);
+		Assert.assertEquals(Double.NaN, radius,  0.0);
+	}
 	
 
 	/***
