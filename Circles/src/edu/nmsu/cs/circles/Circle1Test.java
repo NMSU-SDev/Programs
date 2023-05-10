@@ -59,6 +59,27 @@ public class Circle1Test
 		Assert.assertTrue(circle1.intersects(circle1) == true);
 	}
 
+	// Testing two circles which should not intersect
+	@Test
+	public void noIntersection()
+	{
+		System.out.println("Test: noIntersection.");
+		Circle1 circle2 = new Circle1(0, 5, 2);
+		Circle1 circle3 = new Circle1(0, -5, 2);
+		Assert.assertTrue(circle2.intersects(circle3) == false);
+	}
+
+	// Testing scale using positive value. 
+	// Expected for this example should be 6.
+	@Test
+	public void scalePos()
+	{
+		System.out.println("Test: scalePos.");
+		double radius = circle1.scale(2.0);
+		Assert.assertEquals(6, radius,  0.0);
+	}
+	
+
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
 	 * java.lang.Class.forName("Circle1Test")); } catch (Exception e) { System.out.println("Exception:
