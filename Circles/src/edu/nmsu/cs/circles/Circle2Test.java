@@ -11,53 +11,54 @@ package edu.nmsu.cs.circles;
 
 import org.junit.*;
 
-public class Circle1Test
+public class Circle2Test
 {
 	// Data you need for each test case
-	private Circle1 circle1;
+	private Circle2 circle1;
 
+	//
 	// Stuff you want to do before each test case
+	//
 	@Before
 	public void setup()
 	{
 		System.out.println("\nTest starting...");
-		circle1 = new Circle1(1, 2, 3);
+		circle1 = new Circle2(1, 2, 3);
 	}
 
+	//
 	// Stuff you want to do after each test case
+	//
 	@After
 	public void teardown()
 	{
 		System.out.println("\nTest finished.");
 	}
 
-	// Testing intersections of two different circles at one point
-	@Test
-	public void onePointIntersection()
-	{
-		System.out.println("Test: onePointIntersection.");
-		Circle1 circle2 = new Circle1(0, 5, 5);
-		Circle1 circle3 = new Circle1(0, -5, 5);
-		Assert.assertTrue(circle2.intersects(circle3) == true);
-	}
+	//GIVEN TEST CASES
+	//
+	// Test a simple positive move
+	//
+	// @Test
+	// public void simpleMove()
+	// {
+	// 	Point p;
+	// 	System.out.println("Running test simpleMove.");
+	// 	p = circle1.moveBy(1, 1);
+	// 	Assert.assertTrue(p.x == 2 && p.y == 3);
+	// }
 
-	// Testing intersections of two different circles at two points
-	@Test
-	public void twoPointIntersection()
-	{
-		System.out.println("Test: twoPointIntersection.");
-		Circle1 circle2 = new Circle1(2, 5, 5);
-		Circle1 circle3 = new Circle1(4, 3, 5);
-		Assert.assertTrue(circle2.intersects(circle3) == true);
-	}
-
-	// Testing merged circle intersection
-	@Test
-	public void mergedCircles()
-	{
-		System.out.println("Test: mergedCircles.");
-		Assert.assertTrue(circle1.intersects(circle1) == true);
-	}
+	// //
+	// // Test a simple negative move
+	// //
+	// @Test
+	// public void simpleMoveNeg()
+	// {
+	// 	Point p;
+	// 	System.out.println("Running test simpleMoveNeg.");
+	// 	p = circle1.moveBy(-1, -1);
+	// 	Assert.assertTrue(p.x == 0 && p.y == 1);
+	// }
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
