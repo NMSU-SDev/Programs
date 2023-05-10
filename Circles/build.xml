@@ -1,0 +1,50 @@
+<project name="Circles" default="compile" basedir=".">
+   
+   <property name="source" location="src"/>
+   <property name="build" location="bin"/>
+   <property name="junit" location="lib"/>
+   
+	<path id="classpath">
+     <path location="${junit}">
+     	<fileset dir="${junit}" includes="**/*.jar"/>
+     </path>
+	<path location="${build}"/>
+   </path>
+	
+   <target name="clean" description="removes previous compilation class files">
+      <delete>
+         <fileset dir="${build}" includes="**/*.class"/>
+      </delete>
+   </target>
+   
+   <target name="compile" depends="clean" description="compile source files">
+      <javac includeantruntime="false" srcdir="${source}" destdir="${build}" classpathref="classpath"/>
+   </target>
+   
+   <target name="run" depends="compile" description="runs Circles program">
+      <java classname="edu.nmsu.cs.circles.CircleRun">
+        <classpath path="${build}"/>
+      	<arg value="4"/>
+      	<arg value="4"/>
+      	<arg value="4"/>
+      	<arg value="2"/>
+      	<arg value="2"/>
+      	<arg value="2"/>
+      </java>
+   </target>
+   
+   <target name="testCircle1" depends="compile" description="runs Circle1Test on Circle1">
+      <java classpathref="classpath" classname="org.junit.runner.JUnitCore">
+      	<arg value="edu.nmsu.cs.circles.Circle1Test"/>
+      </java>
+   </target>
+   
+   <target name="testCircle2" depends="compile" description="runs Circle2Test on Circle2">
+   	<java classpathref="classpath" classname="org.junit.runner.JUnitCore" fork="true">
+   		<arg value="edu.nmsu.cs.circles.Circle2Test"/>
+   	</java>
+   </target>
+   
+   <target name="test" depends="testCircle1,testCircle2"/>
+
+</project>
