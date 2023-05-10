@@ -43,7 +43,7 @@
         modify them, and then add more; this only runs if needed
 	 -->
     
-<!--  --------test for RacingScore1-------------------  -->
+<!--  test for RacingScore1  -->
 <!--  fixed: if (s > score3)
                s = score3;  --> 
     
@@ -120,7 +120,7 @@
 </java>
 </jacoco:coverage>
 
-<!--  --------test for RacingScore2-------------------  -->
+<!--  test for RacingScore2  -->
 <!--  fixed: if input == null || input.lenght != 3  -->
 
 <!--  test for RacingScore2  -->

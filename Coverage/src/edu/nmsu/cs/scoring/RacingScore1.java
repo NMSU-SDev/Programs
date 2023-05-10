@@ -40,7 +40,7 @@ public class RacingScore1
 			s = score2;
 		else
 			s = score1;
-		if (s > score3)
+		if (s > score3)		//fixed here, s = score3 when score3 is less then s
 			s = score3;
 		s = (score1 + score2 + score3) - s;
 		return s;
@@ -49,7 +49,7 @@ public class RacingScore1
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args.length != 3)
+		if (args.length != 3)	
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
