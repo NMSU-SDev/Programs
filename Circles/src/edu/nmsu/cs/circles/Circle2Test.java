@@ -16,9 +16,7 @@ public class Circle2Test
 	// Data you need for each test case
 	private Circle2 circle1;
 
-	//
 	// Stuff you want to do before each test case
-	//
 	@Before
 	public void setup()
 	{
@@ -26,39 +24,42 @@ public class Circle2Test
 		circle1 = new Circle2(1, 2, 3);
 	}
 
-	//
 	// Stuff you want to do after each test case
-	//
 	@After
 	public void teardown()
 	{
 		System.out.println("\nTest finished.");
 	}
 
-	//GIVEN TEST CASES
-	//
-	// Test a simple positive move
-	//
-	// @Test
-	// public void simpleMove()
-	// {
-	// 	Point p;
-	// 	System.out.println("Running test simpleMove.");
-	// 	p = circle1.moveBy(1, 1);
-	// 	Assert.assertTrue(p.x == 2 && p.y == 3);
-	// }
+	// Testing intersections of two different circles at one point
+	@Test
+	public void onePointIntersection()
+	{
+		System.out.println("Test: onePointIntersection.");
+		Circle2 circle2 = new Circle2(0, 5, 5);
+		Circle2 circle3 = new Circle2(0, -5, 5);
+		Assert.assertTrue(circle2.intersects(circle3) == true);
+	}
 
-	// //
-	// // Test a simple negative move
-	// //
-	// @Test
-	// public void simpleMoveNeg()
-	// {
-	// 	Point p;
-	// 	System.out.println("Running test simpleMoveNeg.");
-	// 	p = circle1.moveBy(-1, -1);
-	// 	Assert.assertTrue(p.x == 0 && p.y == 1);
-	// }
+	// Testing intersections of two different circles at two points
+	@Test
+	public void twoPointIntersection()
+	{
+		System.out.println("Test: twoPointIntersection.");
+		Circle2 circle2 = new Circle2(2, 5, 5);
+		Circle2 circle3 = new Circle2(4, 3, 5);
+		Assert.assertTrue(circle2.intersects(circle3) == true);
+	}
+
+	// Testing merged circle intersection
+	@Test
+	public void mergedCircles()
+	{
+		System.out.println("Test: mergedCircles.");
+		Assert.assertTrue(circle1.intersects(circle1) == true);
+	}
+
+	
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
