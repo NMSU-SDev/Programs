@@ -1,0 +1,32 @@
+<project name="SimpleWebServer" default="build" basedir=".">
+
+    <!-- Set global properties for this build -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+
+    <!-- Initialize the build directory structure -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <!-- Compile the Java source files -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <!-- Run the web server -->
+    <target name="run" depends="compile">
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${classes.dir}" fork="true"/>
+    </target>
+
+    <!-- Clean the build directory -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <!-- Default build target -->
+    <target name="build" depends="compile"/>
+
+</project>

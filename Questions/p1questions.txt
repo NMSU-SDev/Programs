@@ -1,0 +1,9 @@
+1. Estimated time for assignment: 1.5 hrs
+
+2. Time to complete
+- Thought/Design: 45min
+- Programming: 3hrs
+- Debugging: 45min
+- TOTAL: 4.5hrs
+
+3. Accuracy of original time estimate: 33%
