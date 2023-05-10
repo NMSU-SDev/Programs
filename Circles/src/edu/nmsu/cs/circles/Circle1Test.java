@@ -89,6 +89,14 @@ public class Circle1Test
 		Assert.assertEquals(Double.NaN, radius,  0.0);
 	}
 	
+	// Testing move with different positive numbers. 
+	@Test
+	public void moveByDiffPos()
+	{
+		System.out.println("Test: moveByDiffPos.");
+		Point movedPoint = circle1.moveBy(2.0,3.0);
+		Assert.assertTrue(movedPoint.x == 3 && movedPoint.y == 5);
+	}
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
