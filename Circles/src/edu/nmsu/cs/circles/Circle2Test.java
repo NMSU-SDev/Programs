@@ -59,6 +59,14 @@ public class Circle2Test
 		Assert.assertTrue(circle1.intersects(circle1) == true);
 	}
 
+	// Testing creation of Circle2 object
+	@Test
+	public void valuesSet()
+	{
+		System.out.println("Test: valuesSet.");
+		Assert.assertTrue(circle1.getPointX() == 1 && circle1.getPointY() == 2);
+	}
+
 	
 
 	/***

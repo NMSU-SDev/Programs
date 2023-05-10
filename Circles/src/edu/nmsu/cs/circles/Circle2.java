@@ -5,7 +5,7 @@ public class Circle2 extends Circle
 
 	public Circle2(double x, double y, double radius)
 	{
-		super(y, x, radius);
+		super(x, y, radius);
 	}
 
 	public boolean intersects(Circle other)
@@ -17,6 +17,14 @@ public class Circle2 extends Circle
 			return true;
 		else
 			return false;
+	}
+
+	public double getPointX(){
+		return super.center.x;
+	}
+
+	public double getPointY(){
+		return super.center.y;
 	}
 
 }
