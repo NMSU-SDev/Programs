@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebWorker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Ant Example</a> &gt; <a href="index.source.html" class="el_package">edu.nmsu.cs.webserver</a> &gt; <span class="el_source">WebWorker.java</span></div><h1>WebWorker.java</h1><pre class="source lang-java linenums">package edu.nmsu.cs.webserver;
+
+/**
+ * Web worker: an object of this class executes in its own new thread to receive and respond to a
+ * single HTTP request. After the constructor the object executes on its &quot;run&quot; method, and leaves
+ * when it is done.
+ *
+ * One WebWorker object is only responsible for one client connection. This code uses Java threads
+ * to parallelize the handling of clients: each WebWorker runs in its own thread. This means that
+ * you can essentially just think about what is happening on one client at a time, ignoring the fact
+ * that the entirety of the webserver execution might be handling other clients, too.
+ *
+ * This WebWorker class (i.e., an object of this class) is where all the client interaction is done.
+ * The &quot;run()&quot; method is the beginning -- think of it as the &quot;main()&quot; for a client interaction. It
+ * does three things in a row, invoking three methods in this class: it reads the incoming HTTP
+ * request; it writes out an HTTP header to begin its response, and then it writes out some HTML
+ * content for the response content. HTTP requests and responses are just lines of text (in a very
+ * particular format).
+ *
+ **/
+
+ //imported file readers
+
+import java.io.*;
+import java.net.Socket;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+//import javax.imageio.ImageIO;
+
+public class WebWorker implements Runnable
+{
+	//added 3 global variables, valid, path and doc
+	private Socket socket;
+<span class="nc" id="L36">	public boolean valid = false;</span>
+	public String path;
+	public File doc;
+	
+	/**
+	 * Constructor: must have a valid open socket
+	 **/
+	public WebWorker(Socket s)
+<span class="nc" id="L44">	{</span>
+<span class="nc" id="L45">		socket = s;</span>
+<span class="nc" id="L46">	}</span>
+
+	/**
+	 * Worker thread starting point. Each worker handles just one HTTP request and then returns, which
+	 * destroys the thread. This method assumes that whoever created the worker created it with a
+	 * valid open socket object.
+	 **/
+	public void run()
+	{
+<span class="nc" id="L55">		System.err.println(&quot;Handling connection...&quot;);</span>
+		try
+		{
+<span class="nc" id="L58">			InputStream is = socket.getInputStream();</span>
+<span class="nc" id="L59">			OutputStream os = socket.getOutputStream();</span>
+<span class="nc" id="L60">			readHTTPRequest(is);</span>
+<span class="nc" id="L61">			String contentType = readType(path);</span>
+<span class="nc" id="L62">			writeHTTPHeader(os, contentType);</span>
+<span class="nc" id="L63">			writeContent(os,contentType);</span>
+<span class="nc" id="L64">			os.flush();</span>
+<span class="nc" id="L65">			socket.close();</span>
+		}
+<span class="nc" id="L67">		catch (Exception e)</span>
+		{
+<span class="nc" id="L69">			System.err.println(&quot;Output error: &quot; + e);</span>
+<span class="nc" id="L70">		}</span>
+<span class="nc" id="L71">		System.err.println(&quot;Done handling connection.&quot;);</span>
+<span class="nc" id="L72">		return;</span>
+	}
+
+	/**
+	 * Read the HTTP request header.
+	 **/
+	private void readHTTPRequest(InputStream is) 
+	{	
+		//getting file path after GET
+		String line;
+<span class="nc" id="L82">		String url = null;</span>
+		
+<span class="nc" id="L84">		BufferedReader r = new BufferedReader(new InputStreamReader(is));</span>
+		while (true)
+		{
+			try
+			{
+<span class="nc bnc" id="L89" title="All 2 branches missed.">				while (!r.ready())</span>
+<span class="nc" id="L90">					Thread.sleep(1);</span>
+<span class="nc" id="L91">				line = r.readLine();</span>
+				//if i get the path, i check if it exist, if exist, set valid to true
+				//updated &lt;project root&gt;/www/res/acc/test.html
+<span class="nc bnc" id="L94" title="All 2 branches missed.">				if(url == null){</span>
+<span class="nc" id="L95">					url = line;</span>
+<span class="nc" id="L96">					path = url.split(&quot;\s&quot;)[1];</span>
+<span class="nc" id="L97">					path = path.substring(1);</span>
+<span class="nc" id="L98">					path = &quot;www\\res\\acc\\&quot; + path;</span>
+<span class="nc" id="L99">					doc = new File(path);</span>
+<span class="nc" id="L100">					valid = doc.exists();</span>
+				}
+<span class="nc" id="L102">				System.err.println(&quot;Request line: (&quot; + line + &quot;)&quot;);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">				if (line.length() == 0)</span>
+<span class="nc" id="L104">					break;</span>
+			}
+<span class="nc" id="L106">			catch (Exception e)</span>
+			{
+<span class="nc" id="L108">				System.err.println(&quot;Request error: &quot; + e);</span>
+<span class="nc" id="L109">				break;</span>
+<span class="nc" id="L110">			}</span>
+		}
+<span class="nc" id="L112">		return;</span>
+	}
+
+	//returns the content type, so we can serve image files in the GIF, JPEG, jpg and PNG formats
+	private String readType(String path){
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		if (path.contains(&quot;gif&quot;)) return &quot;image/gif&quot;;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">		if (path.contains(&quot;jpeg&quot;)) return &quot;image/jpeg&quot;;</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">		if (path.contains(&quot;png&quot;)) return &quot;image/png&quot;;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">		if (path.contains(&quot;jpg&quot;)) return &quot;image/jpg&quot;;</span>
+<span class="nc" id="L121">		return &quot;text/html&quot;;</span>
+	}
+
+	/**
+	 * Write the HTTP header lines to the client network connection.
+	 * 
+	 * @param os
+	 *          is the OutputStream object to write to
+	 * @param contentType
+	 *          is the string MIME content type (e.g. &quot;text/html&quot;)
+	 **/
+	private void writeHTTPHeader(OutputStream os, String contentType) throws Exception
+	{
+		//if file exist, write 200 ok, else write 404
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if(valid){</span>
+<span class="nc" id="L136">			os.write(&quot;HTTP/1.1 200 OK\n&quot;.getBytes());</span>
+		}
+		else{
+<span class="nc" id="L139">			os.write(&quot;HTTP/1.1 404\n&quot;.getBytes());</span>
+		}
+
+<span class="nc" id="L142">		Date d = new Date();</span>
+<span class="nc" id="L143">		DateFormat df = DateFormat.getDateTimeInstance();</span>
+<span class="nc" id="L144">		df.setTimeZone(TimeZone.getTimeZone(&quot;GMT&quot;));</span>
+<span class="nc" id="L145">		os.write(&quot;Date: &quot;.getBytes());</span>
+<span class="nc" id="L146">		os.write((df.format(d)).getBytes());</span>
+<span class="nc" id="L147">		os.write(&quot;\n&quot;.getBytes());</span>
+<span class="nc" id="L148">		os.write(&quot;Server: Xindi's very own server\n&quot;.getBytes());</span>
+		//os.write(&quot;Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n&quot;.getBytes());
+		//os.write(&quot;Content-Length: 438\n&quot;.getBytes());
+<span class="nc" id="L151">		os.write(&quot;Connection: close\n&quot;.getBytes());</span>
+<span class="nc" id="L152">		os.write(&quot;Content-Type: &quot;.getBytes());</span>
+<span class="nc" id="L153">		os.write(contentType.getBytes());</span>
+<span class="nc" id="L154">		os.write(&quot;\n\n&quot;.getBytes()); // HTTP header ends with 2 newlines</span>
+<span class="nc" id="L155">		return;</span>
+	}
+
+	/**
+	 * Write the data content to the client network connection. This MUST be done after the HTTP
+	 * header has been written out.
+	 * 
+	 * @param os
+	 *          is the OutputStream object to write to
+	 **/
+	private void writeContent(OutputStream os, String contentType) throws Exception{
+		//check existing file again
+		
+<span class="nc bnc" id="L168" title="All 2 branches missed.">		if(valid){</span>
+			//if contentType has html, read html page
+<span class="nc bnc" id="L170" title="All 2 branches missed.">			if(contentType.contains(&quot;html&quot;)){</span>
+
+<span class="nc" id="L172">				FileReader fr = new FileReader(path);</span>
+<span class="nc" id="L173">				BufferedReader read = new BufferedReader(new FileReader(path));</span>
+
+				//creating substitution for tags
+<span class="nc" id="L176">				String webServer = &quot;Xindi's Server&quot;;</span>
+<span class="nc" id="L177">				Date date = new Date();</span>
+				String sub;
+<span class="nc" id="L179">				String lines = &quot;&quot;;</span>
+
+				//replace &lt;cs371date&gt; and &lt;cs371server&gt; with something else
+				//replace img with img link
+<span class="nc bnc" id="L183" title="All 2 branches missed.">				while((sub = read.readLine()) != null){</span>
+<span class="nc" id="L184">					lines += sub;</span>
+				}
+<span class="nc" id="L186">				lines = lines.replaceAll(&quot;&lt;cs371date&gt;&quot;,date.toString());</span>
+
+<span class="nc" id="L188">				lines = lines.replaceAll(&quot;&lt;cs371server&gt;&quot;,webServer);</span>
+
+<span class="nc" id="L190">				lines = lines.replaceAll(&quot;\&quot;img\&quot;&quot;, &quot;pix.jpg&quot;);</span>
+
+				//contents that is printing to the screen
+<span class="nc" id="L193">				os.write(&quot;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;\n&quot;.getBytes());</span>
+<span class="nc" id="L194">				os.write(lines.getBytes());</span>
+<span class="nc" id="L195">				os.write(&quot;&lt;/body&gt;&lt;/html&gt;\n&quot;.getBytes());</span>
+<span class="nc" id="L196">				read.close();</span>
+<span class="nc" id="L197">				fr.close();</span>
+<span class="nc" id="L198">			}</span>
+			//if contentType has img, read img
+<span class="nc bnc" id="L200" title="All 2 branches missed.">			else if(contentType.contains(&quot;image&quot;)){</span>
+<span class="nc" id="L201">				FileInputStream img = new FileInputStream(doc);</span>
+				int cursor;
+
+<span class="nc bnc" id="L204" title="All 2 branches missed.">				while((cursor = img.read()) != -1) {</span>
+<span class="nc" id="L205">					os.write(cursor);</span>
+				}
+
+<span class="nc" id="L208">				img.close();</span>
+<span class="nc" id="L209">			}</span>
+		}
+		//print 404 to screen if link not found
+		else{
+<span class="nc" id="L213">			os.write(&quot;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;\n&quot;.getBytes());</span>
+<span class="nc" id="L214">			os.write((&quot;&lt;h1&gt; 404 not found&lt;/h1&gt;\n&quot;).getBytes());</span>
+<span class="nc" id="L215">			os.write(&quot;&lt;/body&gt;&lt;/html&gt;\n&quot;.getBytes());</span>
+		}
+<span class="nc" id="L217">	}</span>
+} // end class
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
