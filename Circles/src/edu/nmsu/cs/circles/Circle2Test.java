@@ -76,6 +76,15 @@ public class Circle2Test
 		Assert.assertEquals(5, circle2.getRadius(), 0.00);
 	}
 	
+	// Testing two circles which should not intersect
+	@Test
+	public void noIntersection()
+	{
+		System.out.println("Test: noIntersection.");
+		Circle1 circle2 = new Circle1(0, 5, 2);
+		Circle1 circle3 = new Circle1(0, -5, 2);
+		Assert.assertTrue(circle2.intersects(circle3) == false);
+	}
 	
 	
 

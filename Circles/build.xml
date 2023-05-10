@@ -27,12 +27,12 @@
     <!-- Run -->
     <target name="run" depends="clean,compile">
         <java classname="edu.nmsu.cs.circles.CircleRun" classpath="${build-dir}" fork="true" dir="${basedir}">
-        <arg value="0"/>
-        <arg value="0"/>
-        <arg value="0"/>
-        <arg value="0"/>
-        <arg value="0"/>
-        <arg value="0"/>
+        <arg value="2"/>
+        <arg value="5"/>
+        <arg value="5"/>
+        <arg value="4"/>
+        <arg value="3"/>
+        <arg value="5"/>
         </java>
     </target>
 
