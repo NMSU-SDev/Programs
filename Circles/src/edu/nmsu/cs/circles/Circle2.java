@@ -27,4 +27,8 @@ public class Circle2 extends Circle
 		return super.center.y;
 	}
 
+	public double getRadius(){
+		return super.radius;
+	}
+
 }

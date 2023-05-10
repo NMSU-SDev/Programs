@@ -67,6 +67,18 @@ public class Circle2Test
 		Assert.assertTrue(circle1.getPointX() == 1 && circle1.getPointY() == 2);
 	}
 
+	// Testing creation of Circle2 object using negative radius
+	@Test
+	public void negRadius()
+	{
+		System.out.println("Test: negRadius.");
+		Circle2 circle2 = new Circle2(1, 1, -5);
+		Assert.assertEquals(5, circle2.getRadius(), 0.00);
+	}
+	
+	
+	
+
 	
 
 	/***
