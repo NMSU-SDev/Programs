@@ -64,7 +64,7 @@ public class Circle2Test
 	public void valuesSet()
 	{
 		System.out.println("Test: valuesSet.");
-		Assert.assertTrue(circle1.getPointX() == 1 && circle1.getPointY() == 2);
+		Assert.assertTrue(circle1.center.x == 1 && circle1.center.y == 2);
 	}
 
 	// Testing creation of Circle2 object using negative radius
@@ -73,7 +73,7 @@ public class Circle2Test
 	{
 		System.out.println("Test: negRadius.");
 		Circle2 circle2 = new Circle2(1, 1, -5);
-		Assert.assertEquals(5, circle2.getRadius(), 0.00);
+		Assert.assertEquals(5, circle2.radius, 0.00);
 	}
 	
 	// Testing two circles which should not intersect
@@ -86,6 +86,43 @@ public class Circle2Test
 		Assert.assertTrue(circle2.intersects(circle3) == false);
 	}
 	
+	// Testing scale using positive value. 
+	// Expected for this example should be 6.
+	@Test
+	public void scalePos()
+	{
+		System.out.println("Test: scalePos.");
+		double radius = circle1.scale(2.0);
+		Assert.assertEquals(6, radius,  0.0);
+	}
+
+	// Testing scale using negative value. 
+	//Should return double NaN(not a number)
+	@Test
+	public void scaleNeg()
+	{
+		System.out.println("Test: scaleNeg.");
+		double radius = circle1.scale(-2.0);
+		Assert.assertEquals(Double.NaN, radius,  0.0);
+	}
+	
+	// Testing move with different positive numbers. 
+	@Test
+	public void moveByDiffPos()
+	{
+		System.out.println("Test: moveByDiffPos.");
+		Point movedPoint = circle1.moveBy(2.0,3.0);
+		Assert.assertTrue(movedPoint.x == 3 && movedPoint.y == 5);
+	}
+
+	// Testing move with different negative numbers. 
+	@Test
+	public void moveByDiffNeg()
+	{
+		System.out.println("Test: moveByDiffPos.");
+		Point movedPoint = circle1.moveBy(-2.0,-3.0);
+		Assert.assertTrue(movedPoint.x == -1 && movedPoint.y == -1);
+	}
 	
 
 	

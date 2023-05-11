@@ -59,6 +59,23 @@ public class Circle1Test
 		Assert.assertTrue(circle1.intersects(circle1) == true);
 	}
 
+	// Testing creation of Circle1 object
+	@Test
+	public void valuesSet()
+	{
+		System.out.println("Test: valuesSet.");
+		Assert.assertTrue(circle1.center.x == 1 && circle1.center.y == 2);
+	}
+
+	// Testing creation of Circle2 object using negative radius
+	@Test
+	public void negRadius()
+	{
+		System.out.println("Test: negRadius.");
+		Circle1 circle2 = new Circle1(1, 1, -5);
+		Assert.assertEquals(5, circle2.radius, 0.00);
+	}
+	
 	// Testing two circles which should not intersect
 	@Test
 	public void noIntersection()
