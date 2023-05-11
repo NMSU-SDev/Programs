@@ -17,14 +17,9 @@ import java.net.Socket;
 
 public class WebServer
 {
-	/*
-	 * Networks network
-	 * network connections -> carried over sockets -> link btween 2 computers -> exchange data -> loading/reading data from buffers
-	 * server socket -> 'start up' -> listens for connections -> goes to start method
-	 */
 	private ServerSocket	socket;
 
-	private boolean			running;
+	private boolean				running;
 
 	/**
 	 * Constructor
@@ -46,37 +41,20 @@ public class WebServer
 		Socket workerSocket;
 		WebWorker worker;
 		try
-		
 		{
-<<<<<<< HEAD
-			//memeber variable server socket object
-			
-			/*
-				what happens: java goes to communicate with the everything that has to do with my machine and network
-				takes a port number
-				starts listening for incoming connections to that particular port
-				when incoming connection comes in java passes it off to something else to do work with it
-			 */
-=======
 			System.out.println("Server is working connected to port " + port + ".");
->>>>>>> origin/main
 			socket = new ServerSocket(port);
-			System.out.println("Web server started! Listening on port: " + port + ".");
 		}
-		//throws exception and print error msg/end program
-		//exits try and comes hes 
 		catch (Exception e)
 		{
 			System.err.println("Error binding to port " + port + ": " + e);
 			return false;
 		}
-		//other wise: infinite loop
 		while (true)
 		{
 			try
 			{
 				// wait and listen for new client connection
-				//socket.accpet = blocks execution until something happens 
 				workerSocket = socket.accept();
 			}
 			catch (Exception e)
@@ -105,7 +83,6 @@ public class WebServer
 	 **/
 	public static void main(String args[])
 	{
-		//setting up port 
 		int port = 8080;
 		if (args.length > 1)
 		{
@@ -124,12 +101,9 @@ public class WebServer
 				return;
 			}
 		}
-		//create web server object
 		WebServer server = new WebServer();
-		//tell it to start
 		if (!server.start(port))
 		{
-			//print error if it doesnt start
 			System.err.println("Execution failed!");
 		}
 	} // end main

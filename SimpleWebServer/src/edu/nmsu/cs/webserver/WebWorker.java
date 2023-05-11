@@ -63,11 +63,12 @@ public class WebWorker implements Runnable {
 			OutputStream os = socket.getOutputStream();
 
 			url_address = readHTTPRequest(is); // get this request info into 57,58
-			// System.out.println(url_address);
+			System.out.println(url_address);
 
 			// i think this serves(sends) the url address to the html file
 			writeHTTPHeader(os, "text/html", url_address);
 			writeContent(os, url_address);
+
 			os.flush();
 			socket.close();
 		} catch (Exception e) {
@@ -96,18 +97,18 @@ public class WebWorker implements Runnable {
 				line = r.readLine();
 				System.err.println("Request line: (" + line + ")");
 
-				// // search for request URL header (file_address)
-				// if ((line.contains("GET")) && (line.length() > 3) && (line.length() != 14)) {
-				// file_address = line.substring(4, line.length() - 9);
-				// System.err.println("File Found: (" + file_address + ")");
+				// search for request URL header (file_address)
+				if ((line.contains("GET")) && (line.length() > 3) && (line.length() != 14)) {
+				String file_address = line.substring(4, line.length() - 9);
+				System.err.println("File Found: (" + file_address + ")");
 
-				// }
-
+				}
+//				System.out.println("===========================" + line);
 				if (line.length() == 0)
 					break;
-				else
-					return line;
+				else return line;
 
+				
 			} catch (Exception e) {
 				System.err.println("Request error: " + e);
 				break;
@@ -115,7 +116,6 @@ public class WebWorker implements Runnable {
 		}
 
 		return line;
-
 	}
 
 	/**
@@ -198,6 +198,7 @@ public class WebWorker implements Runnable {
 		// dynamic server changing tags
 		if (!file.exists() || file.isDirectory()) {
 			System.err.println("File not found: " + readFile);
+			System.out.println(file.getAbsolutePath());
 			os.write("<h1>Error: 404 Not found<h1>\n".getBytes());
 		} else {
 			// check that the file is .html

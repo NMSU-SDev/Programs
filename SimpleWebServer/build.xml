@@ -1,25 +1,35 @@
+<project name="SimpleWebServer" basedir=".">
+  <description>
+    Program1: Ant Build File Includes Clean and Compile and Build
+  </description>
 
-<project name="SimpleWebServer" basedir="." default="main">
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="bin"/>
 
-	<property name="src" location="src/"/>
-	<property name="build" location="bin/"/>
+<!-- build  -->
+  <target name="build" description="compile the source files to classes">
+    <!-- make new directory  -->
+    <mkdir dir="${build}"/>
+    <!-- Compile the Java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
 
-	<target name="clean">
-		<delete dir="${build.dir}"/>
-	</target>
-
-	<target name="build">
-		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}"/>
-	</target>
-
-	<target name="run">
-		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" dir="${basedir} " fork="true">
-			<arg value="8080"/>
+<!-- run  -->
+    <target name="run" 
+        description="runs SimpleWebServer on port 8080">
+		<java classname="edu.nmsu.cs.webserver.WebServer" classpath="${build}" fork="true" dir="${basedir}">
+			<arg value="8085"/>
 		</java>
 	</target>
 
-    <target name="clean-build" depends="clean, build"/>
-    <target name="main" depends="clean,run"/>
+<!-- clean  -->
+  <target name="clean"
+        description="removes all compiled / generated files before doing the build.">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+  </target>
+
+
 
 </project>
