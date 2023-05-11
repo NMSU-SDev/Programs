@@ -63,7 +63,13 @@ public class WebWorker implements Runnable
 			if (file.exists() && !file.isDirectory()) {
 				String contentType = getContentType(filePath);
 				writeHTTPHeader(os, contentType);
-				writeContent(os, file);
+
+				if (contentType.startsWith("image/")) {
+					writeBinaryContent(os, file);
+				} else {
+					writeContent(os, file);
+				}
+
 			} else {
 				writeHTTPHeader(os, "text/html");
 				os.write("<h1>404 NOT FOUND</h1>\n\n".getBytes());
@@ -117,6 +123,22 @@ public class WebWorker implements Runnable
 		 if (filePath.endsWith(".html") || filePath.endsWith(".htm")) {
 			 contentType = "text/html";
 		 } 
+		 
+		 else if (filePath.endsWith(".gif")) {
+			contentType = "image/gif";
+		} 
+		
+		else if (filePath.endsWith(".jpeg") || filePath.endsWith(".jpg")) {
+			contentType = "image/jpeg";
+		} 
+		
+		else if (filePath.endsWith(".png")) {
+			contentType = "image/png";
+		} 
+		
+		else if (filePath.endsWith(".ico")) { // line to handle favicon.ico files
+		 contentType = "image/x-icon";
+	 	}	
 		 return contentType;
 	 }
 
@@ -174,6 +196,22 @@ public class WebWorker implements Runnable
 				os.write(line.getBytes());
 				os.write("\n".getBytes());
 			}
+			fis.close();
+		} catch (IOException e) {
+			System.err.println("Error reading file: " + e);
+		}
+	}
+
+	private void writeBinaryContent(OutputStream os, File file) throws Exception {
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			byte[] buffer = new byte[1024];
+			int bytesRead;
+	
+			while ((bytesRead = fis.read(buffer)) != -1) {
+				os.write(buffer, 0, bytesRead);
+			}
+	
 			fis.close();
 		} catch (IOException e) {
 			System.err.println("Error reading file: " + e);
