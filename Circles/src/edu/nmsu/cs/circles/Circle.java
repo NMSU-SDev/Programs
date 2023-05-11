@@ -37,6 +37,7 @@ public abstract class Circle
 	 **/
 	public double scale(double factor) //Change + to *
 	{
+		
 		radius = radius * factor;
 		return radius;
 	}
