@@ -1,32 +1,40 @@
-<project name="SimpleWebServer" default="build" basedir=".">
+
+<project name="SimpleWebServer" default="run" basedir=".">
+    <description>
+        Simple Web Server build file
+    </description>
 
     <!-- Set global properties for this build -->
-    <property name="src.dir" value="src"/>
-    <property name="build.dir" value="build"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="www" location="www"/>
 
-    <!-- Initialize the build directory structure -->
     <target name="init">
-        <mkdir dir="${build.dir}"/>
-        <mkdir dir="${classes.dir}"/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
     </target>
 
-    <!-- Compile the Java source files -->
-    <target name="compile" depends="init">
-        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    <target name="clean" description="clean up">
+        <!-- Delete the build directory -->
+        <delete dir="${build}"/>
     </target>
 
-    <!-- Run the web server -->
-    <target name="run" depends="compile">
-        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${classes.dir}" fork="true"/>
+    <target name="compile" depends="clean, init" description="compile the source">
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
+            <classpath>
+                <pathelement location="${www}" />
+            </classpath>
+        </javac>
     </target>
 
-    <!-- Clean the build directory -->
-    <target name="clean">
-        <delete dir="${build.dir}"/>
+    <target name="run" depends="compile" description="run the server">
+        <java classname="edu.nmsu.cs.webserver.WebServer" fork="true">
+            <classpath>
+                <pathelement location="${build}" />
+                <pathelement location="${www}" />
+            </classpath>
+            <jvmarg value="-Duser.dir=${www}" /> <!-- Set the working directory to www -->
+        </java>
     </target>
-
-    <!-- Default build target -->
-    <target name="build" depends="compile"/>
-
 </project>

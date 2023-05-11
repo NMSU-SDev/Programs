@@ -29,11 +29,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+
+import java.nio.charset.StandardCharsets; // for serving text files
 
 
 
@@ -55,31 +64,59 @@ public class WebWorker implements Runnable
 	 * destroys the thread. This method assumes that whoever created the worker created it with a
 	 * valid open socket object.
 	 **/
-	public void run()
-	{
+	public void run() {
 		System.err.println("Handling connection...");
-		try
-		{
-			InputStream is = socket.getInputStream();
-			OutputStream os = socket.getOutputStream();
-			String requestedFilePath = readHTTPRequest(is);
-			String basePath = new File(".").getCanonicalPath();
-			String filePath = basePath + File.separator + requestedFilePath;
-			boolean fileExists = new File(filePath).exists();
-			int statusCode = fileExists ? 200 : 404;
-			String contentType = "text/html";
-			writeHTTPHeader(os, contentType, statusCode);
-			writeContent(os, filePath);
-			os.flush();
-			socket.close();	
-		}
-		catch (Exception e)
-		{
-			System.err.println("Output error: " + e);
+		try {
+		  InputStream is = socket.getInputStream();
+		  OutputStream os = socket.getOutputStream();
+		  String requestedFilePath = readHTTPRequest(is); // read the HTTP request
+		  String basePath = new File(".").getCanonicalPath(); // get the current directory
+		  String filePath = basePath + File.separator + requestedFilePath; // construct the absolute path
+		  boolean fileExists = new File(filePath).exists(); // check if the file exists
+		  int statusCode = fileExists ? 200 : 404; // set the status code
+	
+		  String fileExtension = getFileExtension(requestedFilePath); // get the file extension
+		  String contentType = getContentType(fileExtension); // get the content type based on the file extension
+	
+		  writeHTTPHeader(os, contentType, statusCode); // write the HTTP header
+		  writeContent(os, filePath, contentType); // write the content
+		  os.flush(); // flush the output stream
+		  socket.close(); // close the socket
+		} catch (Exception e) {
+		  System.err.println("Output error: " + e);
 		}
 		System.err.println("Done handling connection.");
 		return;
-	} // end run()
+	  } // end run()
+
+	  // for file content
+	  private String getFileExtension(String filePath) {
+		int lastDotIndex = filePath.lastIndexOf('.'); // get the last index of '.'
+		// if the file has an extension
+		if (lastDotIndex != -1) {
+		  return filePath.substring(lastDotIndex + 1); // return the file extension
+		}
+		return ""; // otherwise, return an empty string
+	  } // end getFileExtension()
+
+	  // for serving images based on file extension
+	  private String getContentType(String fileExtension) {
+		switch (fileExtension.toLowerCase()) {
+		    case "gif":
+            return "image/gif";
+        case "jpeg":
+        case "jpg":
+            return "image/jpeg";
+        case "png":
+            return "image/png";
+        case "svg":
+            return "image/svg+xml";
+		case "ico":
+			return "image/x-icon"; // for favicon
+        default:
+            return "text/html";
+		}
+	  } // end getContentType()
 
 
 	/**
@@ -155,7 +192,7 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
+		os.write("Server: Kurt's very own server\n".getBytes());
 		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
 		// os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
@@ -172,48 +209,49 @@ public class WebWorker implements Runnable
 	 * @param os
 	 *          is the OutputStream object to write to
 	 **/
-	private boolean writeContent(OutputStream os, String fp) throws Exception
-	{
-		try{
-			// create file object
+	private boolean writeContent(OutputStream os, String fp, String contentType) throws Exception {
+		try {
+			// Create file object
 			File file = new File(fp);
-			// create file input stream
+			// Create file input stream
 			FileInputStream fis = new FileInputStream(file);
-			// create byte array to store file data
+			// Create byte array to store file data
 			byte[] data = new byte[(int) file.length()];
-			// read file data into byte array
+			// Read file data into byte array
 			fis.read(data);
-			// write byte array to output stream
+			// Check if the content type is HTML
+			if (contentType.equals("text/html")) {
+				// Convert the byte array to a string
+				String content = new String(data, StandardCharsets.UTF_8);
+
+				// Replace the <cs371date> tag with the current date
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				Date currentDate = new Date();
+				content = content.replace("<cs371date>", dateFormat.format(currentDate));
+
+				// Replace the <cs371server> tag with the server identification string
+				String serverName = "Kurt Lyell's very own server";
+				content = content.replace("<cs371server>", serverName);
+
+				// Convert the modified content string back to a byte array
+				data = content.getBytes(StandardCharsets.UTF_8);
+			}
 			os.write(data);
-			// close file input stream
+			
+			// Close file input stream
 			fis.close();
-
-			// Convert the byte array to a string
-			String content = new String(data);
-
-			// Replace the <cs371date> tag with the current date
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date currentDate = new Date();
-			content = content.replace("<cs371date>", dateFormat.format(currentDate));
-
-			// Replace the <cs371server> tag with the server identification string
-			String serverName = "Kurt Lyell's very own server";
-			content = content.replace("<cs371server>", serverName);
-
-			// Convert the modified content back to a byte array and write it to the output stream
-			os.write(content.getBytes());
-
-	
-
 			return true;
-		}
-		catch(FileNotFoundException e){
+		} catch (FileNotFoundException e) {
+			// Handle file not found error
+			os.write("HTTP/1.1 404 Not Found\n".getBytes());
+			os.write("Content-Type: text/html\n\n".getBytes());
 			os.write("<html><head></head><body>\n".getBytes());
 			os.write("<h3>404 Not Found</h3>\n".getBytes());
 			os.write("</body></html>\n".getBytes());
 			return false;
-		}
-		
+		} // end try-catch
 	} // end writeContent()
+	
+	
 
 } // end class
