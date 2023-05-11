@@ -19,16 +19,4 @@ public class Circle2 extends Circle
 			return false;
 	}
 
-	public double getPointX(){
-		return super.center.x;
-	}
-
-	public double getPointY(){
-		return super.center.y;
-	}
-
-	public double getRadius(){
-		return super.radius;
-	}
-
 }
