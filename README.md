@@ -1,3 +1,7 @@
+# About me
+Nate Le
+Git id: l3naz
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 
@@ -9,3 +13,6 @@ This assignment relies on the Coverage programs.
 
 ## Program 4
 This assignment relies on the Circles programs. 
+
+## Lab 1
+This lab is to get used to git, create a repo by forking an existing one, perform an initial checkout the repo to individual workspace, add a directory and files to it,and commit it back
