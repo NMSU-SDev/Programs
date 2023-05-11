@@ -10,6 +10,13 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+/***
+ Issue found: score2 and score3 being the same would default to s2 and s3 = 99, fixed by adding = to comparisons
+ changed else statement to default to s1 and s2 
+
+ Issue found: Removed args = NULL condition to avoid redundancy 
+ ***/
+
 public class RacingScore2
 {
 
@@ -36,25 +43,20 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		if (score1 <= score2 && score1 <= score3)
 		{
 			s1 = score2;
 			s2 = score3;
 		}
-		else if (score2 < score1 && score2 < score3)
-		{
-			s1 = score1;
-			s2 = score2;
-		}
-		else if (score3 < score1 && score3 < score2)
+		else if (score2 <= score1 && score2 <= score3)
 		{
 			s1 = score1;
 			s2 = score2;
 		}
 		else
 		{
-			s1 = 99;
-			s2 = 99;
+			s1 = score1;
+			s2 = score2;
 		}
 		s = s1 + s2;
 		return s;
@@ -63,7 +65,7 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;

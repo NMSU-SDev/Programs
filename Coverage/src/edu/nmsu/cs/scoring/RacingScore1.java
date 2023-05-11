@@ -10,6 +10,14 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+ /***
+ Issue found: Higher score was stored after comparing score1 and score2
+
+ Issue found: Values over 50 and negative values are not handled 
+
+
+
+  ***/
 public class RacingScore1
 {
 
@@ -35,13 +43,16 @@ public class RacingScore1
 
 	public int overallScore()
 	{
-		int s;
-		if (score1 < score2)
-			s = score2;
+		int s; // variable to store lowest score
+
+		if (score1 < score2) 
+			s = score1; // changed s to store lower value
 		else
-			s = score1;
-		if (s > score3)
+			s = score2;
+		
+		if(s > score3)
 			s = score3;
+		
 		s = (score1 + score2 + score3) - s;
 		return s;
 	}
