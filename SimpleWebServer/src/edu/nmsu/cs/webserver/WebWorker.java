@@ -38,6 +38,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.text.SimpleDateFormat;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 public class WebWorker implements Runnable
 {
@@ -182,14 +185,15 @@ public class WebWorker implements Runnable
 				try {
 					// Get the date
 					Date date = new Date();
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy");
+					DateFormat formatter = new SimpleDateFormat("dd/MM/yy");
 					String theDate = formatter.format(date);
 					// Get a file reader
 					BufferedReader in = new BufferedReader(new FileReader(filePath));
 					String line;
 					while((line = in.readLine()) != null) {
-						line = line.replace("<cs371date>", theDate);
-						line = line.replace("<cs371server>", "Ryan's server");
+						line = line.replace("cs371date", theDate);
+						System.out.println(line);
+						line = line.replace("cs371server", "Ryan's server");
 						os.write(line.getBytes());
 					}
 					in.close();
@@ -199,12 +203,19 @@ public class WebWorker implements Runnable
 					return;
 				}
 			} else {
-				try {
-					File file=new File(filePath);
-        			os.write(file.getBytes());
-				} catch(FileNotFoundException e) {
-					System.err.println("File not found.");
-					return;
+				if (contentType.equals("image/jpeg") || contentType.equals("image/gif") || contentType.equals("image/png")) {
+					try {
+						// Load an image from a file
+						File imageFile = new File("www/res/acc/image.jpg"); // Replace with your image file path
+						BufferedImage image = ImageIO.read(imageFile);
+			
+						// Write the image to the OutputStream
+						ImageIO.write(image, "jpg", os);
+			
+						System.out.println("Image written to OutputStream successfully.");
+					} catch (IOException e) {
+						System.out.println("Error writing image to OutputStream: " + e.getMessage());
+					}
 				}
 			} // end if/else
 		} // end file not found catch
