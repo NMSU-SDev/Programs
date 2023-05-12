@@ -9,6 +9,9 @@ package edu.nmsu.cs.scoring;
  * scores, and the computing of the competitor's overall score.
  *
  ***/
+/*
+ * Issues: If two smallest scores are equal, the condition will not identify the smallest score
+ */
 
 public class RacingScore2
 {

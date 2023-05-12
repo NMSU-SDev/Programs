@@ -10,6 +10,11 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+ /*
+ * Issues: Code does not handle invalid inputs. overallScore() assigns the highest score to the lowest when all
+ * scores are similar and doesn't handle an instance when the scores are all the same.
+ */
+
 public class RacingScore1
 {
 
