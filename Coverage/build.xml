@@ -1,77 +1,272 @@
-<!-- Sample Ant build file for running IglooScore under JaCoCo -->
-<!-- Jonathan Cook, 17 Sep 2015 -->
-<project name="iglooscore" default="jacocoreport" xmlns:jacoco="antlib:org.jacoco.ant">
+<!--  Sample Ant build file for running RacingScore under JaCoCo 
+     Jonathan Cook, 17 Sep 2015; modified Phoebe O. Toups Dugas, July 2020 using code from: 
+     https://www.eclemma.org/jacoco/trunk/doc/examples/build/build.xml
+     Some components
+        Copyright (c) 2009, 2020 Mountainminds GmbH & Co. KG and Contributors
+        This program and the accompanying materials are made available under
+        the terms of the Eclipse Public License 2.0 which is available at
+        http://www.eclipse.org/legal/epl-2.0
 
-   <!-- property to allow ant to find jacoco: CHANGE THE PATH to point to yours -->
-   <property name="jacocodir" location="/home/jcook/tools/jacoco/lib"/>
+        SPDX-License-Identifier: EPL-2.0
+
+        Contributors:
+            Marc R. Hoffmann - initial API and implementation  -->
+<project xmlns:jacoco="antlib:org.jacoco.ant" name="racingscore" default="report">
+   <!--  directory configuration - if things are not working, start troubleshooting from here  -->
+   <property name="jacoco.dir" location="lib/" />
+   <property name="src.dir" location="src/" />
+   <property name="build.dir" location="bin/" />
+   <property name="result.dir" location="./target" />
+   <property name="result.report.dir" location="${result.dir}/site/jacoco" />
+   <property name="result.exec.file" location="${result.dir}/jacoco.exec" />
 
    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-      <classpath path="${jacocodir}/jacocoant.jar"/>
+      <classpath path="${jacoco.dir}/jacocoant.jar" />
    </taskdef>
 
-   <!-- standard compile task, but turn debugging on for source viewing -->
+   <!--  standard compile task, but turn debugging on for source viewing  -->
    <target name="compile" description="compile the source">
-      <javac srcdir="." includeantruntime="false" debug="true"/>
+      <mkdir dir="${build.dir}" />
+      <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" debug="true" />
    </target>
-
-   <!-- tests if new jacoco run is needed by checking if the jacoco.exec file is
-        newer than the class files or this build file -->
+   <!--  tests if new jacoco run is needed by checking if the jacoco.exec file is
+        newer than the class files or this build file  -->
    <target name="checkRun">
-      <uptodate property="run.notneeded" targetfile="jacoco.exec">
-         <srcfiles dir="." includes="*.class build.xml" />
+      <uptodate property="run.notneeded" targetfile="${result.exec.file}">
+         <srcfiles dir="${src.dir}" includes="**/*.java build.xml" />
       </uptodate>
    </target>
+   <!--  official test example, merged with our code  -->
+   <target name="test" depends="compile,checkRun" unless="run.notneeded">
+      <echo>run needed...</echo>
+      <!-- 
+	 Step 2: Wrap test execution with the JaCoCo coverage task 
+	 this example has two runs, you'll need to perhaps
+        modify them, and then add more; this only runs if needed
+	 -->
+      <echo message="TEST RacingScore1: 8 9 6" />
+      <jacoco:coverage destfile="${result.exec.file}">
+         <java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+            <classpath path="${build.dir}" />
+            <arg value="8" />
+            <arg value="9" />
+            <arg value="6" />
+         </java>
+      </jacoco:coverage>
+      <echo message="TEST RacingScore2: 8 9 6" />
+      <jacoco:coverage destfile="${result.exec.file}">
+         <java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+            <classpath path="${build.dir}" />
+            <arg value="8" />
+            <arg value="9" />
+            <arg value="6" />
+         </java>
+      </jacoco:coverage>
+   <echo message="Test for main function (invalid argument) in RacingScore1: 9 8 a" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="9" />
+				<arg value="8" />
+				<arg value="a" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="Test for main function (less than 3 args) in RacingScore1: 7 6" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore1" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST (score 2 is greatest argument) RacingScore2: 7 8 5" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="8" />
+				<arg value="5" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for Overall Score function (score 1 is smallest arg) RacingScore2: 7 8 9" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="8" />
+				<arg value="9" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for Overall Score function (score 2 is smallest arg) RacingScore2: 7 5 8" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="5" />
+				<arg value="8" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for Overall Score function (s2 is median) RacingScore2: 6 5 4" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="5" />
+				<arg value="4" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for Overall Score function (score 2 is greatest arg) RacingScore2: 3 7 5" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="3" />
+				<arg value="7" />
+				<arg value="5" />
+			</java>
+		</jacoco:coverage>
 
-   <!-- run program under jacoco: this example has two runs, you'll need to perhaps
-        modify them, and then add more; this only runs if needed -->
-   <target name="jacocorun" depends="compile,checkRun" unless="run.notneeded">
-      <delete>
-         <!-- must delete coverage data file to start afresh (otherwise coverage accumulates) -->
-         <fileset dir="." includes="jacoco.exec"/>
-      </delete>
-      <echo message="TEST IglooScore1: 8 9 6"/>
-      <java classname="IglooScore1" fork="true">
-         <arg value="8"/><arg value="9"/><arg value="6"/>
-         <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
-      </java>
-      <echo message="TEST IglooScore2: 8 9 6"/>
-      <java classname="IglooScore2" fork="true">
-         <arg value="8"/><arg value="9"/><arg value="6"/>
-         <jvmarg line="-javaagent:${jacocodir}/jacocoagent.jar"/>
-      </java>
+		<echo message="TEST for Overall Score function (score 3 is smallest arg) RacingScore2: 6 7 4" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="7" />
+				<arg value="4" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for Overall Score function (scores are all equal) RacingScore2: 6 6 6" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="6" />
+				<arg value="6" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (less than 3 arguments) RacingScore2: 6 7" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="7" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (arguments must be integers) RacingScore2: b 7 8" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="b" />
+				<arg value="7" />
+				<arg value="8" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 1 is out of bounds) RacingScore2: -2 7 8" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="-2" />
+				<arg value="7" />
+				<arg value="8" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 1 is out of bounds) RacingScore2: 81 4 5" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="81" />
+				<arg value="4" />
+				<arg value="5" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 2 is out of bounds) RacingScore2: 6 -2 8" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="-2" />
+				<arg value="8" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 2 is out of bounds) RacingScore2: 6 81 7" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="6" />
+				<arg value="81" />
+				<arg value="7" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 3 is out of bounds) RacingScore2: 7 6 -2" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="6" />
+				<arg value="-2" />
+			</java>
+		</jacoco:coverage>
+		
+		<echo message="TEST for main function (argument 3 is out of bounds) RacingScore2: 7 6 81" />
+		<jacoco:coverage destfile="${result.exec.file}">
+			<java classname="edu.nmsu.cs.scoring.RacingScore2" fork="true">
+				<classpath path="${build.dir}" />
+				<arg value="7" />
+				<arg value="6" />
+				<arg value="81" />
+			</java>
+		</jacoco:coverage>
+
    </target>
-
-   <!-- tests if new jacoco report needs generated by checking if top report file
-        (index.html) is newer than the run data file (jacoco.exec) -->
-   <target name="checkReport">
-      <uptodate property="report.notneeded" targetfile="report/index.html" srcfile="jacoco.exec" />
-   </target>
-
-   <!-- generate a new jacoco report from a new data file; only runs if needed -->
-   <target name="jacocoreport" depends="jacocorun,checkReport" unless="report.notneeded">
+   <target name="report" depends="test,checkReport" unless="report.notneeded">
+      <echo>report needed...</echo>
+      <!--   Step 3: Create coverage report   -->
       <jacoco:report>
+         <!-- 
+	 This task needs the collected execution data and ... 
+	 -->
          <executiondata>
-            <file file="jacoco.exec"/>
+            <file file="${result.exec.file}" />
          </executiondata>
-         <structure name="iglooscore">
+         <!--   the class files and optional source files ...   -->
+         <structure name="JaCoCo Ant Example">
             <classfiles>
-               <fileset dir="."/>
+               <fileset dir="${build.dir}" />
             </classfiles>
             <sourcefiles encoding="UTF-8">
-               <fileset dir="."/>
+               <fileset dir="${src.dir}" />
             </sourcefiles>
          </structure>
-         <html destdir="report"/>
+         <!--   to produce reports in different formats.   -->
+         <html destdir="${result.report.dir}" />
+         <csv destfile="${result.report.dir}/report.csv" />
+         <xml destfile="${result.report.dir}/report.xml" />
       </jacoco:report>
    </target>
-
-   <!-- clean up by removing all generated files; do "ant clean" to start afresh -->
+   <!--  tests if new jacoco report needs generated by checking if top report file
+        (index.html) is newer than the run data file (jacoco.exec)  -->
+   <target name="checkReport">
+      <uptodate property="report.notneeded" targetfile="${result.report.dir}/index.html"
+         srcfile="${result.exec.file}" />
+   </target>
+   <!--  clean up by removing all generated files; do "ant clean" to start afresh  -->
    <target name="clean">
       <delete>
-         <fileset dir="." includes="*.class jacoco.exec"/>
+         <fileset dir="." includes="**/*.class **/jacoco.exec" />
       </delete>
-      <delete dir="report" />
+      <delete dir="${result.report.dir}" />
    </target>
-
 </project>
-
