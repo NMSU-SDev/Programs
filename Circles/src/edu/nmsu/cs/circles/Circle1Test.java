@@ -58,6 +58,53 @@ public class Circle1Test
 		p = circle1.moveBy(-1, -1);
 		Assert.assertTrue(p.x == 0 && p.y == 1);
 	}
+    // Test constructor
+    @Test
+    public void testConstructor() {
+        System.out.println("Running testConstructor.");
+        Assert.assertEquals(1, circle1.getX());
+        Assert.assertEquals(2, circle1.getY());
+        Assert.assertEquals(3, circle1.getRadius());
+    }
+    // Test scale
+    @Test
+    public void testScale() {
+        System.out.println("Running testScale.");
+        circle1.scale(2);
+        Assert.assertEquals(6, circle1.getRadius());
+}
+    // Test Intercepts (boundary value)
+    @Test
+    public void testIntercepts() {
+        System.out.println("Running testIntercepts.");
+        Circle1 other = new Circle1(4, 5, 2);
+        Assert.assertTrue(circle1.intersects(other));
+}
+    // Test no intercepts (equivalence partitioning)
+    @Test
+    public void testNoIntercepts() {
+        System.out.println("Running testNoIntercepts.");
+        Circle1 other = new Circle1(10, 10, 2);
+        Assert.assertFalse(circle1.intersects(other));
+}
+    // Test moveBy with Postitive Values
+    @Test
+    public void testMoveByPositive() {
+        System.out.println("Running testMoveByPositive.");
+        circle1.moveBy(3, 4);
+        Assert.assertEquals(4, circle1.getX());
+        Assert.assertEquals(6, circle1.getY());
+}
+    // Test moveBy with negative values
+    @Test
+    public void testMoveByNegative() {
+        System.out.println("Running testMoveByNegative.");
+        circle1.moveBy(-1, -1);
+        Assert.assertEquals(0, circle1.getX());
+        Assert.assertEquals(1, circle1.getY());
+}
+
+
 
 	/***
 	 * NOT USED public static void main(String args[]) { try { org.junit.runner.JUnitCore.runClasses(
