@@ -33,6 +33,15 @@ public class RacingScore2
 		score3 = s3;
 	}
 
+
+	/*
+	 * Code Issues: the conditions to find the smallest score are not handling the situation when two or more scores are the same. 
+	 * If two smallest scores are the same, the condition will fail to identify the smallest score, and the code will fall into the else block, 
+	 * where s1 and s2 are both set to 99, which is not a valid scoring method.
+	 * 
+	 * 
+	 * 
+	 */
 	public int overallScore()
 	{
 		int s, s1, s2;

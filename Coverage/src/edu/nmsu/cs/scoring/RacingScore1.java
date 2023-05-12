@@ -10,6 +10,14 @@ package edu.nmsu.cs.scoring;
  *
  ***/
 
+/*
+ * Code issues: this code does not handle invalid inputs (scores less than 0 or more than 50).
+ * In addition, the overallScore() method is not correct, it identifies the highest score as the lowest
+ * when all scores are similar.  The overallScore() method also does not handle the case where all three 
+ * scores are the same.
+ * 
+ */
+
 public class RacingScore1
 {
 
@@ -32,6 +40,14 @@ public class RacingScore1
 		score2 = s2;
 		score3 = s3;
 	}
+
+	/*
+ * Code issues: this code does not handle invalid inputs (scores less than 0 or more than 50).
+ * In addition, the overallScore() method is not correct, it identifies the highest score as the lowest
+ * when all scores are similar.  The overallScore() method also does not handle the case where all three 
+ * scores are the same.
+ * 
+ */
 
 	public int overallScore()
 	{
