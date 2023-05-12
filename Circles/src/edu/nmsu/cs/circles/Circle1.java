@@ -1,5 +1,7 @@
 package edu.nmsu.cs.circles;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class Circle1 extends Circle
 {
 
@@ -10,8 +12,9 @@ public class Circle1 extends Circle
 
 	public boolean intersects(Circle other)
 	{
-		if (Math.abs(center.x - other.center.x) < radius &&
-				Math.abs(center.y - other.center.y) < radius)
+		double distSq = (center.x - other.center.x ) * (center.x - other.center.x ) + (center.y - other.center.y) * (center.y - other.center.y);
+		double radSumSq = (radius + other.radius) * (radius + other.radius);
+		if (distSq == radSumSq)
 			return true;
 		return false;
 	}
