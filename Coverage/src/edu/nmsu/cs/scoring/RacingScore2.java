@@ -36,8 +36,10 @@ public class RacingScore2
 	public int overallScore()
 	{
 		int s, s1, s2;
-		if (score1 < score2 && score1 < score3)
+		if ( score1 < score2 
+			&& score1 < score3  )
 		{
+			System.out.printf( "Branch: %d, %d, %d\n", score1, score2, score3); 
 			s1 = score2;
 			s2 = score3;
 		}
@@ -63,7 +65,11 @@ public class RacingScore2
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
-		if (args == null || args.length != 3)
+
+		//changed this branch to break the short circuit 
+		//since args can never both been null or not three
+		if ( args ==  null 
+			||args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");
 			return;
@@ -79,7 +85,14 @@ public class RacingScore2
 			System.err.println("Error: arguments must be integers!");
 			return;
 		}
-		if (s1 < 0 || s1 > 50 || s2 < 0 || s2 > 50 || s3 < 0 || s3 > 50)
+
+		//changed some operator to break the short circuit		
+		if (s1 < 0 
+			|| s1 > 50 
+			|| s2 < 0 
+			|| s2 > 50 
+			|| s3 < 0 
+			|| s3 > 50)
 		{
 			System.err.println("Error: scores must be between 0 and 50!");
 			return;

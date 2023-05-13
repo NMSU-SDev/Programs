@@ -17,9 +17,9 @@ import java.net.Socket;
 
 public class WebServer
 {
-	private ServerSocket	socket;
+	private ServerSocket socket;
 
-	private boolean				running;
+	private boolean	running;
 
 	/**
 	 * Constructor
@@ -42,7 +42,7 @@ public class WebServer
 		WebWorker worker;
 		try
 		{
-			socket = new ServerSocket(port);
+			socket = new ServerSocket( port );
 		}
 		catch (Exception e)
 		{
@@ -85,7 +85,7 @@ public class WebServer
 		int port = 8080;
 		if (args.length > 1)
 		{
-			System.err.println("Usage: java Webserver <portNumber>");
+			System.err.println("Usage: java Webserver <8080>");
 			return;
 		}
 		else if (args.length == 1)

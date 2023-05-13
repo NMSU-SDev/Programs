@@ -1,0 +1,21 @@
+
+   <target name="compile" description="compile the source">
+      <javac srcdir="." includeantruntime="false" debug="true"/>
+   </target>
+
+
+  
+   <target name="clean">
+      <delete>
+         <fileset dir="." includes="*.class jacoco.exec"/>
+      </delete>
+      <delete dir="report" />
+   </target>
+
+ 
+   <target name="run">
+      <target >
+         <fileset dir="." includes="*.class jacoco.exec"/>
+      </target>
+      <delete dir="report" />
+   </target>

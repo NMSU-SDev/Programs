@@ -49,6 +49,8 @@ public class RacingScore1
 	public static void main(String args[])
 	{
 		int s1, s2, s3;
+
+		
 		if (args.length != 3)
 		{
 			System.err.println("Error: must supply three arguments!");

@@ -1,0 +1,23 @@
+<project name="simple WebServer " default="foo" basedir=".">
+
+  <property name="src" location="src"/>
+
+  <property name="dest" location="bin"/>   
+
+   <!-- begin target names-->
+
+
+   <!-- Begin default target -->
+   <!-- target must clean and compile here -->
+   <target name="foo">
+     <echo> This file should comple and clean the server :D </echo>
+     <javac srcdir="${src}" destdir="${dest}" includeantruntime="false" />
+   </target> 
+
+
+   <!-- This target should only run the program --> 
+   <target name="run" depends="foo">
+      <echo> This command should be default :D</echo>
+      
+   </target>
+</project>

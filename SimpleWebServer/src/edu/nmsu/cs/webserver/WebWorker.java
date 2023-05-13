@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+
 public class WebWorker implements Runnable
 {
 
@@ -54,6 +55,8 @@ public class WebWorker implements Runnable
 			InputStream is = socket.getInputStream();
 			OutputStream os = socket.getOutputStream();
 			readHTTPRequest(is);
+			
+
 			writeHTTPHeader(os, "text/html");
 			writeContent(os);
 			os.flush();
@@ -68,10 +71,14 @@ public class WebWorker implements Runnable
 	}
 
 	/**
-	 * Read the HTTP request header.
+	 * Read the HTTP request head and parse to get path :D 
+	 * change function here :D
+	 * we need this line here : Request line: (GET / HTTP/1.1)
+	 * 
 	 **/
-	private void readHTTPRequest(InputStream is)
+	private String readHTTPRequest(InputStream is)
 	{
+		String myPath = ""; 
 		String line;
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		while (true)
@@ -81,6 +88,10 @@ public class WebWorker implements Runnable
 				while (!r.ready())
 					Thread.sleep(1);
 				line = r.readLine();
+				if( line.startsWith( "GET" )) {
+					myPath = line; 
+					//System.out.println( line + "Is the file we want to use" ); 
+				}// end if
 				System.err.println("Request line: (" + line + ")");
 				if (line.length() == 0)
 					break;
@@ -91,12 +102,13 @@ public class WebWorker implements Runnable
 				break;
 			}
 		}
-		return;
+		return myPath;
 	}
 
 	/**
 	 * Write the HTTP header lines to the client network connection.
 	 * 
+	 *
 	 * @param os
 	 *          is the OutputStream object to write to
 	 * @param contentType
@@ -111,9 +123,9 @@ public class WebWorker implements Runnable
 		os.write("Date: ".getBytes());
 		os.write((df.format(d)).getBytes());
 		os.write("\n".getBytes());
-		os.write("Server: Jon's very own server\n".getBytes());
-		// os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
-		// os.write("Content-Length: 438\n".getBytes());
+		os.write("Server: Edy's very own server\n".getBytes());
+		os.write("Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\n".getBytes());
+		os.write("Content-Length: 438\n".getBytes());
 		os.write("Connection: close\n".getBytes());
 		os.write("Content-Type: ".getBytes());
 		os.write(contentType.getBytes());
@@ -122,6 +134,8 @@ public class WebWorker implements Runnable
 	}
 
 	/**
+	 * write to the website or barf
+	 * 
 	 * Write the data content to the client network connection. This MUST be done after the HTTP
 	 * header has been written out.
 	 * 
@@ -130,9 +144,17 @@ public class WebWorker implements Runnable
 	 **/
 	private void writeContent(OutputStream os) throws Exception
 	{
+	
 		os.write("<html><head></head><body>\n".getBytes());
 		os.write("<h3>My web server works!</h3>\n".getBytes());
+		os.write("<h3>LIfe sucks :D</h3>\n".getBytes());
+		os.write("<h3>How to make a simple webServer:D</h3>\n".getBytes());
 		os.write("</body></html>\n".getBytes());
+	
+		
+		
+	
 	}
+	
 
 } // end class

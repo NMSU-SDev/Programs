@@ -1,3 +1,6 @@
+# target for test reports :D
+target/
+
 # Compiled class file
 *.class
 
