@@ -1,0 +1,95 @@
+<project name="Circles" default="run" basedir=".">
+	
+	<property name="bin.dir" value="bin"/>
+    <property name="src.dir" value="src"/>
+	<property name="test.dir" value="test"/>
+	<property name="src.classes.dir" value="${bin.dir}/src"/>
+	<property name="test.classes.dir" value="${bin.dir}/src"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="test.dir" value="test"/>
+	<property name="jar.dir" value="${bin.dir}/jar"/>
+	<property name="jar.pathname" value="${jar.dir}/CircleRun.jar"/>
+	<property name="jar.main-class" value="edu.nmsu.cs.circles.CircleRun"/>
+
+
+	<target name = "clean" description = "Cleans class files">
+		<delete dir="${bin.dir}"/>
+	</target>
+
+	<target name="init">
+		<mkdir dir="${jar.dir}"/>
+		<mkdir dir="${src.classes.dir}"/>
+		<mkdir dir="${src.classes.dir}"/>
+	</target>
+
+	<target name = "compile" depends="init" description = "Compiles project" >
+		<javac srcdir = "${src.dir}" destdir = "${src.classes.dir}" includeantruntime = "false"/>
+		<jar destfile = "${jar.pathname}" basedir="${src.classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${jar.main-class}"/>
+			</manifest>
+		</jar>
+
+		<javac srcdir="${test.dir}" destdir="${test.classes.dir}" includeantruntime="false">
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar"/>
+				<path location="${jar.pathname}"/>
+			</classpath>
+		</javac>
+	</target>
+
+
+	<target name = "run" depends = "compile" description = "Run circles with default arguments">
+		<java jar="${jar.pathname}" fork = "true">
+			<arg value = "0"/>
+			<arg value = "0"/>
+			<arg value = "5"/>
+			<arg value = "5"/>
+			<arg value = "5"/>
+			<arg value = "10"/>
+		</java>
+	</target>
+
+	<target name="test" depends="compile">
+		<junit printsummary="on" haltonfailure = "yes" fork = "true">
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar"/>
+				<path location="${jar.pathname}"/>
+				<pathelement location = "${test.classes.dir}"/>
+			</classpath>
+			<formatter type = "brief" usefile ="false"/>
+			<!-- <batchset>
+				<fileset dir="${test.dir}" includes="**/*Test.java"/>
+			</batchset> -->
+		</junit>
+	</target>
+
+    <target name="testCircle1" depends = "compile" description = "Runs JUnit on Circle1Test">
+	  <junit printsummary = "on" haltonfailure = "yes" fork = "true">
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar"/>
+				<path location="${jar.pathname}"/>
+				<pathelement location = "${test.classes.dir}"/>
+			</classpath>
+			<formatter type = "brief" usefile ="false"/>
+			<!-- <batchset>
+				<fileset dir="${test.dir}" includes="**/Circle1Test.java"/>
+			</batchset> -->
+		</junit>
+    </target>
+
+	<target name = "testCircle2" depends = "compile" description = "Runs JUnit on Circle2Test">
+	    <junit printsummary = "on" haltonfailure = "yes" fork = "true">
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar"/>
+				<path location="${jar.pathname}"/>
+				<pathelement location = "${test.classes.dir}"/>
+			</classpath>
+			<formatter type = "brief" usefile ="false"/>
+			<!-- <batchset>
+				<fileset dir="${test.dir}" includes="**/Circle2Test.java"/>
+			</batchset> -->
+		</junit>
+    </target>
+
+</project>
