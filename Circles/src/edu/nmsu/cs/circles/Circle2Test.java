@@ -2,20 +2,20 @@ package edu.nmsu.cs.circles;
 
 import org.junit.*;
 
-public class Circle1Test {
+public class Circle2Test {
 	// Data you need for each test case
-	private Circle1 circle1;
-    private Circle1 circle2;
-    private Circle1 circle3;
+	private Circle2 circle1;
+    private Circle2 circle2;
+    private Circle2 circle3;
     private final double delta = 1e-15;
 
 	// Stuff you want to do before each test case
 	@Before
 	public void setup() {
 		System.out.println("\nTest starting...");
-		circle1 = new Circle1(1, 2, 3);
-        circle2 = new Circle1(1, 2, 4);
-        circle3 = new Circle1(10, 11, 12);
+		circle1 = new Circle2(1, 2, 3);
+        circle2 = new Circle2(1, 2, 4);
+        circle3 = new Circle2(10, 11, 12);
 	}
 
 	// Stuff you want to do after each test case
@@ -23,7 +23,7 @@ public class Circle1Test {
 	public void teardown() {
 		System.out.println("\nTest finished.");
 	}
-
+	
 	// Test a positive move
 	@Test
 	public void simpleMove() {
@@ -57,7 +57,7 @@ public class Circle1Test {
         Assert.assertTrue(circle1.intersects(circle2));
     }
 
-    // Test intersection method with two non-intersecting circles
+    // Test intersection method with two non-intersecting circles	
     @Test
     public void simpleNonIntersect() {
         System.out.println("Running test: simpleNonIntersect");

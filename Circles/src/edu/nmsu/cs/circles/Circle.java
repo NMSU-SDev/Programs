@@ -25,7 +25,7 @@ public abstract class Circle
 		center = new Point();
 		center.x = x;
 		center.y = y;
-		this.radius = radius;
+		this.radius = Math.abs(radius);
 	}
 
 	/**
@@ -35,9 +35,10 @@ public abstract class Circle
 	 *          is the scaling factor (0.8 make it 80% as big, 2.0 doubles its size)
 	 * @return the new radius
 	 **/
-	public double scale(double factor)
+	public double scale(double factor) //Change + to *
 	{
-		radius = radius + factor;
+		
+		radius = radius * factor;
 		return radius;
 	}
 
