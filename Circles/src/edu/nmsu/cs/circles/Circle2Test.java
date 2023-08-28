@@ -50,12 +50,15 @@ public class Circle2Test
 	// Test an that two circles meet but not intersect
 	//
 	@Test
-	public void meetingOfTwoCircles(){
+	public void meetingOfTwoCircles1(){
 		System.out.println("Test Starting...");
 		System.out.println("This is two circles meeting, but not intersecting");
 		Circle2 circle1 = new Circle2(-5, 2, 3);
-		Assert.assertTrue(circle2.intersects(circle1) == true);
+		Circle2 circle2 = new Circle2(1, 2, 3);
+		Assert.assertFalse(circle2.intersects(circle1));
 	}
+
+
 
 	//
 	// Test that two circles do not meet at all
@@ -65,8 +68,10 @@ public class Circle2Test
 		System.out.println("Test Starting...");
 		System.out.println("This is two circles meeting, but not intersecting");
 		Circle2 circle1 = new Circle2(-7, 2, 3);
-		Assert.assertTrue(circle2.intersects(circle1) == true);
+		Circle2 circle2 = new Circle2(1, 2, 3); // You need to create this instance
+		Assert.assertFalse(circle2.intersects(circle1));
 	}
+
 
 	//
 	// Test scaling a circle by a factor of 3
