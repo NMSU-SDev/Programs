@@ -1,0 +1,36 @@
+<html>
+    <body style="background-color:rgb(60, 142, 172);"></body>
+    <body onload = "time()">
+
+    <head>
+        <h1>Hello world! Beans!</h1>
+    </head>  
+    <p style = "font-size: 20px">
+        The current date is: <cs371date>. The server is: <cs371server>. <br> <br>
+        It is currently <span id = "currTime"></span>    
+        <br><br>
+        Here's the list of test files:
+        <br><a href="jptrain.jpg">.jpg example</a>
+        <br><a href="idk.png">.png example</a>
+        <br><a href="ramen.gif">.gif example</a>
+    </p>
+    
+    <!-- This code was obtained from https://www.w3schools.com/js/tryit.asp?filename=tryjs_timing_clock, with minor adjustments-->
+    <script>
+        function time(){
+            const today = new Date();
+            let hour = today.getHours();
+            let minutes = today.getMinutes();
+            let seconds = today.getSeconds();
+
+            if(hour < 10) { hour = "0" + hour; }
+            if(minutes < 10){ minutes = "0" + minutes; }
+            if(seconds < 10){ seconds = "0" + seconds; }
+
+            document.getElementById("currTime").innerHTML = hour + ":" + minutes + ":" + seconds;
+            setTimeout(time, 1000);
+        }
+    </script>
+    
+    </body>
+</html>
