@@ -1,0 +1,21 @@
+<project name="SimpleWebServer" default="run">
+
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="bin"/>
+        <javac srcdir="." destdir="bin"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java  classname="edu.nmsu.cs.webserver.WebServer" classpath="bin/" dir="www" fork="true">
+            <arg value="8080"/>
+             
+        </java>
+    </target>
+
+
+
+</project>
