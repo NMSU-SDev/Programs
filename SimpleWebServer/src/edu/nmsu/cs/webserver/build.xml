@@ -1,0 +1,22 @@
+<project name="WebServer" default="run">
+
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac includeantruntime="false" srcdir="src" destdir="bin"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="WebServer" fork="true">
+            <classpath>
+                <pathelement location="bin"/>
+            </classpath>
+            <arg value="8080"/>
+            <arg value="."/>
+        </java>
+    </target>
+
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+
+</project>

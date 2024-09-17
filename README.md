@@ -1,3 +1,9 @@
+# Zaynab Badawy
+## GitHub ID: badawyzaynab
+
+# Lab One
+Setting up GitHub Desktop, making a helloworld.java file, adding empty text and mxl files, and editing the README file.
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 

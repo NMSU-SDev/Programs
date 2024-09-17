@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="WebServer" default="run" basedir=".">
+
+    <!-- Define properties -->
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+    <property name="dist.dir" value="dist" />
+    <property name="test.dir" value="www" />
+    <property name="main.class" value="com.example.WebServerMain" />
+
+    <!-- Define targets -->
+    <target name="clean">
+        <delete dir="${build.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${build.dir}" />
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" />
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${dist.dir}" />
+        <jar destfile="${dist.dir}/webserver.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java classname="${main.class}" fork="true">
+            <classpath>
+                <pathelement location="${dist.dir}/webserver.jar" />
+            </classpath>
+            <arg line="${test.dir}" />
+        </java>
+    </target>
+
+    <!-- Define the default target -->
+    <target name="default" depends="run" />
+
+</project>

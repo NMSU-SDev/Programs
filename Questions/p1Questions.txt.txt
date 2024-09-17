@@ -1,0 +1,4 @@
+Thought/Design: 1 hour
+Programming: 30 minutes
+Debugging: 15 minutes
+TOTAL: 1 hour 45 minutes

@@ -1,0 +1,60 @@
+<project name="Circles" default="run">
+  <!-- Properties -->
+  <property name="src.dir" value="src" />
+  <property name="build.dir" value="build" />
+  <property name="classes.dir" value="${build.dir}/classes" />
+  <property name="test.dir" value="test" />
+  <property name="lib.dir" value="lib" />
+  <property name="junit.jar" value="${lib.dir}/junit-4.13.jar" />
+  <property name="test.classes.dir" value="${build.dir}/test-classes" />
+  <!-- Targets -->
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+  <target name="init">
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${classes.dir}" />
+    <mkdir dir="${test.classes.dir}" />
+  </target>
+  <target name="compile" depends="init">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" />
+  </target>
+  <target name="test-compile" depends="compile">
+    <javac srcdir="${test.dir}" destdir="${test.classes.dir}">
+      <classpath>
+        <pathelement location="${classes.dir}" />
+        <pathelement location="${junit.jar}" />
+      </classpath>
+    </javac>
+  </target>
+  <target name="testCircle1" depends="test-compile">
+    <java classname="org.junit.runner.JUnitCore" fork="true">
+      <arg value="Circle1Test" />
+      <classpath>
+        <pathelement location="${classes.dir}" />
+        <pathelement location="${test.classes.dir}" />
+        <pathelement location="${junit.jar}" />
+      </classpath>
+    </java>
+  </target>
+  <target name="testCircle2" depends="test-compile">
+    <java classname="org.junit.runner.JUnitCore" fork="true">
+      <arg value="Circle2Test" />
+      <classpath>
+        <pathelement location="${classes.dir}" />
+        <pathelement location="${test.classes.dir}" />
+        <pathelement location="${junit.jar}" />
+      </classpath>
+    </java>
+  </target>
+  <target name="test" depends="testCircle1,testCircle2">
+    <echo message="All tests passed!" />
+  </target>
+  <target name="run" depends="compile">
+    <java classname="Circles" fork="true">
+      <classpath>
+        <pathelement location="${classes.dir}" />
+      </classpath>
+    </java>
+  </target>
+</project>

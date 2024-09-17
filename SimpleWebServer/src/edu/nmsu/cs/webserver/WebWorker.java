@@ -135,4 +135,65 @@ public class WebWorker implements Runnable
 		os.write("</body></html>\n".getBytes());
 	}
 
+	private void processRequest(BufferedReader reader, OutputStream writer) throws IOException {
+		String line = reader.readLine();
+		String[] request = line.split(" ");
+
+		if (request.length != 3) {
+			writeErrorResponse(writer, "400 Bad Request");
+			return;
+		}
+
+		String method = request[0];
+		String path = request[1];
+
+		if (!method.equals("GET")) {
+			writeErrorResponse(writer, "405 Method Not Allowed");
+			return;
+		}
+
+		File file = new File("." + path);
+
+		if (!file.exists()) {
+			writeErrorResponse(writer, "404 Not Found");
+			return;
+		}
+
+		if (file.isDirectory()) {
+			file = new File(file, "index.html");
+		}
+
+		String extension = getExtension(file.getName());
+
+		if (!extension.equals("html") && !extension.equals("gif") && !extension.equals("jpeg") && !extension.equals("png")) {
+			writeErrorResponse(writer, "400 Bad Request");
+			return;
+		}
+
+		FileInputStream inputStream = new FileInputStream(file);
+
+		byte[] buffer = new byte[1024];
+		int bytesRead;
+
+		if (extension.equals("html")) {
+			String content = new String(inputStream.readAllBytes());
+			content = processHtml(content);
+			buffer = content.getBytes();
+			writeResponseHeader(writer, "text/html", buffer.length);
+		} else if (extension.equals("gif")) {
+			buffer = inputStream.readAllBytes();
+			writeResponseHeader(writer, "image/gif", buffer.length);
+		} else if (extension.equals("jpeg")) {
+			buffer = inputStream.readAllBytes();
+			writeResponseHeader(writer, "image/jpeg", buffer.length);
+		} else if (extension.equals("png")) {
+			buffer = inputStream.readAllBytes();
+			writeResponseHeader(writer, "image/png", buffer.length);
+		}
+
+		writer.write(buffer);
+		inputStream.close();
+	}
+
+
 } // end class
