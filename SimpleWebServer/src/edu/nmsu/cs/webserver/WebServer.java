@@ -42,6 +42,7 @@ public class WebServer
 		WebWorker worker;
 		try
 		{
+			System.out.println("Server is working connected to port " + port + ".");
 			socket = new ServerSocket(port);
 		}
 		catch (Exception e)
