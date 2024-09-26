@@ -1,0 +1,11 @@
+Kuntz
+
+1. One hour
+
+2. 
+ Design: half an hour
+ Programming: two hours
+ Debugging: half an hour
+ TOTAL: three hours
+
+3. 300% inaccurate...

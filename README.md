@@ -1,3 +1,9 @@
+# GitHub User ID:
+davidkuntz02
+
+# Lab 1
+What a mess...
+
 # Programs
 Base code for program assignments in Software Development (C S 371). 
 

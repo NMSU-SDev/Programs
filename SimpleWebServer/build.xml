@@ -1,0 +1,18 @@
+<!--David Kuntz CS371 Spring 2023 Ant Build File Painstakingly Handmade-->
+<!DOCTYPE xml>
+<project name="SimpleWebServer" default="run">
+	<property name="main_class.dir" value="edu.nmsu.cs.webserver"/>
+	<property name="dest.dir" value="../bin"/>
+	
+	<target name="clean">
+		<delete dir="${dest.dir}/${main_class.dir}"/>
+	</target>
+
+    <target name="compile" depends="clean">
+    	<javac includeantruntime="true" srcdir="src" destdir="${dest.dir}"/>
+    </target>
+
+    <target name="run" depends="clean,compile">
+    	<java classpath="${dest.dir}" classname="${main_class.dir}.WebServer" fork="true"/>
+    </target>
+</project>
