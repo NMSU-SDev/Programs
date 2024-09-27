@@ -1,0 +1,23 @@
+<project name="WebServer" default="default" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="bin.dir" value="bin"/>
+
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" includeantruntime="false"/>
+    </target>
+
+    <target name="build" depends="clean, compile"/>
+
+    <target name="run" depends="build">
+        <java classname="edu.nmsu.cs.webserver.WebServer" classpath="${bin.dir}" fork="true">
+            <arg value="8080"/>
+        </java>
+    </target>
+
+    <target name="default" depends="build, run"/>
+</project>
